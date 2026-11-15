@@ -1,0 +1,164 @@
+{
+ "film": "Why Your Phone Gets Heavier When You Charge It",
+ "total_seconds": 629.8,
+ "fps": 24,
+ "resolution": "1920x1080",
+ "chapters": [
+  {
+   "n": 1,
+   "title": "The Impossible Scale",
+   "frm": 0.0,
+   "to": 40.822,
+   "frames": [
+    0,
+    980
+   ],
+   "out": "out/ch01.mp4",
+   "marks": 48,
+   "camera_keys": 9
+  },
+  {
+   "n": 2,
+   "title": "Energy Is Not Stuff",
+   "frm": 40.821999999999996,
+   "to": 72.383,
+   "frames": [
+    980,
+    1737
+   ],
+   "out": "out/ch02.mp4",
+   "marks": 50,
+   "camera_keys": 8
+  },
+  {
+   "n": 3,
+   "title": "The Old Rule",
+   "frm": 72.383,
+   "to": 122.362,
+   "frames": [
+    1737,
+    2937
+   ],
+   "out": "out/ch03.mp4",
+   "marks": 45,
+   "camera_keys": 9
+  },
+  {
+   "n": 4,
+   "title": "The Balance's Limit",
+   "frm": 122.362,
+   "to": 161.953,
+   "frames": [
+    2937,
+    3887
+   ],
+   "out": "out/ch04.mp4",
+   "marks": 47,
+   "camera_keys": 9
+  },
+  {
+   "n": 5,
+   "title": "Radium Refuses to Behave",
+   "frm": 161.953,
+   "to": 209.326,
+   "frames": [
+    3887,
+    5024
+   ],
+   "out": "out/ch05.mp4",
+   "marks": 62,
+   "camera_keys": 9
+  },
+  {
+   "n": 6,
+   "title": "Light Has Momentum",
+   "frm": 209.32600000000002,
+   "to": 266.849,
+   "frames": [
+    5024,
+    6404
+   ],
+   "out": "out/ch06.mp4",
+   "marks": 56,
+   "camera_keys": 11
+  },
+  {
+   "n": 7,
+   "title": "Einstein's First Argument",
+   "frm": 266.849,
+   "to": 341.272,
+   "frames": [
+    6404,
+    8191
+   ],
+   "out": "out/ch07.mp4",
+   "marks": 59,
+   "camera_keys": 11
+  },
+  {
+   "n": 8,
+   "title": "The Box of Light",
+   "frm": 341.272,
+   "to": 405.197,
+   "frames": [
+    8191,
+    9725
+   ],
+   "out": "out/ch08.mp4",
+   "marks": 70,
+   "camera_keys": 12
+  },
+  {
+   "n": 9,
+   "title": "Why Nobody Could See It",
+   "frm": 405.197,
+   "to": 450.388,
+   "frames": [
+    9725,
+    10809
+   ],
+   "out": "out/ch09.mp4",
+   "marks": 39,
+   "camera_keys": 11
+  },
+  {
+   "n": 10,
+   "title": "Weighing Atoms",
+   "frm": 450.38800000000003,
+   "to": 533.788,
+   "frames": [
+    10809,
+    12811
+   ],
+   "out": "out/ch10.mp4",
+   "marks": 72,
+   "camera_keys": 15
+  },
+  {
+   "n": 11,
+   "title": "The Sun Proves It",
+   "frm": 533.788,
+   "to": 578.283,
+   "frames": [
+    12811,
+    13879
+   ],
+   "out": "out/ch11.mp4",
+   "marks": 71,
+   "camera_keys": 8
+  },
+  {
+   "n": 12,
+   "title": "Your Phone, Your Body, E=mc\u00b2",
+   "frm": 578.2829999999999,
+   "to": 629.8,
+   "frames": [
+    13879,
+    15115
+   ],
+   "out": "out/ch12.mp4",
+   "marks": 51,
+   "camera_keys": 14
+  }
+ ]
+}

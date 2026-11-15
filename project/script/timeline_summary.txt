@@ -1,0 +1,19 @@
+TIMELINE (from real WAV durations)
+speech 556.0s | narration (speech+gaps) 622.9s | film total 629.8s (10.50 min)
+lines 120 | cue groups 83 | cues 83
+cue rule violations: too-short 0 [], overlaps 0
+
+ch 1    0.70 -   40.66  ( 40.0s, 10 lines)  The Impossible Scale
+ch 2   41.52 -   72.22  ( 30.7s,  7 lines)  Energy Is Not Stuff
+ch 3   73.08 -  122.20  ( 49.1s,  8 lines)  The Old Rule
+ch 4  123.06 -  161.79  ( 38.7s,  7 lines)  The Balance's Limit
+ch 5  162.65 -  209.17  ( 46.5s,  9 lines)  Radium Refuses to Behave
+ch 6  210.03 -  266.69  ( 56.7s, 12 lines)  Light Has Momentum
+ch 7  267.55 -  341.11  ( 73.6s, 15 lines)  Einstein's First Argument
+ch 8  341.97 -  405.04  ( 63.1s, 11 lines)  The Box of Light
+ch 9  405.90 -  450.23  ( 44.3s, 10 lines)  Why Nobody Could See It
+ch10  451.09 -  533.63  ( 82.5s, 14 lines)  Weighing Atoms
+ch11  534.49 -  578.12  ( 43.6s,  8 lines)  The Sun Proves It
+ch12  578.98 -  622.95  ( 44.0s,  9 lines)  Your Phone, Your Body, E=mc²
+
+end card: 624.00 + 4.6s draw + 1.2s hold

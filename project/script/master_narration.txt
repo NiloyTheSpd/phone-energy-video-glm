@@ -1,0 +1,67 @@
+WHY YOUR PHONE GETS HEAVIER WHEN YOU CHARGE IT
+Master narration - final (Kokoro af_heart, speed 0.70-0.82; 1,451 spoken words)
+
+======================================================================
+CHAPTER 1 - THE IMPOSSIBLE SCALE  (83 words)
+======================================================================
+Take two phones, identical in every way. Charge one completely, drain the other until it's dead, and set them on a balance. The charged phone is heavier. Not by any amount you could measure. Yet nothing material went in while it charged. No atoms came down the cable. No extra electrons piled up either: every electron that flowed in through one wire flowed back out through the other. The only thing the phone gained was energy. And energy, it turns out, has weight.
+
+======================================================================
+CHAPTER 2 - ENERGY IS NOT STUFF  (69 words)
+======================================================================
+Inside the battery, charging doesn't add stuff. It rearranges it. Ions shuttle between two layers into an arrangement that stores energy, like a stretched spring. Use the phone, and they slide back down, releasing it. A full battery and an empty one hold exactly the same atoms. The only difference is energy. So why would energy have weight at all? Matter is supposed to be the thing that weighs.
+
+======================================================================
+CHAPTER 3 - THE OLD RULE  (118 words)
+======================================================================
+For a century, science's most careful weighings said the opposite: nothing inside a sealed container can change its weight. The rule was born in Paris, in the 1770s, with Antoine Lavoisier, a chemist who trusted his balance more than any theory. He sealed tin inside a glass vessel, melting the glass shut so nothing could get in or out, and took its weight. Then he heated it, until part of the shiny metal turned to grey powder, let it cool, and took its weight again. Heat had poured in and out. The weight had not changed at all. In 1789, his rule: an equal quantity of matter, before and after. Energy, it seemed, weighs nothing.
+
+======================================================================
+CHAPTER 4 - THE BALANCE'S LIMIT  (89 words)
+======================================================================
+But a rule is only as good as the balance that tests it. In the 1890s, Hans Landolt in Berlin spent 20 years testing it harder than anyone. Two chemicals, sealed in the separate arms of a glass vessel, react; the heat escapes; he weighs it again. And again. And again. He chased every error — buoyancy, moisture, dust. His 1908 verdict: no reaction changed weight by more than 0.03 mg. If the escaping heat weighed anything at all, it weighed less than that.
+
+======================================================================
+CHAPTER 5 - RADIUM REFUSES TO BEHAVE  (109 words)
+======================================================================
+Then a tiny glowing sample made that answer hard to believe. Radium, which Marie Curie purified in 1902, from more than a ton of ore. Pierre Curie measured one gram giving off a hundred calories of heat, every hour. That adds up to nearly nine hundred thousand calories a year. A gram of coal gives 7,000. Then it's gone. The radium releases a hundred times more, every year, and barely slows down: half is still there sixteen hundred years from now. Nobody could say what it was using up. Either it soaked up invisible energy from space, or the energy came from inside the atom itself.
+
+======================================================================
+CHAPTER 6 - LIGHT HAS MOMENTUM  (128 words)
+======================================================================
+The first clue had appeared earlier, in the way light behaves. In 1900, Henri Poincaré worked through a fact most people never think about: light pushes. It's why a comet's tail points away from the Sun; and lab experiments had just measured that push. Anything that pushes carries momentum. A flash of energy E carries momentum: E divided by the speed of light. Momentum is mass times speed. What mass would that flash need? Its energy, divided by the speed of light squared. His example: a one kilogram lamp firing three million joules of light recoils like a cannon, while the flash carries thirty-three billionths of a gram. But he called it a fiction, not a real weight. The number sat there. He didn't believe it.
+
+======================================================================
+CHAPTER 7 - EINSTEIN'S FIRST ARGUMENT  (164 words)
+======================================================================
+Believing it took Albert Einstein — 26, a clerk at the patent office in Bern. In 1905, just after finishing relativity, he wrote to a friend: a body's mass must be a measure of the energy inside it. Light carries mass, he said. Radium should get noticeably lighter. That September, three pages in the leading physics journal. A glowing object, at rest, fires two identical flashes in opposite directions. The pushes cancel. It just loses the light's energy, L. Now watch from a passing train. The speed is unchanged, but the forward flash now looks slightly more energetic, the backward slightly less. Add them: most of the difference cancels. Not all. From the train, the light carries away a little more than L. That extra must come out of its kinetic energy. And kinetic energy is one half, times mass, times speed squared. The speed hasn't changed. So the mass drops — by the light's energy, divided by the speed of light squared.
+
+======================================================================
+CHAPTER 8 - THE BOX OF LIGHT  (153 words)
+======================================================================
+A year later, Einstein offered a simpler argument: a flash of light inside a box. Walk from one end of a small boat to the other, and it slides back under you. Nothing inside a closed system can move its own centre of mass. Now make it a box in empty space, and make you a flash of light off the left wall. The flash pushes the box back, crosses, and is absorbed at the right wall — the box stops, shifted. Nothing outside touched it. So either the box pushed itself through space, or the light carried mass, wall to wall. The boat settles it: box mass times shift equals light mass times box length. Everything cancels but one line: the light's mass equals its energy, divided by the speed of light squared. The left wall really gets lighter. The right wall really gets heavier. Einstein credited Poincaré on the paper's first page.
+
+======================================================================
+CHAPTER 9 - WHY NOBODY COULD SEE IT  (104 words)
+======================================================================
+Once energy has real weight, the old mysteries make sense. Only one thing hid that weight: the size of c squared. Light moves at three hundred million metres per second. So c squared is ninety million billion. Ninety million billion joules, for one kilogram of weight. Landolt's escaping heat weighed about a billionth of a gram. His balance could only see 30 millionths of a gram. Tens of thousands of times too coarse. Even a gram of radium radiates a whole year of heat that weighs just forty billionths of a gram, right at the edge of the finest balances — after twelve patient months.
+
+======================================================================
+CHAPTER 10 - WEIGHING ATOMS  (177 words)
+======================================================================
+So could anyone weigh energy at all? It would take more energy per atom, and a way to weigh single atoms. Both arrived in Rutherford's lab in Cambridge. Atoms were no longer weighed on pans: flying through magnetic fields in a vacuum, the lighter ones curve more sharply. The bend became the scale. On the 14th of April 1932, researchers fired fast protons at a thin layer of lithium. One watched from a darkened hut beneath the machine, shielded from X-rays. The screen lit up. Rutherford squeezed in: the flashes looked, he said, mighty like alpha particles. A lithium nucleus had swallowed a proton and split into two helium nuclei, flying apart with 17.2 million electron volts. Lithium plus hydrogen outweighs two heliums. If Einstein was right, the missing mass times c squared must equal that energy. But lithium's 1932 mass predicted only 14 million electron volts, against 17. A year later, a more precise lithium mass raised the prediction to 16.8 — within a few percent. It matched.
+
+======================================================================
+CHAPTER 11 - THE SUN PROVES IT  (95 words)
+======================================================================
+Weighing atoms had already explained something bigger. In 1920, helium proved lighter than the four hydrogens that build it. 4.0313 against 4.0026. Arthur Eddington saw that the missing mass could power the stars. Fusing hydrogen into helium leaves seven tenths of one percent missing, carried away as energy. The Sun fuses 600 million tons of hydrogen a second, and 4 million tons of that never becomes matter — it leaves as light. The same equation runs the stars, and the battery in your pocket.
+
+======================================================================
+CHAPTER 12 - YOUR PHONE, YOUR BODY, E=MC²  (109 words)
+======================================================================
+So, back to the phones. The charged one gained energy, and therefore mass: less than a billionth of a gram. No balance can show it. We know it anyway: every kind of energy weighs exactly its amount, divided by c squared. Almost all the mass of your body is energy too, locked in its protons and neutrons. The three quarks in a proton are less than one percent of its weight. The rest is the strong force — trapped, seething motion. You are mostly stored energy, wearing the shape of a person. So is your phone. Charge it tonight, and in the morning, it will be ever so slightly heavier.
+
+======================================================================
+END CARD (silent)
+======================================================================
+E = mc2 - energy has weight.

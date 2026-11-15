@@ -1,0 +1,397 @@
+1
+00:00:00,400 --> 00:00:08,988
+Take two phones, identical in every way. Charge one completely, drain
+the other until it's dead,
+
+2
+00:00:09,008 --> 00:00:19,043
+and set them on a balance. The charged phone is heavier. Not by any
+amount you could measure.
+
+3
+00:00:19,063 --> 00:00:25,434
+Yet nothing material went in while it charged. No atoms came down the
+cable.
+
+4
+00:00:25,454 --> 00:00:34,088
+No extra electrons piled up either: every electron that flowed in
+through one wire flowed back out through the other.
+
+5
+00:00:34,108 --> 00:00:41,202
+The only thing the phone gained was energy. And energy, it turns out,
+has weight.
+
+6
+00:00:41,222 --> 00:00:46,929
+Inside the battery, charging doesn't add stuff. It rearranges it.
+
+7
+00:00:46,949 --> 00:00:53,720
+Ions shuttle between two layers into an arrangement that stores energy,
+like a stretched spring.
+
+8
+00:00:53,740 --> 00:01:03,015
+Use the phone, and they slide back down, releasing it. A full battery
+and an empty one hold exactly the same atoms.
+
+9
+00:01:03,035 --> 00:01:09,053
+The only difference is energy. So why would energy have weight at all?
+
+10
+00:01:09,073 --> 00:01:12,763
+Matter is supposed to be the thing that weighs.
+
+11
+00:01:12,783 --> 00:01:22,003
+For a century, science's most careful weighings said the opposite:
+nothing inside a sealed container can change its weight.
+
+12
+00:01:22,023 --> 00:01:32,652
+The rule was born in Paris, in the 1770s, with Antoine Lavoisier, a
+chemist who trusted his balance more than any theory.
+
+13
+00:01:32,672 --> 00:01:40,232
+He sealed tin inside a glass vessel, melting the glass shut so nothing
+could get in or out, and took its weight.
+
+14
+00:01:40,252 --> 00:01:47,556
+Then he heated it, until part of the shiny metal turned to grey powder,
+let it cool, and took its weight again.
+
+15
+00:01:47,576 --> 00:01:52,360
+Heat had poured in and out. The weight had not changed at all.
+
+16
+00:01:52,380 --> 00:02:02,742
+In 1789, his rule: an equal quantity of matter, before and after.
+Energy, it seemed, weighs nothing.
+
+17
+00:02:02,762 --> 00:02:06,746
+But a rule is only as good as the balance that tests it.
+
+18
+00:02:06,766 --> 00:02:14,618
+In the 1890s, Hans Landolt in Berlin spent 20 years testing it harder
+than anyone.
+
+19
+00:02:14,638 --> 00:02:24,589
+Two chemicals, sealed in the separate arms of a glass vessel, react; the
+heat escapes; he weighs it again. And again. And again.
+
+20
+00:02:24,609 --> 00:02:28,854
+He chased every error — buoyancy, moisture, dust.
+
+21
+00:02:28,874 --> 00:02:36,815
+His 1908 verdict: no reaction changed weight by more than 0.03 mg.
+
+22
+00:02:36,835 --> 00:02:42,333
+If the escaping heat weighed anything at all, it weighed less than that.
+
+23
+00:02:42,353 --> 00:02:47,628
+Then a tiny glowing sample made that answer hard to believe.
+
+24
+00:02:47,648 --> 00:02:54,275
+Radium, which Marie Curie purified in 1902, from more than a ton of ore.
+
+25
+00:02:54,295 --> 00:03:00,798
+Pierre Curie measured one gram giving off a hundred calories of heat,
+every hour.
+
+26
+00:03:00,818 --> 00:03:09,851
+That adds up to nearly nine hundred thousand calories a year. A gram of
+coal gives 7,000. Then it's gone.
+
+27
+00:03:09,871 --> 00:03:19,170
+The radium releases a hundred times more, every year, and barely slows
+down: half is still there sixteen hundred years from now.
+
+28
+00:03:19,190 --> 00:03:29,706
+Nobody could say what it was using up. Either it soaked up invisible
+energy from space, or the energy came from inside the atom itself.
+
+29
+00:03:29,726 --> 00:03:34,254
+The first clue had appeared earlier, in the way light behaves.
+
+30
+00:03:34,274 --> 00:03:42,283
+In 1900, Henri Poincaré worked through a fact most people never think
+about: light pushes.
+
+31
+00:03:42,303 --> 00:03:49,971
+It's why a comet's tail points away from the Sun; and lab experiments
+had just measured that push.
+
+32
+00:03:49,991 --> 00:03:59,306
+Anything that pushes carries momentum. A flash of energy E carries
+momentum: E divided by the speed of light.
+
+33
+00:03:59,326 --> 00:04:08,857
+Momentum is mass times speed. What mass would that flash need? Its
+energy, divided by the speed of light squared.
+
+34
+00:04:08,877 --> 00:04:16,100
+His example: a one kilogram lamp firing three million joules of light
+recoils like a cannon,
+
+35
+00:04:16,120 --> 00:04:23,533
+while the flash carries thirty-three billionths of a gram. But he called
+it a fiction, not a real weight.
+
+36
+00:04:23,553 --> 00:04:27,229
+The number sat there. He didn't believe it.
+
+37
+00:04:27,249 --> 00:04:34,390
+Believing it took Albert Einstein — 26, a clerk at the patent office in
+Bern.
+
+38
+00:04:34,410 --> 00:04:44,868
+In 1905, just after finishing relativity, he wrote to a friend: a body's
+mass must be a measure of the energy inside it.
+
+39
+00:04:44,888 --> 00:04:54,570
+Light carries mass, he said. Radium should get noticeably lighter. That
+September, three pages in the leading physics journal.
+
+40
+00:04:54,590 --> 00:05:01,403
+A glowing object, at rest, fires two identical flashes in opposite
+directions.
+
+41
+00:05:01,423 --> 00:05:08,860
+The pushes cancel. It just loses the light's energy, L. Now watch from a
+passing train.
+
+42
+00:05:08,880 --> 00:05:16,768
+The speed is unchanged, but the forward flash now looks slightly more
+energetic, the backward slightly less.
+
+43
+00:05:16,788 --> 00:05:23,804
+Add them: most of the difference cancels. Not all. From the train, the
+light carries away a little more than L.
+
+44
+00:05:23,824 --> 00:05:32,870
+That extra must come out of its kinetic energy. And kinetic energy is
+one half, times mass, times speed squared.
+
+45
+00:05:32,890 --> 00:05:41,652
+The speed hasn't changed. So the mass drops — by the light's energy,
+divided by the speed of light squared.
+
+46
+00:05:41,672 --> 00:05:48,294
+A year later, Einstein offered a simpler argument: a flash of light
+inside a box.
+
+47
+00:05:48,314 --> 00:05:53,577
+Walk from one end of a small boat to the other, and it slides back under
+you.
+
+48
+00:05:53,597 --> 00:05:59,104
+Nothing inside a closed system can move its own centre of mass.
+
+49
+00:05:59,124 --> 00:06:05,098
+Now make it a box in empty space, and make you a flash of light off the
+left wall.
+
+50
+00:06:05,118 --> 00:06:15,355
+The flash pushes the box back, crosses, and is absorbed at the right
+wall — the box stops, shifted. Nothing outside touched it.
+
+51
+00:06:15,375 --> 00:06:21,633
+So either the box pushed itself through space, or the light carried
+mass, wall to wall.
+
+52
+00:06:21,653 --> 00:06:27,828
+The boat settles it: box mass times shift equals light mass times box
+length.
+
+53
+00:06:27,848 --> 00:06:35,937
+Everything cancels but one line: the light's mass equals its energy,
+divided by the speed of light squared.
+
+54
+00:06:35,957 --> 00:06:45,577
+The left wall really gets lighter. The right wall really gets heavier.
+Einstein credited Poincaré on the paper's first page.
+
+55
+00:06:45,597 --> 00:06:54,674
+Once energy has real weight, the old mysteries make sense. Only one
+thing hid that weight: the size of c squared.
+
+56
+00:06:54,694 --> 00:07:02,217
+Light moves at three hundred million metres per second. So c squared is
+ninety million billion.
+
+57
+00:07:02,237 --> 00:07:11,807
+Ninety million billion joules, for one kilogram of weight. Landolt's
+escaping heat weighed about a billionth of a gram.
+
+58
+00:07:11,827 --> 00:07:18,301
+His balance could only see 30 millionths of a gram. Tens of thousands of
+times too coarse.
+
+59
+00:07:18,321 --> 00:07:25,370
+Even a gram of radium radiates a whole year of heat that weighs just
+forty billionths of a gram,
+
+60
+00:07:25,390 --> 00:07:30,768
+right at the edge of the finest balances — after twelve patient months.
+
+61
+00:07:30,788 --> 00:07:34,042
+So could anyone weigh energy at all?
+
+62
+00:07:34,062 --> 00:07:42,851
+It would take more energy per atom, and a way to weigh single atoms.
+Both arrived in Rutherford's lab in Cambridge.
+
+63
+00:07:42,871 --> 00:07:53,976
+Atoms were no longer weighed on pans: flying through magnetic fields in
+a vacuum, the lighter ones curve more sharply. The bend became…
+
+64
+00:07:53,996 --> 00:08:02,036
+On the 14th of April 1932, researchers fired fast protons at a thin
+layer of lithium.
+
+65
+00:08:02,056 --> 00:08:09,236
+One watched from a darkened hut beneath the machine, shielded from
+X-rays. The screen lit up.
+
+66
+00:08:09,256 --> 00:08:15,541
+Rutherford squeezed in: the flashes looked, he said, mighty like alpha
+particles.
+
+67
+00:08:15,561 --> 00:08:21,662
+A lithium nucleus had swallowed a proton and split into two helium
+nuclei,
+
+68
+00:08:21,682 --> 00:08:30,640
+flying apart with 17.2 million electron volts. Lithium plus hydrogen
+outweighs two heliums.
+
+69
+00:08:30,660 --> 00:08:36,726
+If Einstein was right, the missing mass times c squared must equal that
+energy.
+
+70
+00:08:36,746 --> 00:08:45,004
+But lithium's 1932 mass predicted only 14 million electron volts,
+against 17.
+
+71
+00:08:45,024 --> 00:08:54,168
+A year later, a more precise lithium mass raised the prediction to 16.8
+— within a few percent. It matched.
+
+72
+00:08:54,188 --> 00:09:04,285
+Weighing atoms had already explained something bigger. In 1920, helium
+proved lighter than the four hydrogens that build it.
+
+73
+00:09:04,305 --> 00:09:11,108
+4.0313 against 4.0026.
+
+74
+00:09:11,128 --> 00:09:15,661
+Arthur Eddington saw that the missing mass could power the stars.
+
+75
+00:09:15,681 --> 00:09:23,182
+Fusing hydrogen into helium leaves seven tenths of one percent missing,
+carried away as energy.
+
+76
+00:09:23,202 --> 00:09:33,264
+The Sun fuses 600 million tons of hydrogen a second, and 4 million tons
+of that never becomes matter — it leaves as light.
+
+77
+00:09:33,284 --> 00:09:38,663
+The same equation runs the stars, and the battery in your pocket.
+
+78
+00:09:38,683 --> 00:09:46,934
+So, back to the phones. The charged one gained energy, and therefore
+mass: less than a billionth of a gram.
+
+79
+00:09:46,954 --> 00:09:56,493
+No balance can show it. We know it anyway: every kind of energy weighs
+exactly its amount, divided by c squared.
+
+80
+00:09:56,513 --> 00:10:02,942
+Almost all the mass of your body is energy too, locked in its protons
+and neutrons.
+
+81
+00:10:02,962 --> 00:10:11,891
+The three quarks in a proton are less than one percent of its weight.
+The rest is the strong force — trapped, seething motion.
+
+82
+00:10:11,911 --> 00:10:17,666
+You are mostly stored energy, wearing the shape of a person. So is your
+phone.
+
+83
+00:10:17,686 --> 00:10:23,570
+Charge it tonight, and in the morning, it will be ever so slightly
+heavier.
+

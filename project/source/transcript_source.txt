@@ -1,0 +1,411 @@
+Take two identical phones, one fully
+charged and one completely dead,
+and put them on opposite sides of a
+balance. The charged phone is heavier,
+even though no material went into it
+while it was charging.
+No atoms came down the cable, and no
+extra electrons piled up inside because
+every electron that flowed in through
+one wire flowed back out through the
+other.
+The only thing the phone gained was
+energy, and yet that energy has weight.
+That leaves a strange puzzle because
+nobody could have discovered this by
+weighing things, and for more than a
+century, the most careful weighing in
+science said the opposite, that nothing
+happening inside a sealed container ever
+changes its weight.
+So, how much does energy actually weigh,
+and how could anyone know when no
+balance on Earth can see it?
+The first answer came from a balance in
+Paris in the 1770s,
+in the laboratory of Lavoisier,
+a chemist who trusted his balance more
+than any theory.
+He sealed a piece of tin inside a glass
+vessel, melting the glass shut so that
+nothing could get in or out, and weighed
+the whole thing.
+Then he heated it until part of the
+shiny tin turned into a dark powder, let
+it cool, and weighed it again, and even
+though heat had poured in and out of
+that glass, the weight hadn't changed at
+all.
+In 1789, he turned this into a rule,
+writing that in every operation, there's
+an equal quantity of matter before and
+after, and with that, the answer to our
+question looked obvious because energy,
+it seemed, weighs nothing.
+Still, a rule is only as good as the
+balance that tests it. So, in the 1890s,
+a Swiss chemist in Berlin spent nearly
+20 years testing it harder than anyone
+before him.
+He sealed two chemicals in separate arms
+of a glass vessel, let them react, and
+weighed the vessel again once the heat
+of the reaction had escaped.
+After chasing down every tiny source of
+error, he reported in 1908 that none of
+his reactions changed weight by more
+than 3/100 of a milligram.
+So, if the heat leaving his vessels
+weighed anything at all, it weighed less
+than that. And yet, while his work was
+still going on, a tiny glowing sample in
+Paris was making that answer very hard
+to believe.
+That sample was radium, which Marie
+Curie had purified in 1902 after
+processing more than a ton of ore.
+And the next year, Pierre Curie measured
+that a single gram of it gives off about
+100 calories of heat every hour without
+burning anything and without any visible
+change.
+That sounds small until you add it up
+because 100 calories an hour comes to
+nearly 900,000 calories in a year.
+While burning a whole gram of coal gives
+about 7,000 calories, and then it's
+gone.
+So, every year a gram of radium releases
+more than 100 times the heat of a gram
+of coal, and it barely slows down since
+it takes about 1,600 years for half of
+it to decay.
+Over its whole life, it gives off
+hundreds of thousands of times more heat
+than coal, and nobody could say what it
+was using up.
+There seemed to be only two
+possibilities.
+Either radium soaked up some invisible
+energy from space and gave it back as
+heat, or the energy came from inside the
+radium itself.
+To rule out ordinary chemistry, radium
+was lowered into liquid hydrogen, about
+20° above absolute zero,
+where chemical reactions essentially
+stop, and the heat kept coming at the
+same rate. In his Nobel lecture, Pierre
+Curie pointed out that the heat seemed
+to stay constant for years, so the total
+energy radium released was considerable.
+Something inside the atom was being
+spent, which raises the question of
+whether energy carries any weight it
+leaves.
+And the first clue had actually appeared
+before anyone measured radium's heat in
+the way light behaves.
+In 1900, the French mathematician
+Poincaré worked through the consequences
+of a fact most people never think about,
+which is that light pushes.
+It's part of the reason a comet's tail
+points away from the sun.
+And around that time, experiments
+measured this push in the laboratory for
+the first time.
+Anything that pushes carries momentum,
+and according to the theory of light, a
+flash with energy E carries momentum E
+divided by C, the speed of light.
+For an ordinary object, momentum is mass
+times speed. So, if you ask what mass a
+flash moving at speed C would need, you
+get mass times C equals E over C,
+which gives a mass of E divided by C
+squared.
+Poincaré even gave an example, a 1-kg
+device that fires 3 million joules of
+light in one direction and recoils like
+a cannon at about 1 cm per second.
+While by his own formula, the flash
+itself would carry about 33 billionths
+of a gram.
+Yet, he didn't treat that mass as
+something real.
+He described the energy of light as a
+fictitious fluid, one that appears when
+light is emitted and disappears when
+it's absorbed. And he never concluded
+that the device firing it gets any
+lighter.
+That left him with a paradox because the
+balance point of the whole system ends
+up shifted with nothing outside pushing
+it, and Poincaré treated this as a flaw
+in the theory rather than a sign that
+the device itself had lost mass.
+So, by 1900, there was already a number
+for the weight of light, E over C
+squared.
+But the man who found it didn't believe
+it applied to anything else.
+Believing that number took someone
+willing to follow it all the way,
+and in 1905, that was Einstein, a
+26-year-old clerk at the patent office
+in Bern.
+That summer, just after finishing his
+theory of relativity, he wrote to a
+friend that his theory required a body's
+mass to be a direct measure of the
+energy inside it, so light carries mass
+with it, and radium should get
+noticeably lighter.
+He called the idea amusing and
+seductive, but admitted that he couldn't
+know whether the good Lord was laughing
+at it and leading him around by the
+nose.
+Then in September, he sent a paper of
+just three pages to the leading German
+physics journal,
+and its argument is easy to picture.
+A glowing object floating at rest gives
+off two identical flashes of light in
+opposite directions, so their pushes
+cancel, the object stays still, and it
+simply loses the energy of the light,
+which Einstein called L.
+Now watch the same event from a train
+passing at speed V.
+From the train, the object moves at
+speed V both before and after the
+flashes, yet the forward flash looks
+slightly more energetic and the backward
+one slightly less. And when Einstein
+added them using a formula from his
+relativity paper, most of that
+difference canceled, but not all of it.
+So, from the train, the light carries
+away a little more than L.
+Since the only thing that's different
+from the train is that the object is
+moving,
+that extra energy must come out of its
+kinetic energy,
+which drops by exactly that much.
+For ordinary speeds, the same series
+Newton used to calculate pi simplifies
+that drop to 1/2 * L / c ^ 2 * v ^ 2.
+Kinetic energy is 1/2 * mass * v ^ 2.
+And the speed hasn't changed, so the
+only thing that can have dropped is the
+mass.
+And it dropped by L / c ^ 2.
+Einstein wrote the conclusion down in
+exactly those terms.
+If a body gives off energy L as
+radiation, its mass decreases by L / v ^
+2, using v for the speed of light.
+So, the number Poincaré had called a
+fiction now applied to everything.
+To a lamp, to a lump of radium, and to a
+charged phone.
+And Einstein suggested testing it with
+radium.
+Still, his argument leaned on the moving
+train and on relativity. And less than a
+year later, he gave a second argument
+that needs nothing but a flash of light
+inside a box and a rule you've probably
+felt yourself.
+If you've ever walked from one end of a
+small boat to the other,
+you felt the boat slide backward as you
+moved forward and stop when you stopped.
+That happens because nothing inside a
+closed system can move its overall
+balance point, its center of mass. So,
+your mass moving one way is matched by
+the boat moving the other way.
+If the boat has mass M and slides back a
+distance d while you with mass m move
+forward a distance x over the water,
+then m * d = m * x.
+Now, Einstein replaced the boat with a
+closed box of mass m and length l
+floating in empty space.
+And he replaced you with a flash of
+light of energy e leaving the left wall.
+The flash carries momentum e over c, so
+the box recoils the other way with the
+same momentum.
+The light takes about l over c to reach
+the right wall where it's absorbed and
+brings the box to a stop. So, in that
+time the box slides back by its speed
+times the time.
+Nothing outside touched the box, and yet
+it has shifted left, so either a sealed
+box can push itself through empty space
+from the inside or the light carried
+some mass m from the left wall to the
+right.
+The boat already settled that since
+nothing inside a closed system can move
+its center of mass. So, just like the
+boat, the box's mass times its shift
+equals the light's mass times the length
+of the box.
+Once the box's mass and length cancel
+out, what remains is m = e over c
+squared, which means the left wall
+really gets lighter when it emits the
+flash, and the right wall really gets
+heavier when it absorbs it.
+With Poincaré's own numbers,
+a 1 kg box 1 m long and a flash of 3
+million joules, the box slides back by 3
+million divided by c squared meters,
+which is about a third of the width of a
+hydrogen atom, while the flash carries
+33 billionths of a gram from one wall to
+the other.
+That's the same mass Poincaré's formula
+gave his flash,
+except that now it's real weight leaving
+one wall and arriving at the other.
+And on the paper's first page, Einstein
+credited him. Writing that the simple
+reasoning behind this was mainly already
+contained in Poincaré's work.
+Once energy has real weight, the earlier
+mysteries finally make sense.
+Because the only thing hiding energy's
+weight was the size of c squared.
+The speed of light is about 300 million
+meters per second.
+So c squared is about 90 million
+billion, which means it takes 90 million
+billion joules of energy to weigh a
+single kilogram.
+So the heat from the Berlin chemist's
+reactions weighed around a billionth of
+a gram or less.
+While his balance could only see 300ths
+of a milligram.
+Which made it at least tens of thousands
+of times too coarse.
+Even a gram of radium sealed inside a
+capsule gives off heat that weighs only
+about 40 billionths of a gram over a
+whole year.
+Which is why Einstein's radium test was
+hopeless in 1905.
+So if a year of radium's heat weighs
+that little.
+Could anyone ever put the weight of
+energy on a scale?
+The only hope was a process that
+releases vastly more energy from each
+atom. Along with a way to weigh single
+atoms. And both came together in
+Rutherford's laboratory in Cambridge.
+Researchers there had stopped weighing
+atoms on balance pans. And were sending
+charged atoms through electric and
+magnetic fields in a vacuum. Where
+lighter atoms curve more sharply than
+heavier ones. So the bend of the path
+became a scale for single atoms.
+Then on the 14th of April 1932.
+Two of Rutherford's researchers fired
+fast protons, the nuclei of hydrogen, at
+a thin layer of lithium.
+One of them crawled into a small,
+darkened hut built beneath the machine
+to shield him from x-rays to watch a
+screen that flashed whenever a fast
+particle struck it. And the screen lit
+up with flashes.
+Rutherford squeezed into the hut
+himself, and as one of them later
+recalled, "Once the machine was switched
+off, he said the flashes looked mighty
+like alpha particles." Which he would
+know, since he'd been watching them ever
+since they were discovered.
+What they'd seen was a lithium nucleus
+swallowing a proton and splitting into
+two alpha particles, the nuclei of
+helium,
+which flew apart with a total energy of
+17.2 million electron volts.
+Lithium plus hydrogen weighs slightly
+more than two heliums. So, if Einstein
+was right, that missing mass multiplied
+by c squared had to equal the energy of
+the flying helium.
+However, the mass of lithium known in
+1932
+wasn't precise enough to settle it, and
+it predicted only about 14 million
+electron volts against the 17.2 they
+measured.
+The scale had finally tipped, but the
+reading was blurry. Close enough to
+suggest that Einstein was right, while
+still falling short of proof.
+A year later, an American physicist
+measured lithium's mass far more
+precisely, and with his value, the
+prediction rose to about 16.8 million
+electron volts, within a few percent of
+the measured energy.
+Almost 30 years after the three pages,
+the weight of energy had finally been
+measured, and it matched what Einstein
+had predicted.
+Weighing single atoms had already
+explained something far bigger.
+Because back in 1920, when it showed
+that helium is lighter than four
+hydrogens, a British astronomer realized
+this could explain what powers the sun.
+Four hydrogen atoms weigh 4.0313
+atomic mass units.
+And one helium weighs 4.0026.
+So, fusing hydrogen into helium leaves
+about 0.7%
+of the mass missing, carried away as
+energy.
+The sun gives off about 3.8 * 10 ^ 26 W.
+And dividing that by c squared shows
+that it gets lighter by more than 4
+million tons every second.
+Which means it fuses roughly 600 million
+tons of hydrogen every second to keep
+shining.
+Every kind of energy weighs its amount
+divided by c squared.
+So, the same division that takes more
+than 4 million tons off the sun every
+second puts less than a billionth of a
+gram onto the charged phone.
+A difference no balance can show, and
+yet one we know is there.
+That rule reaches much further than a
+battery.
+Because almost all of the mass of your
+own body is energy, too, locked inside
+the protons and neutrons of its atoms.
+The three quarks inside a proton make up
+less than 1% of its mass.
+So, where does the other 99% come from?
+And why does it mean you're made mostly
+of trapped motion?
+I take that apart in this video, right
+here on your screen.
+I'll see you there.

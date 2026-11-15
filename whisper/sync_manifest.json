@@ -1,0 +1,935 @@
+{
+ "method": "faster-whisper base.en, word timestamps, per-line placement from measured Kokoro WAVs",
+ "total": 629.8,
+ "rules": [
+  "every drawing stroke begins with or slightly before its narration line",
+  "colour changes/arrows/equations land on the spoken word (word_timestamps)",
+  "subtitles from real audio timing; hold >= max(1.8, speech+0.6); bottom-left chip"
+ ],
+ "chapters": [
+  {
+   "n": 1,
+   "t0": 0.7,
+   "t1": 40.662,
+   "lines": [
+    {
+     "id": "c01l01",
+     "t0": 0.7,
+     "t1": 4.217,
+     "cue": "construction lines, two phone outlines",
+     "event": "two phones drawn white on the balance pans"
+    },
+    {
+     "id": "c01l02",
+     "t0": 4.517,
+     "t1": 8.668,
+     "cue": "battery glyphs on screens: full / empty",
+     "event": "coral block fills the left phone's battery"
+    },
+    {
+     "id": "c01l03",
+     "t0": 9.308,
+     "t1": 11.077,
+     "cue": "balance beam, pans, pivot",
+     "event": "balance drawn around the phones"
+    },
+    {
+     "id": "c01l04",
+     "t0": 11.377,
+     "t1": 13.619,
+     "cue": "beam tilts a hair left",
+     "event": "punch-in: exaggerated tilt wedge on the left pan"
+    },
+    {
+     "id": "c01l05",
+     "t0": 13.918,
+     "t1": 18.723,
+     "cue": "tiny question mark by the tilt",
+     "event": "note: 'heavier by ???'"
+    },
+    {
+     "id": "c01l06",
+     "t0": 19.363,
+     "t1": 22.548,
+     "cue": "cable from a wall socket",
+     "event": "charging cable drawn to the left phone"
+    },
+    {
+     "id": "c01l07",
+     "t0": 22.848,
+     "t1": 25.114,
+     "cue": "empty circles along the cable",
+     "event": "note: '0 atoms in'"
+    },
+    {
+     "id": "c01l08",
+     "t0": 25.754,
+     "t1": 33.768,
+     "cue": "in/out arrows on both wires",
+     "event": "electron loop arrows along the cable"
+    },
+    {
+     "id": "c01l09",
+     "t0": 34.408,
+     "t1": 37.508,
+     "cue": "energy block glows into the battery",
+     "event": "colour flood: coral ENERGY block enters the phone"
+    },
+    {
+     "id": "c01l10",
+     "t0": 37.808,
+     "t1": 40.662,
+     "cue": "the coral block sits on the pan",
+     "event": "the energy block becomes the mystery; chapter capsule"
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "t0": 41.522,
+   "t1": 72.223,
+   "lines": [
+    {
+     "id": "c02l01",
+     "t0": 41.522,
+     "t1": 46.609,
+     "cue": "battery outline, cross-section rings",
+     "event": "battery cross-section drawn (holes as layers)"
+    },
+    {
+     "id": "c02l02",
+     "t0": 47.249,
+     "t1": 53.4,
+     "cue": "ion dots sliding between slabs",
+     "event": "ions + arrows between the two electrode layers"
+    },
+    {
+     "id": "c02l03",
+     "t0": 54.04,
+     "t1": 57.716,
+     "cue": "reverse arrows, discharge",
+     "event": "discharge arrows (grey) opposite the coral charge arrows"
+    },
+    {
+     "id": "c02l04",
+     "t0": 58.016,
+     "t1": 62.695,
+     "cue": "atom count note",
+     "event": "note: 'same atoms, same electrons'"
+    },
+    {
+     "id": "c02l05",
+     "t0": 63.335,
+     "t1": 65.666,
+     "cue": "swatch strip: empty / charging / full",
+     "event": "swatch strip states tracked"
+    },
+    {
+     "id": "c02l06",
+     "t0": 65.965,
+     "t1": 68.613,
+     "cue": "big question mark builds",
+     "event": "camera drifts up; the question written large"
+    },
+    {
+     "id": "c02l07",
+     "t0": 69.373,
+     "t1": 72.223,
+     "cue": "the question left unfinished",
+     "event": "half-coloured block left; transition drift right"
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "t0": 73.083,
+   "t1": 122.202,
+   "lines": [
+    {
+     "id": "c03l01",
+     "t0": 73.083,
+     "t1": 77.621,
+     "cue": "chapter capsule 'an old rule'",
+     "event": "new region: 1770s Paris lab table"
+    },
+    {
+     "id": "c03l02",
+     "t0": 77.921,
+     "t1": 81.683,
+     "cue": "sealed ampoule sketch",
+     "event": "sealed glass vessel with tin block inside"
+    },
+    {
+     "id": "c03l03",
+     "t0": 82.323,
+     "t1": 92.332,
+     "cue": "label 'Paris, 1770s'",
+     "event": "handwritten label + leader line"
+    },
+    {
+     "id": "c03l04",
+     "t0": 92.972,
+     "t1": 99.912,
+     "cue": "sealed neck, 'nothing in, nothing out'",
+     "event": "vessel neck sealed; note written"
+    },
+    {
+     "id": "c03l05",
+     "t0": 100.552,
+     "t1": 107.236,
+     "cue": "flame under vessel, heat waves",
+     "event": "flame + mustard heat waves through the glass"
+    },
+    {
+     "id": "c03l06",
+     "t0": 107.876,
+     "t1": 112.04,
+     "cue": "identical needle readings",
+     "event": "both balance readings match; coral 'unchanged!'"
+    },
+    {
+     "id": "c03l07",
+     "t0": 112.68,
+     "t1": 119.345,
+     "cue": "quill note card",
+     "event": "note card: the conservation rule, coral underline"
+    },
+    {
+     "id": "c03l08",
+     "t0": 119.645,
+     "t1": 122.202,
+     "cue": "closure of the old rule",
+     "event": "swatch strip: 'energy weighs nothing?'"
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "t0": 123.062,
+   "t1": 161.793,
+   "lines": [
+    {
+     "id": "c04l01",
+     "t0": 123.062,
+     "t1": 126.426,
+     "cue": "chapter capsule 'the balance's limit'",
+     "event": "new region: Berlin, 1890s"
+    },
+    {
+     "id": "c04l02",
+     "t0": 127.066,
+     "t1": 134.298,
+     "cue": "label 'Landolt, Berlin'",
+     "event": "label + two-decade calendar note"
+    },
+    {
+     "id": "c04l03",
+     "t0": 134.938,
+     "t1": 139.757,
+     "cue": "H-shaped vessel, two colours",
+     "event": "H-vessel drawn; coral + mustard chemicals in the arms"
+    },
+    {
+     "id": "c04l04",
+     "t0": 140.057,
+     "t1": 144.269,
+     "cue": "repeat weigh ticks",
+     "event": "colour flood: chemicals merge mottled; heat arrows rise; weigh ticks"
+    },
+    {
+     "id": "c04l05",
+     "t0": 144.909,
+     "t1": 148.534,
+     "cue": "error list note",
+     "event": "error-hunting list written"
+    },
+    {
+     "id": "c04l06",
+     "t0": 149.174,
+     "t1": 156.495,
+     "cue": "the number, circled",
+     "event": "punch-in on the needle; coral circle around '0.03 mg'"
+    },
+    {
+     "id": "c04l07",
+     "t0": 157.135,
+     "t1": 161.793,
+     "cue": "heat arrows weighed 'less than...'",
+     "event": "error bar drawn under the needle"
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "t0": 162.653,
+   "t1": 209.166,
+   "lines": [
+    {
+     "id": "c05l01",
+     "t0": 162.653,
+     "t1": 167.308,
+     "cue": "chapter capsule 'radium'",
+     "event": "new region: back in Paris, 1902"
+    },
+    {
+     "id": "c05l02",
+     "t0": 167.948,
+     "t1": 173.955,
+     "cue": "ore pile, funnel, tiny vial",
+     "event": "purification chain drawn: ton of ore into one vial"
+    },
+    {
+     "id": "c05l03",
+     "t0": 174.595,
+     "t1": 180.478,
+     "cue": "thermometer under the vial",
+     "event": "heat waves radiate; '100 cal/hour' note"
+    },
+    {
+     "id": "c05l04",
+     "t0": 181.118,
+     "t1": 185.231,
+     "cue": "calendar pages flip",
+     "event": "calendar pages drawn flying; radium bar grows tall (coral)"
+    },
+    {
+     "id": "c05l05",
+     "t0": 185.53,
+     "t1": 189.531,
+     "cue": "coal comparison bar",
+     "event": "coal bar stays tiny (graphite); swatch strip records both"
+    },
+    {
+     "id": "c05l06",
+     "t0": 190.171,
+     "t1": 195.524,
+     "cue": "'\u00d7100' coral note",
+     "event": "coral '\u00d7100' bursts between the bars"
+    },
+    {
+     "id": "c05l07",
+     "t0": 195.824,
+     "t1": 198.85,
+     "cue": "half-life marker",
+     "event": "decay line drawn; 'half remains at 1,600 years'"
+    },
+    {
+     "id": "c05l08",
+     "t0": 199.49,
+     "t1": 202.146,
+     "cue": "question mark over the vial",
+     "event": "big '?' over the glowing vial"
+    },
+    {
+     "id": "c05l09",
+     "t0": 202.446,
+     "t1": 209.166,
+     "cue": "two rival arrows",
+     "event": "option A: sky-to-vial arrow; option B: atom cross-section"
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "t0": 210.026,
+   "t1": 266.689,
+   "lines": [
+    {
+     "id": "c06l01",
+     "t0": 210.026,
+     "t1": 213.934,
+     "cue": "chapter capsule 'light pushes'",
+     "event": "new region: light, 1900"
+    },
+    {
+     "id": "c06l02",
+     "t0": 214.574,
+     "t1": 221.963,
+     "cue": "label 'Poincar\u00e9, 1900'",
+     "event": "sun + radiating light rays drawn"
+    },
+    {
+     "id": "c06l03",
+     "t0": 222.603,
+     "t1": 226.059,
+     "cue": "comet with tail",
+     "event": "comet + tail pushed outward"
+    },
+    {
+     "id": "c06l04",
+     "t0": 226.359,
+     "t1": 229.651,
+     "cue": "lab bulb with vanes",
+     "event": "light-pressure apparatus: beam pushing a vane"
+    },
+    {
+     "id": "c06l05",
+     "t0": 230.291,
+     "t1": 233.365,
+     "cue": "'momentum' note",
+     "event": "note: 'push = momentum'"
+    },
+    {
+     "id": "c06l06",
+     "t0": 233.664,
+     "t1": 238.986,
+     "cue": "formula p = E/c",
+     "event": "handwritten: 'momentum = E / c'"
+    },
+    {
+     "id": "c06l07",
+     "t0": 239.626,
+     "t1": 242.293,
+     "cue": "formula p = m\u00b7v",
+     "event": "handwritten: 'momentum = mass \u00d7 speed'"
+    },
+    {
+     "id": "c06l08",
+     "t0": 242.593,
+     "t1": 248.537,
+     "cue": "m = E/c\u00b2 reveal",
+     "event": "match cut + punch-in: 'mass = E / c\u00b2' in coral"
+    },
+    {
+     "id": "c06l09",
+     "t0": 249.177,
+     "t1": 255.78,
+     "cue": "cannon-lamp recoil",
+     "event": "lamp fires a flash; recoil arrow '1 cm/s'"
+    },
+    {
+     "id": "c06l10",
+     "t0": 256.42,
+     "t1": 259.799,
+     "cue": "flash mass label",
+     "event": "flash labelled '33 billionths of a gram'"
+    },
+    {
+     "id": "c06l11",
+     "t0": 260.099,
+     "t1": 263.213,
+     "cue": "hesitation note",
+     "event": "'a fictitious fluid' \u2014 quote note beside the number"
+    },
+    {
+     "id": "c06l12",
+     "t0": 263.853,
+     "t1": 266.689,
+     "cue": "the formula, doubted",
+     "event": "the coral formula left half-coloured; transition drift"
+    }
+   ]
+  },
+  {
+   "n": 7,
+   "t0": 267.549,
+   "t1": 341.112,
+   "lines": [
+    {
+     "id": "c07l01",
+     "t0": 267.549,
+     "t1": 274.07,
+     "cue": "chapter capsule 'Einstein's first argument'",
+     "event": "new region: Bern, 1905; desk + patent doodles"
+    },
+    {
+     "id": "c07l02",
+     "t0": 274.71,
+     "t1": 279.959,
+     "cue": "letter card",
+     "event": "letter card drawn with the claim"
+    },
+    {
+     "id": "c07l03",
+     "t0": 280.259,
+     "t1": 284.548,
+     "cue": "the claim, underlined",
+     "event": "coral underline under the claim"
+    },
+    {
+     "id": "c07l04",
+     "t0": 285.188,
+     "t1": 289.872,
+     "cue": "radium callback doodle",
+     "event": "small radium vial with down-arrow"
+    },
+    {
+     "id": "c07l05",
+     "t0": 290.171,
+     "t1": 294.25,
+     "cue": "three-page paper",
+     "event": "paper with '3 pages' note"
+    },
+    {
+     "id": "c07l06",
+     "t0": 294.89,
+     "t1": 301.083,
+     "cue": "object + two opposite flashes",
+     "event": "glowing dot; two mustard flashes left/right"
+    },
+    {
+     "id": "c07l07",
+     "t0": 301.723,
+     "t1": 305.968,
+     "cue": "equal arrows, 'L' labels",
+     "event": "'L' labels both flashes; arrows cancel"
+    },
+    {
+     "id": "c07l08",
+     "t0": 306.268,
+     "t1": 308.54,
+     "cue": "train frame drawn below",
+     "event": "match cut: same drawing, train + motion lines"
+    },
+    {
+     "id": "c07l09",
+     "t0": 309.18,
+     "t1": 316.448,
+     "cue": "asymmetric flash lengths",
+     "event": "forward flash redrawn longer, backward shorter"
+    },
+    {
+     "id": "c07l10",
+     "t0": 317.088,
+     "t1": 320.615,
+     "cue": "sum bracket",
+     "event": "energy bookkeeping: 'L + a little extra'"
+    },
+    {
+     "id": "c07l11",
+     "t0": 320.915,
+     "t1": 323.484,
+     "cue": "extra energy highlighted",
+     "event": "coral highlight on the extra"
+    },
+    {
+     "id": "c07l12",
+     "t0": 324.124,
+     "t1": 327.189,
+     "cue": "'kinetic energy' note",
+     "event": "note: 'paid out of kinetic energy'"
+    },
+    {
+     "id": "c07l13",
+     "t0": 327.489,
+     "t1": 332.55,
+     "cue": "formula KE = \u00bdmv\u00b2",
+     "event": "handwritten: 'kinetic = \u00bd \u00b7 mass \u00b7 speed\u00b2'"
+    },
+    {
+     "id": "c07l14",
+     "t0": 333.19,
+     "t1": 336.591,
+     "cue": "speed crossed out",
+     "event": "'speed' crossed out; 'mass?' remains"
+    },
+    {
+     "id": "c07l15",
+     "t0": 336.89,
+     "t1": 341.112,
+     "cue": "m = E/c\u00b2 again, now real",
+     "event": "punch-in: the same coral formula, re-registered solid"
+    }
+   ]
+  },
+  {
+   "n": 8,
+   "t0": 341.972,
+   "t1": 405.037,
+   "lines": [
+    {
+     "id": "c08l01",
+     "t0": 341.972,
+     "t1": 347.974,
+     "cue": "chapter capsule 'the box of light'",
+     "event": "new region: a box floats in space; starfield dots"
+    },
+    {
+     "id": "c08l02",
+     "t0": 348.614,
+     "t1": 353.257,
+     "cue": "walking figure, slide arrows",
+     "event": "boat + walking figure; slide arrows"
+    },
+    {
+     "id": "c08l03",
+     "t0": 353.897,
+     "t1": 358.784,
+     "cue": "centre-of-mass dot, X axis",
+     "event": "centre-of-mass dot + fixed axis drawn"
+    },
+    {
+     "id": "c08l04",
+     "t0": 359.424,
+     "t1": 364.778,
+     "cue": "boat -> box morph",
+     "event": "colour flood: the boat block becomes the box"
+    },
+    {
+     "id": "c08l05",
+     "t0": 365.418,
+     "t1": 370.491,
+     "cue": "recoil + travel + absorb",
+     "event": "box recoil arrow; flash travels (dashed); absorption burst"
+    },
+    {
+     "id": "c08l06",
+     "t0": 370.791,
+     "t1": 375.035,
+     "cue": "shift marks on a ruler",
+     "event": "ruler shows the shift d; note 'nothing outside'"
+    },
+    {
+     "id": "c08l07",
+     "t0": 375.675,
+     "t1": 381.313,
+     "cue": "the two options",
+     "event": "option notes: 'magic push' vs 'light carries mass'"
+    },
+    {
+     "id": "c08l08",
+     "t0": 381.953,
+     "t1": 387.508,
+     "cue": "balance equation",
+     "event": "handwritten: 'M\u00b7d = m\u00b7L'"
+    },
+    {
+     "id": "c08l09",
+     "t0": 388.148,
+     "t1": 395.617,
+     "cue": "m = E/c\u00b2 boxed",
+     "event": "punch-in: 'm = E / c\u00b2' in a coral box"
+    },
+    {
+     "id": "c08l10",
+     "t0": 396.257,
+     "t1": 400.813,
+     "cue": "walls re-registered",
+     "event": "left wall block fades lighter, right wall heavier"
+    },
+    {
+     "id": "c08l11",
+     "t0": 401.113,
+     "t1": 405.037,
+     "cue": "credit note",
+     "event": "note: 'built on Poincar\u00e9's reasoning'"
+    }
+   ]
+  },
+  {
+   "n": 9,
+   "t0": 405.897,
+   "t1": 450.228,
+   "lines": [
+    {
+     "id": "c09l01",
+     "t0": 405.897,
+     "t1": 410.144,
+     "cue": "chapter capsule 'the giant denominator'",
+     "event": "new region: the fraction"
+    },
+    {
+     "id": "c09l02",
+     "t0": 410.444,
+     "t1": 414.354,
+     "cue": "c\u00b2 written huge",
+     "event": "'c' written, squared"
+    },
+    {
+     "id": "c09l03",
+     "t0": 414.994,
+     "t1": 418.499,
+     "cue": "c = 300,000,000 m/s",
+     "event": "handwritten: 'c = 300,000,000 m/s'"
+    },
+    {
+     "id": "c09l04",
+     "t0": 418.798,
+     "t1": 421.897,
+     "cue": "the number expands",
+     "event": "'90,000,000,000,000,000' sprawling"
+    },
+    {
+     "id": "c09l05",
+     "t0": 422.537,
+     "t1": 426.851,
+     "cue": "giant fraction drawn",
+     "event": "the fraction: tiny E over a huge graphite slab"
+    },
+    {
+     "id": "c09l06",
+     "t0": 427.151,
+     "t1": 431.487,
+     "cue": "swatch: reaction heat",
+     "event": "swatch strip: reaction heat, a billionth g"
+    },
+    {
+     "id": "c09l07",
+     "t0": 432.127,
+     "t1": 434.894,
+     "cue": "swatch: balance limit",
+     "event": "swatch strip: balance sees 30 millionths g"
+    },
+    {
+     "id": "c09l08",
+     "t0": 435.194,
+     "t1": 437.981,
+     "cue": "'\u00d730,000' note",
+     "event": "coral '\u00d730,000 too coarse' between swatches"
+    },
+    {
+     "id": "c09l09",
+     "t0": 438.621,
+     "t1": 445.05,
+     "cue": "radium capsule + year dial",
+     "event": "capsule drawn; 12-month dial around it"
+    },
+    {
+     "id": "c09l10",
+     "t0": 445.69,
+     "t1": 450.228,
+     "cue": "balance needle barely moves",
+     "event": "needle drawn a hair off zero; 'a full year' note"
+    }
+   ]
+  },
+  {
+   "n": 10,
+   "t0": 451.088,
+   "t1": 533.628,
+   "lines": [
+    {
+     "id": "c10l01",
+     "t0": 451.088,
+     "t1": 453.602,
+     "cue": "chapter capsule 'weighing atoms'",
+     "event": "new region: Cambridge, 1932"
+    },
+    {
+     "id": "c10l02",
+     "t0": 454.362,
+     "t1": 458.805,
+     "cue": "two requirements noted",
+     "event": "two notes: 'more energy per atom' / 'weigh single atoms'"
+    },
+    {
+     "id": "c10l03",
+     "t0": 459.105,
+     "t1": 462.531,
+     "cue": "lab bench, label",
+     "event": "vacuum chamber + magnet poles drawn"
+    },
+    {
+     "id": "c10l04",
+     "t0": 463.171,
+     "t1": 473.656,
+     "cue": "curving ion paths",
+     "event": "dashed arcs: light atom bends hard, heavy bends less"
+    },
+    {
+     "id": "c10l05",
+     "t0": 474.296,
+     "t1": 481.716,
+     "cue": "date note; proton beam",
+     "event": "proton beam from left; thin lithium target"
+    },
+    {
+     "id": "c10l06",
+     "t0": 482.356,
+     "t1": 487.14,
+     "cue": "dark hut cross-section",
+     "event": "hut drawn under the machine; observer figure inside"
+    },
+    {
+     "id": "c10l07",
+     "t0": 487.439,
+     "t1": 488.916,
+     "cue": "screen sparkles",
+     "event": "particle sparkles burst on the screen"
+    },
+    {
+     "id": "c10l08",
+     "t0": 489.556,
+     "t1": 495.221,
+     "cue": "quote note",
+     "event": "quote card: 'mighty like alpha particles'"
+    },
+    {
+     "id": "c10l09",
+     "t0": 495.861,
+     "t1": 501.342,
+     "cue": "the reaction diagram",
+     "event": "match cut: magnified reaction; lithium swallows proton"
+    },
+    {
+     "id": "c10l10",
+     "t0": 501.982,
+     "t1": 506.578,
+     "cue": "two alphas fly out",
+     "event": "shatter: two alpha particles burst apart with energy arrows"
+    },
+    {
+     "id": "c10l11",
+     "t0": 506.878,
+     "t1": 510.32,
+     "cue": "mass ledger LHS",
+     "event": "ledger: 'Li + H > He + He'"
+    },
+    {
+     "id": "c10l12",
+     "t0": 510.96,
+     "t1": 516.406,
+     "cue": "equation link",
+     "event": "coral '=' drawn between missing mass and energy"
+    },
+    {
+     "id": "c10l13",
+     "t0": 517.046,
+     "t1": 524.684,
+     "cue": "blurry prediction bar",
+     "event": "bar: predicted 14 vs measured 17.2; 'blurry'"
+    },
+    {
+     "id": "c10l14",
+     "t0": 525.324,
+     "t1": 533.628,
+     "cue": "prediction bar fixed",
+     "event": "bar re-registered: 16.8 close to 17.2; check mark"
+    }
+   ]
+  },
+  {
+   "n": 11,
+   "t0": 534.488,
+   "t1": 578.123,
+   "lines": [
+    {
+     "id": "c11l01",
+     "t0": 534.488,
+     "t1": 537.978,
+     "cue": "chapter capsule 'the Sun proves it'",
+     "event": "new region: the stars"
+    },
+    {
+     "id": "c11l02",
+     "t0": 538.278,
+     "t1": 543.965,
+     "cue": "4 H circles vs He",
+     "event": "four pale hydrogen circles drawn"
+    },
+    {
+     "id": "c11l03",
+     "t0": 544.605,
+     "t1": 550.788,
+     "cue": "the ledger numbers",
+     "event": "handwritten ledger: '4.0313 to 4.0026'"
+    },
+    {
+     "id": "c11l04",
+     "t0": 551.428,
+     "t1": 555.341,
+     "cue": "Eddington label",
+     "event": "small telescope doodle; label 'Eddington, 1920'"
+    },
+    {
+     "id": "c11l05",
+     "t0": 555.981,
+     "t1": 562.862,
+     "cue": "fusion arrow + lost chip",
+     "event": "four H merge into one He; a coral chip flies off"
+    },
+    {
+     "id": "c11l06",
+     "t0": 563.502,
+     "t1": 568.049,
+     "cue": "the Sun drawn",
+     "event": "sun with rays; '600,000,000 t/s' note"
+    },
+    {
+     "id": "c11l07",
+     "t0": 568.349,
+     "t1": 572.944,
+     "cue": "light leaving the Sun",
+     "event": "rays leave; '4,000,000 t/s' in coral"
+    },
+    {
+     "id": "c11l08",
+     "t0": 573.584,
+     "t1": 578.123,
+     "cue": "sun -> phone echo",
+     "event": "tiny phone doodle beside the sun; coral link"
+    }
+   ]
+  },
+  {
+   "n": 12,
+   "t0": 578.983,
+   "t1": 622.95,
+   "lines": [
+    {
+     "id": "c12l01",
+     "t0": 578.983,
+     "t1": 580.788,
+     "cue": "chapter capsule 'E = mc\u00b2'",
+     "event": "match cut: the ch1 balance region, aged"
+    },
+    {
+     "id": "c12l02",
+     "t0": 581.087,
+     "t1": 586.614,
+     "cue": "phone on the pan, tiny block",
+     "event": "charged phone redrawn; coral energy block on the pan"
+    },
+    {
+     "id": "c12l03",
+     "t0": 587.254,
+     "t1": 590.588,
+     "cue": "the tilt, unmeasurable",
+     "event": "the tilt wedge again; 'unmeasurable' note"
+    },
+    {
+     "id": "c12l04",
+     "t0": 590.888,
+     "t1": 596.173,
+     "cue": "E = mc\u00b2 written",
+     "event": "the equation written large, mustard block under 'mc\u00b2'"
+    },
+    {
+     "id": "c12l05",
+     "t0": 596.813,
+     "t1": 602.622,
+     "cue": "body outline + magnified proton",
+     "event": "body outline drawn; match cut: magnifier with a proton"
+    },
+    {
+     "id": "c12l06",
+     "t0": 603.262,
+     "t1": 607.447,
+     "cue": "three quark dots",
+     "event": "three small dots in the proton; '<1%' note"
+    },
+    {
+     "id": "c12l07",
+     "t0": 607.747,
+     "t1": 611.571,
+     "cue": "colour flood in the proton",
+     "event": "colour flood: the proton floods with energy texture"
+    },
+    {
+     "id": "c12l08",
+     "t0": 612.211,
+     "t1": 617.346,
+     "cue": "body + phone blocks fill",
+     "event": "the body and phone blocks re-registered to coral"
+    },
+    {
+     "id": "c12l09",
+     "t0": 617.986,
+     "t1": 622.95,
+     "cue": "final composition: phone + equation",
+     "event": "camera settles: phone, balance, E = mc\u00b2; end card drawn"
+    }
+   ]
+  }
+ ]
+}

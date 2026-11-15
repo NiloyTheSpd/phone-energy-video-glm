@@ -1,0 +1,13 @@
+file 'project/out/ch01.mp4'
+file 'project/out/ch02.mp4'
+file 'project/out/ch03.mp4'
+file 'project/out/ch04.mp4'
+file 'project/out/ch05.mp4'
+file 'project/out/ch06.mp4'
+file 'project/out/ch07.mp4'
+file 'project/out/ch08.mp4'
+file 'project/out/ch09.mp4'
+file 'project/out/ch10.mp4'
+file 'project/out/ch11.mp4'
+file 'project/out/ch12.mp4'
+# concat with: ffmpeg -f concat -safe 0 -i concat_order.txt -c copy out/video.mp4

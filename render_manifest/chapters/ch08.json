@@ -1,0 +1,17 @@
+{
+ "chapter": 8,
+ "title": "The Box of Light",
+ "from": 341.272,
+ "to": 405.197,
+ "frame_range": [
+  8191,
+  9725
+ ],
+ "frame_count": 1534,
+ "fps": 24,
+ "resolution": "1920x1080",
+ "video_codec": "libx264 (crf 14, preset medium, yuv420p \u2014 set by core/render/video.mjs)",
+ "command": "node core/render/video.mjs project --fps 24 --workers 2 --q 'from=341.272&to=405.197' --out project/out/ch08.mp4",
+ "audio": "project/out/mix.wav (full-film mix; mux after concat \u2014 see audio_mix_plan.md)",
+ "subtitle": "burned into the page itself (drawSubs); project/script/subtitles.srt is the export"
+}

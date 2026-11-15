@@ -1,0 +1,17 @@
+{
+ "chapter": 9,
+ "title": "Why Nobody Could See It",
+ "from": 405.197,
+ "to": 450.388,
+ "frame_range": [
+  9725,
+  10809
+ ],
+ "frame_count": 1084,
+ "fps": 24,
+ "resolution": "1920x1080",
+ "video_codec": "libx264 (crf 14, preset medium, yuv420p \u2014 set by core/render/video.mjs)",
+ "command": "node core/render/video.mjs project --fps 24 --workers 2 --q 'from=405.197&to=450.388' --out project/out/ch09.mp4",
+ "audio": "project/out/mix.wav (full-film mix; mux after concat \u2014 see audio_mix_plan.md)",
+ "subtitle": "burned into the page itself (drawSubs); project/script/subtitles.srt is the export"
+}

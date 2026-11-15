@@ -1,0 +1,290 @@
+[
+ {
+  "n": 1,
+  "title": "The Impossible Scale",
+  "theme": "hook",
+  "lines": [
+   "c01l01",
+   "c01l02",
+   "c01l03",
+   "c01l04",
+   "c01l05",
+   "c01l06",
+   "c01l07",
+   "c01l08",
+   "c01l09",
+   "c01l10"
+  ],
+  "narration": "Take two phones, identical in every way. Charge one completely, drain the other until it's dead, and set them on a balance. The charged phone is heavier. Not by any amount you could measure. Yet nothing material went in while it charged. No atoms came down the cable. No extra electrons piled up either: every electron that flowed in through one wire flowed back out through the other. The only thing the phone gained was energy. And energy, it turns out, has weight.",
+  "narration_display": "Take two phones, identical in every way. Charge one completely, drain the other until it's dead, and set them on a balance. The charged phone is heavier. Not by any amount you could measure. Yet nothing material went in while it charged. No atoms came down the cable. No extra electrons piled up either: every electron that flowed in through one wire flowed back out through the other. The only thing the phone gained was energy. And energy, it turns out, has weight.",
+  "words": 83,
+  "speed_range": [
+   0.74,
+   0.82
+  ]
+ },
+ {
+  "n": 2,
+  "title": "Energy Is Not Stuff",
+  "theme": "setup",
+  "lines": [
+   "c02l01",
+   "c02l02",
+   "c02l03",
+   "c02l04",
+   "c02l05",
+   "c02l06",
+   "c02l07"
+  ],
+  "narration": "Inside the battery, charging doesn't add stuff. It rearranges it. Ions shuttle between two layers into an arrangement that stores energy, like a stretched spring. Use the phone, and they slide back down, releasing it. A full battery and an empty one hold exactly the same atoms. The only difference is energy. So why would energy have weight at all? Matter is supposed to be the thing that weighs.",
+  "narration_display": "Inside the battery, charging doesn't add stuff. It rearranges it. Ions shuttle between two layers into an arrangement that stores energy, like a stretched spring. Use the phone, and they slide back down, releasing it. A full battery and an empty one hold exactly the same atoms. The only difference is energy. So why would energy have weight at all? Matter is supposed to be the thing that weighs.",
+  "words": 69,
+  "speed_range": [
+   0.76,
+   0.82
+  ]
+ },
+ {
+  "n": 3,
+  "title": "The Old Rule",
+  "theme": "history 1",
+  "lines": [
+   "c03l01",
+   "c03l02",
+   "c03l03",
+   "c03l04",
+   "c03l05",
+   "c03l06",
+   "c03l07",
+   "c03l08"
+  ],
+  "narration": "For a century, science's most careful weighings said the opposite: nothing inside a sealed container can change its weight. The rule was born in Paris, in the seventeen seventies, with Antoine Lavoisier, a chemist who trusted his balance more than any theory. He sealed tin inside a glass vessel, melting the glass shut so nothing could get in or out, and took its weight. Then he heated it, until part of the shiny metal turned to grey powder, let it cool, and took its weight again. Heat had poured in and out. The weight had not changed at all. In seventeen eighty-nine, his rule: an equal quantity of matter, before and after. Energy, it seemed, weighs nothing.",
+  "narration_display": "For a century, science's most careful weighings said the opposite: nothing inside a sealed container can change its weight. The rule was born in Paris, in the 1770s, with Antoine Lavoisier, a chemist who trusted his balance more than any theory. He sealed tin inside a glass vessel, melting the glass shut so nothing could get in or out, and took its weight. Then he heated it, until part of the shiny metal turned to grey powder, let it cool, and took its weight again. Heat had poured in and out. The weight had not changed at all. In 1789, his rule: an equal quantity of matter, before and after. Energy, it seemed, weighs nothing.",
+  "words": 118,
+  "speed_range": [
+   0.74,
+   0.82
+  ]
+ },
+ {
+  "n": 4,
+  "title": "The Balance's Limit",
+  "theme": "history 2",
+  "lines": [
+   "c04l01",
+   "c04l02",
+   "c04l03",
+   "c04l04",
+   "c04l05",
+   "c04l06",
+   "c04l07"
+  ],
+  "narration": "But a rule is only as good as the balance that tests it. In the eighteen nineties, Hans Landolt in Berlin spent twenty years testing it harder than anyone. Two chemicals, sealed in the separate arms of a glass vessel, react; the heat escapes; he weighs it again. And again. And again. He chased every error — buoyancy, moisture, dust. His nineteen oh eight verdict: no reaction changed weight by more than three hundredths of a milligram. If the escaping heat weighed anything at all, it weighed less than that.",
+  "narration_display": "But a rule is only as good as the balance that tests it. In the 1890s, Hans Landolt in Berlin spent 20 years testing it harder than anyone. Two chemicals, sealed in the separate arms of a glass vessel, react; the heat escapes; he weighs it again. And again. And again. He chased every error — buoyancy, moisture, dust. His 1908 verdict: no reaction changed weight by more than 0.03 mg. If the escaping heat weighed anything at all, it weighed less than that.",
+  "words": 89,
+  "speed_range": [
+   0.78,
+   0.8
+  ]
+ },
+ {
+  "n": 5,
+  "title": "Radium Refuses to Behave",
+  "theme": "mystery",
+  "lines": [
+   "c05l01",
+   "c05l02",
+   "c05l03",
+   "c05l04",
+   "c05l05",
+   "c05l06",
+   "c05l07",
+   "c05l08",
+   "c05l09"
+  ],
+  "narration": "Then a tiny glowing sample made that answer hard to believe. Radium, which Marie Curie purified in nineteen oh two, from more than a ton of ore. Pierre Curie measured one gram giving off a hundred calories of heat, every hour. That adds up to nearly nine hundred thousand calories a year. A gram of coal gives seven thousand. Then it's gone. The radium releases a hundred times more, every year, and barely slows down: half is still there sixteen hundred years from now. Nobody could say what it was using up. Either it soaked up invisible energy from space, or the energy came from inside the atom itself.",
+  "narration_display": "Then a tiny glowing sample made that answer hard to believe. Radium, which Marie Curie purified in 1902, from more than a ton of ore. Pierre Curie measured one gram giving off a hundred calories of heat, every hour. That adds up to nearly nine hundred thousand calories a year. A gram of coal gives 7,000. Then it's gone. The radium releases a hundred times more, every year, and barely slows down: half is still there sixteen hundred years from now. Nobody could say what it was using up. Either it soaked up invisible energy from space, or the energy came from inside the atom itself.",
+  "words": 109,
+  "speed_range": [
+   0.76,
+   0.82
+  ]
+ },
+ {
+  "n": 6,
+  "title": "Light Has Momentum",
+  "theme": "clue",
+  "lines": [
+   "c06l01",
+   "c06l02",
+   "c06l03",
+   "c06l04",
+   "c06l05",
+   "c06l06",
+   "c06l07",
+   "c06l08",
+   "c06l09",
+   "c06l10",
+   "c06l11",
+   "c06l12"
+  ],
+  "narration": "The first clue had appeared earlier, in the way light behaves. In nineteen hundred, Henri Poincaré worked through a fact most people never think about: light pushes. It's why a comet's tail points away from the Sun; and lab experiments had just measured that push. Anything that pushes carries momentum. A flash of energy E carries momentum: E divided by the speed of light. Momentum is mass times speed. What mass would that flash need? Its energy, divided by the speed of light squared. His example: a one kilogram lamp firing three million joules of light recoils like a cannon, while the flash carries thirty-three billionths of a gram. But he called it a fiction, not a real weight. The number sat there. He didn't believe it.",
+  "narration_display": "The first clue had appeared earlier, in the way light behaves. In 1900, Henri Poincaré worked through a fact most people never think about: light pushes. It's why a comet's tail points away from the Sun; and lab experiments had just measured that push. Anything that pushes carries momentum. A flash of energy E carries momentum: E divided by the speed of light. Momentum is mass times speed. What mass would that flash need? Its energy, divided by the speed of light squared. His example: a one kilogram lamp firing three million joules of light recoils like a cannon, while the flash carries thirty-three billionths of a gram. But he called it a fiction, not a real weight. The number sat there. He didn't believe it.",
+  "words": 128,
+  "speed_range": [
+   0.76,
+   0.82
+  ]
+ },
+ {
+  "n": 7,
+  "title": "Einstein's First Argument",
+  "theme": "turn 1",
+  "lines": [
+   "c07l01",
+   "c07l02",
+   "c07l03",
+   "c07l04",
+   "c07l05",
+   "c07l06",
+   "c07l07",
+   "c07l08",
+   "c07l09",
+   "c07l10",
+   "c07l11",
+   "c07l12",
+   "c07l13",
+   "c07l14",
+   "c07l15"
+  ],
+  "narration": "Believing it took Albert Einstein — twenty six, a clerk at the patent office in Bern. In nineteen oh five, just after finishing relativity, he wrote to a friend: a body's mass must be a measure of the energy inside it. Light carries mass, he said. Radium should get noticeably lighter. That September, three pages in the leading physics journal. A glowing object, at rest, fires two identical flashes in opposite directions. The pushes cancel. It just loses the light's energy, L. Now watch from a passing train. The speed is unchanged, but the forward flash now looks slightly more energetic, the backward slightly less. Add them: most of the difference cancels. Not all. From the train, the light carries away a little more than L. That extra must come out of its kinetic energy. And kinetic energy is one half, times mass, times speed squared. The speed hasn't changed. So the mass drops — by the light's energy, divided by the speed of light squared.",
+  "narration_display": "Believing it took Albert Einstein — 26, a clerk at the patent office in Bern. In 1905, just after finishing relativity, he wrote to a friend: a body's mass must be a measure of the energy inside it. Light carries mass, he said. Radium should get noticeably lighter. That September, three pages in the leading physics journal. A glowing object, at rest, fires two identical flashes in opposite directions. The pushes cancel. It just loses the light's energy, L. Now watch from a passing train. The speed is unchanged, but the forward flash now looks slightly more energetic, the backward slightly less. Add them: most of the difference cancels. Not all. From the train, the light carries away a little more than L. That extra must come out of its kinetic energy. And kinetic energy is one half, times mass, times speed squared. The speed hasn't changed. So the mass drops — by the light's energy, divided by the speed of light squared.",
+  "words": 164,
+  "speed_range": [
+   0.76,
+   0.82
+  ]
+ },
+ {
+  "n": 8,
+  "title": "The Box of Light",
+  "theme": "turn 2",
+  "lines": [
+   "c08l01",
+   "c08l02",
+   "c08l03",
+   "c08l04",
+   "c08l05",
+   "c08l06",
+   "c08l07",
+   "c08l08",
+   "c08l09",
+   "c08l10",
+   "c08l11"
+  ],
+  "narration": "A year later, Einstein offered a simpler argument: a flash of light inside a box. Walk from one end of a small boat to the other, and it slides back under you. Nothing inside a closed system can move its own centre of mass. Now make it a box in empty space, and make you a flash of light off the left wall. The flash pushes the box back, crosses, and is absorbed at the right wall — the box stops, shifted. Nothing outside touched it. So either the box pushed itself through space, or the light carried mass, wall to wall. The boat settles it: box mass times shift equals light mass times box length. Everything cancels but one line: the light's mass equals its energy, divided by the speed of light squared. The left wall really gets lighter. The right wall really gets heavier. Einstein credited Poincaré on the paper's first page.",
+  "narration_display": "A year later, Einstein offered a simpler argument: a flash of light inside a box. Walk from one end of a small boat to the other, and it slides back under you. Nothing inside a closed system can move its own centre of mass. Now make it a box in empty space, and make you a flash of light off the left wall. The flash pushes the box back, crosses, and is absorbed at the right wall — the box stops, shifted. Nothing outside touched it. So either the box pushed itself through space, or the light carried mass, wall to wall. The boat settles it: box mass times shift equals light mass times box length. Everything cancels but one line: the light's mass equals its energy, divided by the speed of light squared. The left wall really gets lighter. The right wall really gets heavier. Einstein credited Poincaré on the paper's first page.",
+  "words": 153,
+  "speed_range": [
+   0.78,
+   0.82
+  ]
+ },
+ {
+  "n": 9,
+  "title": "Why Nobody Could See It",
+  "theme": "scale",
+  "lines": [
+   "c09l01",
+   "c09l02",
+   "c09l03",
+   "c09l04",
+   "c09l05",
+   "c09l06",
+   "c09l07",
+   "c09l08",
+   "c09l09",
+   "c09l10"
+  ],
+  "narration": "Once energy has real weight, the old mysteries make sense. Only one thing hid that weight: the size of c squared. Light moves at three hundred million metres per second. So c squared is ninety million billion. Ninety million billion joules, for one kilogram of weight. Landolt's escaping heat weighed about a billionth of a gram. His balance could only see thirty millionths of a gram. Tens of thousands of times too coarse. Even a gram of radium radiates a whole year of heat that weighs just forty billionths of a gram, right at the edge of the finest balances — after twelve patient months.",
+  "narration_display": "Once energy has real weight, the old mysteries make sense. Only one thing hid that weight: the size of c squared. Light moves at three hundred million metres per second. So c squared is ninety million billion. Ninety million billion joules, for one kilogram of weight. Landolt's escaping heat weighed about a billionth of a gram. His balance could only see 30 millionths of a gram. Tens of thousands of times too coarse. Even a gram of radium radiates a whole year of heat that weighs just forty billionths of a gram, right at the edge of the finest balances — after twelve patient months.",
+  "words": 104,
+  "speed_range": [
+   0.76,
+   0.82
+  ]
+ },
+ {
+  "n": 10,
+  "title": "Weighing Atoms",
+  "theme": "proof",
+  "lines": [
+   "c10l01",
+   "c10l02",
+   "c10l03",
+   "c10l04",
+   "c10l05",
+   "c10l06",
+   "c10l07",
+   "c10l08",
+   "c10l09",
+   "c10l10",
+   "c10l11",
+   "c10l12",
+   "c10l13",
+   "c10l14"
+  ],
+  "narration": "So could anyone weigh energy at all? It would take more energy per atom, and a way to weigh single atoms. Both arrived in Rutherford's lab in Cambridge. Atoms were no longer weighed on pans: flying through magnetic fields in a vacuum, the lighter ones curve more sharply. The bend became the scale. On the fourteenth of April, nineteen thirty-two, researchers fired fast protons at a thin layer of lithium. One watched from a darkened hut beneath the machine, shielded from X-rays. The screen lit up. Rutherford squeezed in: the flashes looked, he said, mighty like alpha particles. A lithium nucleus had swallowed a proton and split into two helium nuclei, flying apart with seventeen point two million electron volts. Lithium plus hydrogen outweighs two heliums. If Einstein was right, the missing mass times c squared must equal that energy. But lithium's nineteen thirty-two mass predicted only fourteen million electron volts, against seventeen. A year later, a more precise lithium mass raised the prediction to sixteen point eight — within a few percent. It matched.",
+  "narration_display": "So could anyone weigh energy at all? It would take more energy per atom, and a way to weigh single atoms. Both arrived in Rutherford's lab in Cambridge. Atoms were no longer weighed on pans: flying through magnetic fields in a vacuum, the lighter ones curve more sharply. The bend became the scale. On the 14th of April 1932, researchers fired fast protons at a thin layer of lithium. One watched from a darkened hut beneath the machine, shielded from X-rays. The screen lit up. Rutherford squeezed in: the flashes looked, he said, mighty like alpha particles. A lithium nucleus had swallowed a proton and split into two helium nuclei, flying apart with 17.2 million electron volts. Lithium plus hydrogen outweighs two heliums. If Einstein was right, the missing mass times c squared must equal that energy. But lithium's 1932 mass predicted only 14 million electron volts, against 17. A year later, a more precise lithium mass raised the prediction to 16.8 — within a few percent. It matched.",
+  "words": 177,
+  "speed_range": [
+   0.74,
+   0.82
+  ]
+ },
+ {
+  "n": 11,
+  "title": "The Sun Proves It",
+  "theme": "cosmic",
+  "lines": [
+   "c11l01",
+   "c11l02",
+   "c11l03",
+   "c11l04",
+   "c11l05",
+   "c11l06",
+   "c11l07",
+   "c11l08"
+  ],
+  "narration": "Weighing atoms had already explained something bigger. In nineteen twenty, helium proved lighter than the four hydrogens that build it. Four point zero three one three, against four point zero zero two six. Arthur Eddington saw that the missing mass could power the stars. Fusing hydrogen into helium leaves seven tenths of one percent missing, carried away as energy. The Sun fuses six hundred million tons of hydrogen a second, and four million tons of that never becomes matter — it leaves as light. The same equation runs the stars, and the battery in your pocket.",
+  "narration_display": "Weighing atoms had already explained something bigger. In 1920, helium proved lighter than the four hydrogens that build it. 4.0313 against 4.0026. Arthur Eddington saw that the missing mass could power the stars. Fusing hydrogen into helium leaves seven tenths of one percent missing, carried away as energy. The Sun fuses 600 million tons of hydrogen a second, and 4 million tons of that never becomes matter — it leaves as light. The same equation runs the stars, and the battery in your pocket.",
+  "words": 95,
+  "speed_range": [
+   0.78,
+   0.82
+  ]
+ },
+ {
+  "n": 12,
+  "title": "Your Phone, Your Body, E=mc²",
+  "theme": "landing",
+  "lines": [
+   "c12l01",
+   "c12l02",
+   "c12l03",
+   "c12l04",
+   "c12l05",
+   "c12l06",
+   "c12l07",
+   "c12l08",
+   "c12l09"
+  ],
+  "narration": "So, back to the phones. The charged one gained energy, and therefore mass: less than a billionth of a gram. No balance can show it. We know it anyway: every kind of energy weighs exactly its amount, divided by c squared. Almost all the mass of your body is energy too, locked in its protons and neutrons. The three quarks in a proton are less than one percent of its weight. The rest is the strong force — trapped, seething motion. You are mostly stored energy, wearing the shape of a person. So is your phone. Charge it tonight, and in the morning, it will be ever so slightly heavier.",
+  "narration_display": "So, back to the phones. The charged one gained energy, and therefore mass: less than a billionth of a gram. No balance can show it. We know it anyway: every kind of energy weighs exactly its amount, divided by c squared. Almost all the mass of your body is energy too, locked in its protons and neutrons. The three quarks in a proton are less than one percent of its weight. The rest is the strong force — trapped, seething motion. You are mostly stored energy, wearing the shape of a person. So is your phone. Charge it tonight, and in the morning, it will be ever so slightly heavier.",
+  "words": 109,
+  "speed_range": [
+   0.74,
+   0.82
+  ]
+ }
+]

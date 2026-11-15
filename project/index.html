@@ -1,0 +1,1443 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Why Your Phone Gets Heavier When You Charge It</title>
+<style>
+@font-face{font-family:CB;src:url(fonts/Caveat-Bold.ttf);font-display:block}
+@font-face{font-family:CM;src:url(fonts/Caveat-Medium.ttf);font-display:block}
+html,body{margin:0;background:#f3eadb;overflow:hidden}
+canvas{display:block}
+</style></head>
+<body><canvas id="c" width="1920" height="1080"></canvas>
+<script>
+// Tablet Sketch Explainer · «Why Your Phone Gets Heavier When You Charge It» (10:30), one page, twelve chapters.
+// Engine adapted from the style's demo (pencil brush + grain threshold + off-register colour blocks + gesture camera):
+//  - one 4320×2400 canvas that fills progressively across 12 chapter regions (3 rows × 4 columns);
+//  - coverage buffers as Uint8 (a 10-minute page needs 3× the demo's area at 1.75× buffer scale);
+//  - mark times come from voice/timeline.json (Whisper-aligned narration clock), not hand-placed;
+//  - English-only subtitle chip (one film language), bottom left, wiped in like a colour block.
+// ?from=&to= renders a stretch; ?clean=1 hides stylus and subtitles (stills).
+const W = 1920, H = 1080, FPS = 24;
+const QS = new URLSearchParams(location.search);
+let FROM = +(QS.get('from') ?? 0), TO = +(QS.get('to') ?? 0);
+const CLEAN = QS.get('clean') === '1';
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+
+// ---------- canvas domain (world units) and buffer resolution ----------
+// the 12-chapter grid spans 0..4320 x 0..2400; the domain adds 160/240 of overscan on every side
+const X0 = -160, Y0 = -120, DW = 4640, DH = 2760, S = 1.75;
+const BW = Math.round(DW * S), BH = Math.round(DH * S);
+const PX = x => (x - X0) * S, PY = y => (y - Y0) * S;
+
+// ---------- palette ----------
+const C = {
+  paper: '#f3eadb', graphite: '#43362e', light: '#a8998a', coral: '#dc6a4c', mustard: '#f1c04f',
+  // subject colours (soft chalky, each with a darker shadow variant)
+  alu: '#b9c4c9', aluDk: '#8f9ba1', glass: '#eef0e6', batGreen: '#a9c79a', batGreenDk: '#7fa073',
+  tin: '#c9cdd4', tinDk: '#9aa0a8', chemA: '#d98a6a', chemB: '#e9c85a', radium: '#f1e3a8',
+  coal: '#6b5f55', hydrogen: '#dfe8ee', helium: '#f1c04f', lithium: '#c98a4b', body: '#e8ddd0'
+};
+const hex = c => [parseInt(c.slice(1, 3), 16) / 255, parseInt(c.slice(3, 5), 16) / 255, parseInt(c.slice(5, 7), 16) / 255];
+
+// ---------- seeded randomness and noise ----------
+function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+let R = mulberry(20261115);
+const rnd = (a = 0, b = 1) => a + (b - a) * R();
+function h2(x, y) { let n = Math.imul(x | 0, 374761393) + Math.imul(y | 0, 668265263); n = Math.imul(n ^ (n >>> 13), 1274126177); return ((n ^ (n >>> 16)) >>> 0) / 4294967296; }
+function vn(x, y) { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+  const a = h2(xi, yi), b = h2(xi + 1, yi), c = h2(xi, yi + 1), d = h2(xi + 1, yi + 1); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; }
+const n1 = (s, seed) => vn(s, seed * 13.7);
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const lerp = (a, b, t) => a + (b - a) * t;
+const eio = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+const eo = t => 1 - Math.pow(1 - clamp(t), 3);
+const TAU = Math.PI * 2;
+
+// ---------- paper grain (buffer resolution, fixed to the canvas, Uint8) ----------
+let GRAIN, GRAIN2;
+function buildGrain() {
+  const N = BW * BH, wn = new Float32Array(N), tmp = new Float32Array(N);
+  GRAIN = new Uint8Array(N); GRAIN2 = new Uint8Array(N);
+  const GK = 1.5 / S;
+  for (let i = 0; i < N; i++) wn[i] = h2(Math.floor(i % BW * GK) * 3 + 11, Math.floor((i / BW | 0) * GK) * 7 + 5);
+  for (let y = 0; y < BH; y++) { const o = y * BW; for (let x = 0; x < BW; x++) tmp[o + x] = (wn[o + Math.max(0, x - 1)] + wn[o + x] + wn[o + Math.min(BW - 1, x + 1)]) / 3; }
+  for (let y = 0; y < BH; y++) { const a = Math.max(0, y - 1) * BW, b = y * BW, c = Math.min(BH - 1, y + 1) * BW;
+    for (let x = 0; x < BW; x++) {
+      const fine = (tmp[a + x] + tmp[b + x] + tmp[c + x]) / 3;
+      const gx = x * GK, gy = y * GK, g = 0.45 * fine * 1.6 - 0.22 + 0.35 * vn(gx / 2.3 + gy * 0.35 / 2.3, gy / 1.6) + 0.2 * vn(gx / 7, gy / 7);
+      GRAIN[b + x] = g; GRAIN2[b + x] = vn(gx / 90, gy / 90) * 0.6 + vn(gx / 23, gy / 23) * 0.4;
+    } }
+  let m = 0, v = 0, n = 0; for (let i = 0; i < N; i += 7) { m += GRAIN[i]; n++; } m /= n; for (let i = 0; i < N; i += 7) v += (GRAIN[i] - m) ** 2; v = Math.sqrt(v / n);
+  for (let i = 0; i < N; i++) { GRAIN[i] = clamp(0.5 + (GRAIN[i] - m) / v * 0.2) * 255 | 0; GRAIN2[i] = clamp(GRAIN2[i]) * 255 | 0; }
+}
+
+// ---------- drawing targets: pencil layers (Uint8 coverage) + colour canvas ----------
+const LAYERS = { light: { col: hex(C.light), alpha: 0.55 }, graph: { col: hex(C.graphite), alpha: 0.95 }, coral: { col: hex(C.coral), alpha: 0.95 } };
+const ORDER = ['light', 'graph', 'coral'];
+function mkCanvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+function mkTarget() { const fc = mkCanvas(BW, BH); return { L: { light: new Uint8Array(BW * BH), graph: new Uint8Array(BW * BH), coral: new Uint8Array(BW * BH) }, fc, fx: fc.getContext('2d', { willReadFrequently: true }) }; }
+let CACHE, WORK, TG, cacheK = 0;
+const WC = mkCanvas(BW, BH), wx = WC.getContext('2d');
+window.wcx = wx;
+const TMP = mkCanvas(900, 900), tx = TMP.getContext('2d', { willReadFrequently: true });
+const TMP2 = mkCanvas(900, 900), tx2 = TMP2.getContext('2d');
+function tmpSize(c, w, h) { if (c.width < w || c.height < h) { c.width = Math.max(c.width, w); c.height = Math.max(c.height, h); } }
+
+// ---------- geometry ----------
+function spline(P, step = 2) {
+  if (P.length < 2) return P.slice();
+  const out = [];
+  for (let i = 0; i < P.length - 1; i++) {
+    const p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)];
+    const n = Math.max(1, Math.ceil(Math.hypot(p2[0] - p1[0], p2[1] - p1[1]) / step));
+    for (let k = 0; k < n; k++) { const t = k / n, t2 = t * t, t3 = t2 * t;
+      out.push([0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3),
+        0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)]); }
+  }
+  out.push(P[P.length - 1]); return out;
+}
+function resample(P, step) {
+  const out = [P[0].slice()]; let acc = 0;
+  for (let i = 1; i < P.length; i++) { let [x0, y0] = P[i - 1]; const [x1, y1] = P[i]; let d = Math.hypot(x1 - x0, y1 - y0);
+    while (acc + d >= step) { const t = (step - acc) / d; x0 += (x1 - x0) * t; y0 += (y1 - y0) * t; out.push([x0, y0]); d = Math.hypot(x1 - x0, y1 - y0); acc = 0; }
+    acc += d; }
+  return out;
+}
+function ell(cx, cy, rx, ry, rot = 0, a0 = 0, a1 = TAU, n = 64, wob = 0) { const P = [], c = Math.cos(rot), s = Math.sin(rot);
+  for (let i = 0; i <= n; i++) { const a = a0 + (a1 - a0) * i / n, k = 1 + wob * Math.sin(2 * a), x = rx * Math.cos(a) * k, y = ry * Math.sin(a) * k; P.push([cx + x * c - y * s, cy + x * s + y * c]); } return P; }
+function bez(p0, p1, p2, p3, n = 24) { const P = []; for (let i = 0; i <= n; i++) { const t = i / n, u = 1 - t; P.push([u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0], u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1]]); } return P; }
+function rotP(P, cx, cy, a) { const c = Math.cos(a), s = Math.sin(a); return P.map(([x, y]) => [cx + (x - cx) * c - (y - cy) * s, cy + (x - cx) * s + (y - cy) * c]); }
+function bbox(P) { let a = 1e9, b = 1e9, c = -1e9, d = -1e9; for (const [x, y] of P) { if (x < a) a = x; if (y < b) b = y; if (x > c) c = x; if (y > d) d = y; } return [a, b, c, d]; }
+function centroid(P) { let x = 0, y = 0; for (const p of P) { x += p[0]; y += p[1]; } return [x / P.length, y / P.length]; }
+function roughen(P, amp = 1.6) {   // closed polygon, displaced along its normal by noise: a ragged edge
+  const seed = rnd(0, 999), D = resample(P.concat([P[0]]), 3), N = D.length, out = [];
+  for (let i = 0; i < N; i++) { const a = D[(i - 1 + N) % N], b = D[(i + 1) % N]; let tx_ = b[0] - a[0], ty = b[1] - a[1]; const l = Math.hypot(tx_, ty) || 1; tx_ /= l; ty /= l;
+    const s = i * 3, off = amp * ((n1(s / 30, seed) - 0.5) * 1.6 + (n1(s / 4, seed + 5) - 0.5) * 0.9 + (h2(i, seed | 0) - 0.5) * 0.5);
+    out.push([D[i][0] - ty * off, D[i][1] + tx_ * off]); }
+  return out;
+}
+function plen(P) { let s = 0; for (let i = 1; i < P.length; i++) s += Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]); return s; }
+function along(P, d) {
+  for (let i = 1; i < P.length; i++) { const l = Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]); if (d <= l) { const u = l ? d / l : 0; return [lerp(P[i - 1][0], P[i][0], u), lerp(P[i - 1][1], P[i][1], u)]; } d -= l; }
+  return P[P.length - 1].slice();
+}
+function polyPath(c, P, k = 1, ox = 0, oy = 0) { c.moveTo(P[0][0] * k + ox, P[0][1] * k + oy); for (let i = 1; i < P.length; i++) c.lineTo(P[i][0] * k + ox, P[i][1] * k + oy); c.closePath(); }
+
+// ---------- the timeline of marks (times come from the narration clock TL) ----------
+const EL = [];
+function addEl(e) { e.d = Math.max(e.d, 1 / FPS); if (e.ghost) { e.kind = 'none'; delete e.nib; } EL.push(e); return e.t0 + e.d; }
+let TL = null;                      // voice/timeline.json
+const T = id => TL.lines.find(l => l.id === id).t0;    // a line's start on the film clock
+const TE = id => TL.lines.find(l => l.id === id).t1;   // ... and its end
+
+// pencil stroke: stamps precomputed once (geometry never depends on progress)
+function PEN(pts, o, t0, d) {
+  const lay = o.layer || 'graph';
+  const w = (o.w ?? 2.4) * 1.18, wob = o.wob ?? 0.8, press = o.p ?? 1, ta = o.ta ?? 0.18, tb = o.tb ?? 0.22, seed = rnd(0, 999);
+  let P = o.smooth === false ? pts : spline(pts, 2); P = resample(P, 0.55); if (P.length < 2) return t0;
+  const N = P.length, tot = (N - 1) * 0.55, st = new Float32Array(N * 4), nib = [];
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  for (let i = 0; i < N; i++) {
+    const a = P[Math.max(0, i - 2)], b = P[Math.min(N - 1, i + 2)]; let tx_ = b[0] - a[0], ty = b[1] - a[1]; const l = Math.hypot(tx_, ty) || 1; tx_ /= l; ty /= l;
+    const s = i * 0.55, off = wob * ((n1(s / 38, seed) - 0.5) * 2 + (n1(s / 9, seed + 3) - 0.5) * 0.5);
+    const qx = P[i][0] - ty * off, qy = P[i][1] + tx_ * off;
+    let p = Math.pow(clamp(s / (tot * ta + 1e-3)), 0.55) * Math.pow(clamp((tot - s) / (tot * tb + 1e-3)), 0.55);
+    p = press * (0.12 + 0.88 * p) * (0.82 + 0.18 * n1(s / 22, seed + 7));
+    const r = w * 0.5 * (0.5 + 0.5 * p) * S, cx = PX(qx), cy = PY(qy);
+    st[i * 4] = cx; st[i * 4 + 1] = cy; st[i * 4 + 2] = r; st[i * 4 + 3] = 0.3 + 0.7 * p;
+    x0 = Math.min(x0, cx - r); y0 = Math.min(y0, cy - r); x1 = Math.max(x1, cx + r); y1 = Math.max(y1, cy + r);
+    if (i % 8 === 0 || i === N - 1) nib.push([qx, qy]);
+  }
+  const bx0 = Math.max(0, Math.floor(x0 - 2)), by0 = Math.max(0, Math.floor(y0 - 2)), bx1 = Math.min(BW - 1, Math.ceil(x1 + 2)), by1 = Math.min(BH - 1, Math.ceil(y1 + 2));
+  const bw = bx1 - bx0 + 1, bh = by1 - by0 + 1;
+  if (bw <= 0 || bh <= 0) { console.warn('PEN out of canvas, skipped:', JSON.stringify(pts.slice(0, 2)), 't0', t0); return t0; }
+  return addEl({ t0, d, ghost: o.ghost, kind: lay === 'light' ? 'light' : (o.kind || 'pencil'), wx: centroid(nib),
+    nib: p => nib[Math.min(nib.length - 1, Math.floor(clamp(p) * (nib.length - 1)))],
+    apply(prog) {
+      const n = prog >= 1 ? N : Math.floor(prog * N); if (n < 2) return;
+      const B = new Float32Array(bw * bh);
+      for (let i = 0; i < n; i++) {
+        const cx = st[i * 4] - bx0, cy = st[i * 4 + 1] - by0, r = st[i * 4 + 2], val = st[i * 4 + 3];
+        const ix0 = Math.max(0, Math.floor(cx - r - 1)), ix1 = Math.min(bw - 1, Math.ceil(cx + r + 1)), iy0 = Math.max(0, Math.floor(cy - r - 1)), iy1 = Math.min(bh - 1, Math.ceil(cy + r + 1));
+        for (let y = iy0; y <= iy1; y++) { const dy = y + 0.5 - cy, row = y * bw; for (let x = ix0; x <= ix1; x++) { const dx = x + 0.5 - cx, cov = r - Math.sqrt(dx * dx + dy * dy) + 0.5; if (cov <= 0) continue; const v = (cov > 1 ? 1 : cov) * val; if (v > B[row + x]) B[row + x] = v; } }
+      }
+      const buf = TG.L[lay];
+      for (let y = 0; y < bh; y++) { const row = y * bw, o = (y + by0) * BW + bx0; for (let x = 0; x < bw; x++) { const v = B[row + x]; if (v) { const k = o + x, b = buf[k], q = v * 255; buf[k] = b + q - b * q / 255 + 0.5 | 0; } } }
+    } });
+}
+// occlusion: an object in front clears the lines (and colour) already drawn inside its outline
+function OCC(poly, t0, names = ['light', 'graph', 'coral'], fills = true) {
+  const P = poly.map(([x, y]) => [PX(x), PY(y)]), [a, b, c, d] = bbox(P);
+  const x0 = Math.max(0, Math.floor(a) - 1), y0 = Math.max(0, Math.floor(b) - 1), x1 = Math.min(BW, Math.ceil(c) + 1), y1 = Math.min(BH, Math.ceil(d) + 1), w = x1 - x0, h = y1 - y0;
+  tmpSize(TMP, w, h); tx.clearRect(0, 0, w, h); tx.fillStyle = '#fff'; tx.beginPath(); polyPath(tx, P, 1, -x0, -y0); tx.fill();
+  const id = tx.getImageData(0, 0, w, h).data, M = new Float32Array(w * h); for (let i = 0; i < w * h; i++) M[i] = id[i * 4 + 3] / 255;
+  return addEl({ t0, d: 0, kind: 'occ', apply() {
+    for (const nm of names) { const buf = TG.L[nm]; for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const m = M[y * w + x]; if (m) { const k = (y + y0) * BW + x + x0; buf[k] = buf[k] * (1 - m) + 0.5 | 0; } } }
+    if (fills) { TG.fx.save(); TG.fx.globalCompositeOperation = 'destination-out'; TG.fx.beginPath(); polyPath(TG.fx, P); TG.fx.fill(); TG.fx.restore(); }
+  } });
+}
+// colour block: shifted off the line, ragged edge, multiply; holes erase, cuts outline objects in front
+function BLOB(poly, col, o, t0, d) {
+  const dx = o.dx ?? 7, dy = o.dy ?? 5, Q = roughen(poly.map(([x, y]) => [x + dx, y + dy]), o.amp ?? 1.5);
+  const holes = (o.holes || []).map(h => h.map(([x, y]) => [x + dx, y + dy])), cuts = o.cuts || [];
+  const [a, b, c, e] = bbox(Q);
+  const ang = o.ang ?? -0.5, sp = o.sp ?? 9, ca = Math.cos(ang), sa = Math.sin(ang);
+  const RQ = Q.map(([x, y]) => [x * ca + y * sa, -x * sa + y * ca]), [, rb, , re] = bbox(RQ);
+  const path = []; let dir = 1, rows = 0;
+  for (let v = rb + sp * 0.5; v < re; v += sp) {
+    let lo = 1e9, hi = -1e9;
+    for (let i = 0; i < RQ.length; i++) { const p = RQ[i], q = RQ[(i + 1) % RQ.length]; if ((p[1] - v) * (q[1] - v) <= 0 && p[1] !== q[1]) { const u = (v - p[1]) / (q[1] - p[1]), x = p[0] + (q[0] - p[0]) * u; lo = Math.min(lo, x); hi = Math.max(hi, x); } }
+    if (lo > hi) continue;
+    const ends = dir > 0 ? [lo - 2 + rnd(-3, 2), hi + 2 + rnd(-2, 3)] : [hi + 2 + rnd(-2, 3), lo - 2 + rnd(-3, 2)];
+    for (const u of ends) path.push([u * ca - v * sa, u * sa + v * ca]);
+    dir = -dir; rows++;
+  }
+  const L = plen(path), stop = o.stop ?? 1, alpha = o.a ?? 0.92;
+  const x0 = Math.max(0, Math.floor(PX(a) - 4)), y0 = Math.max(0, Math.floor(PY(b) - 4)), x1 = Math.min(BW, Math.ceil(PX(c) + 4)), y1 = Math.min(BH, Math.ceil(PY(e) + 4)), w = x1 - x0, h = y1 - y0;
+  const toT = P => P.map(([x, y]) => [PX(x) - x0, PY(y) - y0]);
+  const QT = toT(Q), HT = holes.map(toT), CT = cuts.map(toT), PT = toT(path);
+  return addEl({ t0, d, ghost: o.ghost, kind: 'color', rate: rows / Math.max(d, 0.05), wx: [(a + c) / 2, (b + e) / 2], stop,
+    nib: p => path.length ? along(path, clamp(p) * stop * L) : [(a + c) / 2, (b + e) / 2],
+    apply(prog) {
+      const pr = clamp(prog) * stop; if (pr <= 0) return;
+      tmpSize(TMP, w, h); tx.clearRect(0, 0, w, h);
+      tx.save(); tx.globalCompositeOperation = 'source-over'; tx.fillStyle = col; tx.beginPath(); polyPath(tx, QT); tx.fill();
+      tx.globalCompositeOperation = 'destination-out'; tx.fillStyle = '#000';
+      for (const P of HT.concat(CT)) { tx.beginPath(); polyPath(tx, P); tx.fill(); }
+      if (pr < 1 && PT.length) {   // only what the colouring stroke has covered so far
+        tx.globalCompositeOperation = 'destination-in'; tx.lineCap = 'round'; tx.lineJoin = 'round'; tx.lineWidth = sp * 1.9 * S; tx.strokeStyle = '#000';
+        tx.beginPath(); let left = pr * L; tx.moveTo(PT[0][0], PT[0][1]);
+        for (let i = 1; i < PT.length && left > 0; i++) { const l = Math.hypot(path[i][0] - path[i - 1][0], path[i][1] - path[i - 1][1]); const u = Math.min(1, left / l); tx.lineTo(lerp(PT[i - 1][0], PT[i][0], u), lerp(PT[i - 1][1], PT[i][1], u)); left -= l; }
+        tx.stroke();
+      }
+      tx.restore();
+      if (o.replace) {   // re-register: what this block covers loses its old colour first
+        tmpSize(TMP2, w, h); tx2.setTransform(1, 0, 0, 1, 0, 0); tx2.clearRect(0, 0, w, h); tx2.save();
+        tx2.fillStyle = '#000'; tx2.strokeStyle = '#000'; tx2.lineWidth = 7 * S; tx2.lineJoin = 'round'; tx2.beginPath(); polyPath(tx2, QT); tx2.fill(); tx2.stroke();
+        tx2.globalCompositeOperation = 'destination-out'; for (const P of CT) { tx2.beginPath(); polyPath(tx2, P); tx2.fill(); }
+        if (pr < 1 && PT.length) { tx2.globalCompositeOperation = 'destination-in'; tx2.lineCap = 'round'; tx2.lineJoin = 'round'; tx2.lineWidth = sp * 1.9 * S;
+          tx2.beginPath(); let left = pr * L; tx2.moveTo(PT[0][0], PT[0][1]);
+          for (let i = 1; i < PT.length && left > 0; i++) { const l = Math.hypot(path[i][0] - path[i - 1][0], path[i][1] - path[i - 1][1]); const u = Math.min(1, left / l); tx2.lineTo(lerp(PT[i - 1][0], PT[i][0], u), lerp(PT[i - 1][1], PT[i][1], u)); left -= l; }
+          tx2.stroke(); }
+        tx2.restore();
+        const f0 = TG.fx; f0.save(); f0.globalCompositeOperation = 'destination-out'; f0.drawImage(TMP2, 0, 0, w, h, x0, y0, w, h); f0.restore();
+      }
+      const f = TG.fx; f.save(); f.globalCompositeOperation = 'multiply'; f.globalAlpha = alpha; f.drawImage(TMP, 0, 0, w, h, x0, y0, w, h); f.restore();
+    } });
+}
+
+// ---------- pencil lettering, written stroke by stroke along glyph skeletons ----------
+let GLY = null;
+const mctx = mkCanvas(10, 10).getContext('2d');
+function textLayout(s, x, y, size, o = {}) {
+  const f = o.f || 'CM', jit = o.jit ?? 0.6, rot = o.rot || 0, sp = o.sp ?? 1;
+  mctx.font = `${size}px ${f}`;
+  const ch = [...s], G = GLY[f], chars = []; let cx = 0, L = 0;
+  const c0 = Math.cos(rot), s0 = Math.sin(rot);
+  ch.forEach(c => {
+    const adv = mctx.measureText(c).width * sp, dy = rnd(-1, 1) * jit * size * 0.025, r = rnd(-1, 1) * jit * 0.035;
+    const cr = Math.cos(r), sr = Math.sin(r);
+    const toW = (u, v) => { const lx = cx + u * cr - v * sr, ly = dy + u * sr + v * cr; return [x + lx * c0 - ly * s0, y + lx * s0 + ly * c0]; };
+    const sk = (G.g[c] || []).map(a => { const P = []; for (let j = 0; j < a.length; j += 2) P.push([a[j] * size, a[j + 1] * size]); return P; });
+    const lens = sk.map(plen), len = lens.reduce((p, q) => p + q, 0) + sk.length * size * 0.12;
+    const wsk = sk.map(P => P.map(([u, v]) => toW(u, v)));
+    chars.push({ c, ox: cx, dy, r, sk, wsk, len: c === ' ' ? 0 : len, L0: L, adv }); L += c === ' ' ? size * 0.25 : len; cx += adv;
+  });
+  return { s, x, y, size, f, rot, chars, L, hw: G.hw * size, tot: cx };
+}
+function textNib(T, prog) {
+  let target = clamp(prog) * T.L, last = [T.x, T.y];
+  for (const C of T.chars) {
+    if (!C.wsk.length) { target -= (C.c === ' ' ? T.size * 0.25 : 0); continue; }
+    if (target <= C.len) {
+      let left = target;
+      for (let k = 0; k < C.wsk.length; k++) { const P = C.wsk[k], l = plen(P); if (left <= l) return along(P, left); left -= l; if (left <= T.size * 0.12) { const n = C.wsk[k + 1]; return n ? along([P[P.length - 1], n[0]], left / (T.size * 0.12) * Math.hypot(n[0][0] - P[P.length - 1][0], n[0][1] - P[P.length - 1][1])) : P[P.length - 1]; } left -= T.size * 0.12; }
+      return last;
+    }
+    target -= C.len; const P = C.wsk[C.wsk.length - 1]; last = P[P.length - 1];
+  }
+  return last;
+}
+function TXT(s, x, y, size, o, t0, d) {
+  const T = textLayout(s, x, y, size, o), lay = o.layer || 'graph', k = o.k ?? 0.74, pass = o.pass || undefined;
+  const x0 = Math.max(0, Math.floor(PX(x - size * 0.4))), y0 = Math.max(0, Math.floor(PY(y - size * 1.25 - Math.abs(T.rot) * T.tot))),
+    x1 = Math.min(BW, Math.ceil(PX(x + T.tot + size * 0.5))), y1 = Math.min(BH, Math.ceil(PY(y + size * 0.6 + Math.abs(T.rot) * T.tot))), w = x1 - x0, h = y1 - y0;
+  T.box = [x - size * 0.1, y - size * 0.85, x + T.tot, y + size * 0.3];
+  const e = { t0, d: d ?? T.L / (o.cps || 900), kind: 'write', T, pass, wx: [x + T.tot / 2, y], nib: p => textNib(T, p),
+    apply(prog) {
+      const target = clamp(prog) * T.L; if (target <= 0) return;
+      tmpSize(TMP, w, h); tx.setTransform(1, 0, 0, 1, 0, 0); tx.clearRect(0, 0, w, h);
+      const base = () => { tx.setTransform(S, 0, 0, S, -X0 * S - x0, -Y0 * S - y0); tx.translate(T.x, T.y); tx.rotate(T.rot); };
+      tx.font = `${T.size}px ${T.f}`; tx.fillStyle = '#000'; tx.textBaseline = 'alphabetic';
+      for (const Cc of T.chars) {
+        if (Cc.L0 >= target) break;
+        const part = target - Cc.L0;
+        base(); tx.translate(Cc.ox, Cc.dy); tx.rotate(Cc.r);
+        if (part >= Cc.len || !Cc.sk.length) { tx.fillText(Cc.c, 0, 0); continue; }
+        tmpSize(TMP2, w, h); tx2.setTransform(1, 0, 0, 1, 0, 0); tx2.clearRect(0, 0, w, h); tx2.setTransform(tx.getTransform());
+        tx2.font = tx.font; tx2.fillStyle = '#000'; tx2.textBaseline = 'alphabetic'; tx2.fillText(Cc.c, 0, 0);
+        tx2.globalCompositeOperation = 'destination-in'; tx2.lineCap = 'round'; tx2.lineJoin = 'round'; tx2.lineWidth = T.hw * 2.9 + 1.2; tx2.strokeStyle = '#000';
+        let left = part; tx2.beginPath();
+        for (let q = 0; q < Cc.sk.length && left > 0; q++) {
+          const P = Cc.sk[q]; tx2.moveTo(P[0][0], P[0][1]); if (P.length === 1) tx2.lineTo(P[0][0] + 0.1, P[0][1]);
+          for (let j = 1; j < P.length && left > 0; j++) { const dd = Math.hypot(P[j][0] - P[j - 1][0], P[j][1] - P[j - 1][1]);
+            if (dd <= left) { tx2.lineTo(P[j][0], P[j][1]); left -= dd; } else { const u = left / dd; tx2.lineTo(lerp(P[j - 1][0], P[j][0], u), lerp(P[j - 1][1], P[j][1], u)); left = 0; } }
+          left -= T.size * 0.12;
+        }
+        tx2.stroke(); tx2.globalCompositeOperation = 'source-over';
+        tx.setTransform(1, 0, 0, 1, 0, 0); tx.drawImage(TMP2, 0, 0, w, h, 0, 0, w, h);
+      }
+      tx.setTransform(1, 0, 0, 1, 0, 0);
+      const id = tx.getImageData(0, 0, w, h).data, buf = TG.L[lay];
+      for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) { const a = id[(yy * w + xx) * 4 + 3]; if (a) { const q = a / 255 * k * 255, k2 = (yy + y0) * BW + xx + x0, b = buf[k2]; buf[k2] = b + q - b * q / 255 + 0.5 | 0; } }
+    } };
+  addEl(e); return e;
+}
+
+// =============== shared parts ===============
+const CUE = {}; let VOC = null, CAM = [], DYN = [], SFX = [], STORYBOARD = {};
+function cellOf(n) { return { ox: ((n - 1) % 4) * 1080, oy: Math.floor((n - 1) / 4) * 800, cx: ((n - 1) % 4) * 1080 + 540, cy: Math.floor((n - 1) / 4) * 800 + 400 }; }
+function circleStroke(cx, cy, r, o, t0, d) {
+  const a0 = o.a0 ?? rnd(0, TAU), turn = o.turn ?? 1.07, ry = o.ry ?? r;
+  return PEN(ell(cx, cy, r, ry, o.rot || 0, a0, a0 + TAU * turn, Math.max(16, r * 0.7 | 0)), { w: o.w ?? 2.2, layer: o.layer, ta: 0.1, tb: 0.12, wob: o.wob ?? 0.5, p: o.p, kind: o.kind }, t0, d);
+}
+function arrow(P, o, t0, d) {
+  const lay = o.layer || 'coral', w = o.w ?? 4.6;
+  const Sp = spline(P, 2); let t = PEN(P, { w, layer: lay, ta: 0.08, tb: 0.06, wob: 0.7 }, t0, d * 0.78);
+  const e = Sp[Sp.length - 1], f = Sp[Math.max(0, Sp.length - 9)], a = Math.atan2(e[1] - f[1], e[0] - f[0]), L = o.head ?? 22;
+  const sides = [1, -1].map(sg => { const b = a + Math.PI + sg * 0.5; return [[e[0] + Math.cos(b) * L, e[1] + Math.sin(b) * L], [e[0] + Math.cos(b) * L * 0.5 + rnd(-1, 1), e[1] + Math.sin(b) * L * 0.5], [e[0], e[1]]]; });
+  t = PEN(sides[0], { w: w * 0.9, layer: lay, ta: 0.4, tb: 0.05, wob: 0.3 }, t, d * 0.11);
+  return PEN(sides[1], { w: w * 0.9, layer: lay, ta: 0.4, tb: 0.05, wob: 0.3 }, t, d * 0.11);
+}
+function rrect(x, y, w, h, r) {
+  const P = [];
+  P.push(...ell(x + r, y + r, r, r, 0, Math.PI, Math.PI * 1.5, 10).slice(0, -1));
+  P.push(...ell(x + w - r, y + r, r, r, 0, Math.PI * 1.5, TAU, 10).slice(0, -1));
+  P.push(...ell(x + w - r, y + h - r, r, r, 0, 0, Math.PI / 2, 10).slice(0, -1));
+  P.push(...ell(x + r, y + h - r, r, r, 0, Math.PI / 2, Math.PI, 10).slice(0, -1));
+  return P;
+}
+// a note with a short pencil leader to what it names
+function note(s, x, y, size, t0, o = {}) {
+  const e = TXT(s, x, y, size, { f: o.f || 'CM', k: o.k ?? 0.8, rot: o.rot || 0, layer: o.layer, cps: o.cps || 620, pass: o.pass }, t0, o.d);
+  if (o.leader) PEN([o.leader[0], [o.leader[0][0] + (o.leader[1]?.[0] - o.leader[0][0]) * 0.42, o.leader[0][1] + (o.leader[1]?.[1] - o.leader[0][1]) * 0.42]], { layer: 'light', w: 1.4, p: 0.6 }, t0 - 0.05, 0.08);
+  return e;
+}
+// chapter capsule: circled number + short title, mustard block under the number
+function capsule(n, title, t0) {
+  const { ox, oy } = cellOf(n), x = ox + 84, y = oy + 96;
+  circleStroke(x, y, 30, { w: 2.4, a0: -1.2 }, t0, 0.22);
+  TXT(String(n), x - 11, y + 13, 44, { f: 'CB', k: 0.8, pass: true }, t0 + 0.16, 0.18);
+  BLOB(ell(x, y, 30, 30, 0, 0, TAU, 22), C.mustard, { dx: 6, dy: 5, a: 0.55, ang: -0.6, sp: 8 }, t0 + 0.30, 0.14);
+  const e = TXT(title, x + 52, y + 14, 40, { f: 'CB', k: 0.78, jit: 0.5, pass: true }, t0 + 0.34, Math.min(0.85, title.length * 0.026 + 0.2));
+  return e;
+}
+// a phone: outline, screen, battery glyph; returns { body, screen } polys
+function phone(cx, cy, w, h, t0, d, o = {}) {
+  const body = rrect(cx - w / 2, cy - h / 2, w, h, Math.min(34, w * 0.16));
+  const scr = rrect(cx - w / 2 + 14, cy - h / 2 + 34, w - 28, h - 62, 12);
+  PEN(body.concat([body[0], body[1]]), { w: 2.8, ta: 0.06, tb: 0.1, wob: 0.5 }, t0, d * 0.5);
+  PEN(scr.concat([scr[0], scr[1]]), { w: 1.9, p: 0.85, ta: 0.08, tb: 0.15, wob: 0.4 }, t0 + d * 0.5, d * 0.3);
+  PEN([[cx - 12, cy - h / 2 + 15], [cx + 12, cy - h / 2 + 15]], { w: 2.0, p: 0.8, wob: 0.2 }, t0 + d * 0.8, 0.06);
+  PEN(ell(cx, cy + h / 2 - 15, 9, 9, 0, 0, TAU, 14), { w: 1.6, p: 0.8, wob: 0.3 }, t0 + d * 0.85, 0.06);
+  // battery glyph on screen
+  const bw2 = 44, bh2 = 20, bx = cx - bw2 / 2, by = cy - h * 0.18;
+  PEN([[bx, by], [bx + bw2, by], [bx + bw2, by + bh2], [bx, by + bh2], [bx, by]], { w: 1.8, smooth: false, ta: 0.1, tb: 0.1, wob: 0.3 }, t0 + d * 0.62, 0.12);
+  PEN([[bx + bw2 + 2, by + 6], [bx + bw2 + 7, by + 6], [bx + bw2 + 7, by + bh2 - 6], [bx + bw2 + 2, by + bh2 - 6]], { w: 1.6, p: 0.8, smooth: false }, t0 + d * 0.74, 0.05);
+  return { body, scr, bx, by, bw2, bh2, cx, cy };
+}
+// a beam balance. tilt > 0: left pan down
+function balance(cx, baseY, halfW, tilt, t0, d, o = {}) {
+  const byT = baseY - 150, xl = cx - halfW, xr = cx + halfW;
+  const yl = byT + tilt, yr = byT - tilt;
+  PEN([[cx - 70, baseY], [cx + 70, baseY]], { w: 2.8, ta: 0.1, tb: 0.1 }, t0, d * 0.14);                       // base
+  PEN([[cx, baseY], [cx, byT - 4]], { w: 2.6, ta: 0.2, tb: 0.2 }, t0 + d * 0.1, d * 0.12);                     // pillar
+  PEN([[cx - 26, byT - 14], [cx, byT + 12], [cx + 26, byT - 14]], { w: 2.4, ta: 0.2, tb: 0.3, p: 0.9 }, t0 + d * 0.18, d * 0.1);  // pivot
+  const beamEl = EL.length; PEN([[xl, yl], [xr, yr]], { w: 3.0, ta: 0.15, tb: 0.15, wob: 0.4 }, t0 + d * 0.24, d * 0.2);
+  const pans = [0, 1].map(s => {
+    const px = s ? xr : xl, py = s ? yr : yl, panY = py + 120;
+    PEN([[px, py], [px - 34, panY - 8]], { w: 1.7, p: 0.85, ta: 0.25, tb: 0.2, wob: 0.3 }, t0 + d * (0.42 + s * 0.14), d * 0.08);
+    PEN([[px, py], [px + 34, panY - 8]], { w: 1.7, p: 0.85, ta: 0.25, tb: 0.2, wob: 0.3 }, t0 + d * (0.46 + s * 0.14), d * 0.08);
+    PEN(ell(px, panY, 62, 16, 0, Math.PI * 0.06, Math.PI * 0.94, 22), { w: 2.6, ta: 0.1, tb: 0.15, wob: 0.4 }, t0 + d * (0.5 + s * 0.16), d * 0.12);
+    return { px, panY };
+  });
+  return { beam: EL[beamEl], left: pans[0], right: pans[1], byT };
+}
+// swatch strip: n empty squares, returns a fill(i, colour, t0) closure
+function swatchStrip(x, y, n, size, t0, d) {
+  const sq = [];
+  for (let i = 0; i < n; i++) {
+    const sx = x + i * (size + 26);
+    PEN([[sx, y], [sx + size, y + 1], [sx + size + 1, y + size], [sx - 1, y + size - 1], [sx, y + 2]], { w: 1.9, smooth: false, ta: 0.05, tb: 0.05, wob: 0.4 }, t0 + i * d / n, d / n * 0.7);
+    sq.push([[sx, y], [sx + size, y], [sx + size, y + size], [sx, y + size]]);
+  }
+  return { sq, fill: (i, col, t0b, db) => BLOB(sq[i], col, { dx: 7, dy: 6, a: 0.94, amp: 1.6, ang: -0.7, sp: 9 }, t0b, db || 0.12),
+    label: (i, s, t0b) => TXT(s, x + i * (size + 26) + size / 2 - s.length * 6.4, y + size + 40, 30, { f: 'CM', k: 0.78 }, t0b, 0.2) };
+}
+function magnifier(cx, cy, r, t0, d, o = {}) {
+  const hd = o.hd || [1, 1];
+  circleStroke(cx, cy, r, { w: 2.8, a0: 2.3 }, t0, d * 0.5);
+  circleStroke(cx, cy, r + 11, { layer: 'light', w: 1.4, p: 0.6, a0: 0.5 }, t0 + d * 0.4, d * 0.2);
+  PEN([[cx + r * 0.72 * hd[0], cy + r * 0.72 * hd[1]], [cx + r * 1.5 * hd[0], cy + r * 1.5 * hd[1]]], { w: 4.4, ta: 0.1, tb: 0.2, wob: 0.5 }, t0 + d * 0.6, d * 0.3);
+}
+// place marks through the span between two narration lines
+function span(a, b, pad = 0.15) { const t0 = T(a), t1 = b ? T(b) : TE(a) + 1.6; return f => t0 + Math.max(0.05, (t1 - t0 - pad)) * clamp(f); }
+
+function buildPage() {
+  R = mulberry(20261115);
+
+  // =====================================================================
+  // CHAPTER 1 — THE IMPOSSIBLE SCALE  (cell 0,0 · lines c01l01..c01l10)
+  // =====================================================================
+  (function ch1() {
+    const A = cellOf(1), S1 = span('c01l01', 'c01l02'), S2 = span('c01l02', 'c01l03'), S3 = span('c01l03', 'c01l04'),
+      S4 = span('c01l04', 'c01l05'), S6 = span('c01l06', 'c01l07'), S7 = span('c01l07', 'c01l08'), S8 = span('c01l08', 'c01l09'),
+      S9 = span('c01l09', 'c01l10'), S10 = span('c01l10', null);
+    capsule(1, 'the impossible scale', S1(0));
+    // construction + two phones, drawn white
+    PEN([[A.cx, A.oy + 120], [A.cx, A.oy + 700]], { layer: 'light', w: 1.3, p: 0.5 }, S1(0.02), 0.06);
+    PEN([[A.ox + 160, A.cy - 60], [A.ox + 920, A.cy - 60]], { layer: 'light', w: 1.3, p: 0.5 }, S1(0.04), 0.06);
+    const phL = phone(A.ox + 330, A.cy - 120, 148, 290, S1(0.05), 1.7);
+    const phR = phone(A.ox + 790, A.cy - 120, 148, 290, S1(0.3), 1.7);
+    // charge one completely: coral floods the left battery glyph (camera is close here)
+    BLOB([[phL.bx, phL.by], [phL.bx + phL.bw2, phL.by], [phL.bx + phL.bw2, phL.by + phL.bh2], [phL.bx, phL.by + phL.bh2]], C.coral, { dx: 5, dy: 4, a: 0.95, ang: -0.3, sp: 7 }, S2(0.15), 0.5);
+    BLOB(phL.scr, C.glass, { dx: 8, dy: 6, a: 0.35, ang: -0.2, sp: 10, cuts: [] }, S2(0.5), 0.3);
+    BLOB(phR.scr, C.glass, { dx: 8, dy: 6, a: 0.35, ang: -0.2, sp: 10 }, S2(0.62), 0.3);
+    note('charged', phL.cx - 46, phL.cy + phL.bh2 + 150, 34, S2(0.05), { pass: true, leader: [[phL.cx, phL.cy + 40], [phL.cx, phL.cy + 130]] });
+    note('dead', phR.cx - 26, phR.cy + phR.bh2 + 150, 34, S2(0.55), { pass: true });
+    // the balance, around the phones
+    const bal = balance(A.cx + 10, A.oy + 700, 300, 9, S3(0.05), 3.0);
+    // punch-in moment: the tilt wedge + '???'
+    PEN([[A.ox + 300, bal.left.panY - 26], [A.ox + 420, bal.left.panY - 26], [A.ox + 408, bal.left.panY - 12], [A.ox + 296, bal.left.panY - 14]], { layer: 'coral', w: 3.2, ta: 0.1, tb: 0.2, wob: 0.5 }, S4(0.1), 0.3);
+    note('heavier by ???', A.ox + 214, bal.left.panY + 66, 40, S4(0.4), { f: 'CB', k: 0.82 });
+    // the cable
+    const cbl = bez([A.ox + 60, A.oy + 730], [A.ox + 120, A.oy + 640], [A.ox + 210, A.oy + 600], [A.ox + 320, A.oy + 590], 40);
+    const cbEl = EL.length; PEN(cbl, { w: 3.2, ta: 0.12, tb: 0.06, wob: 0.5 }, S6(0.1), 1.1);
+    PEN(ell(A.ox + 52, A.oy + 736, 26, 20, -0.3, 0, TAU, 18), { w: 2.2, ta: 0.15, tb: 0.2, wob: 0.4 }, S6(0.02), 0.2);
+    note('no atoms in', A.ox + 96, A.oy + 560, 34, S7(0.25), { rot: -0.04 });
+    // electrons: in through one wire, out through the other
+    const e1 = arrow([[A.ox + 150, A.oy + 700], [A.ox + 210, A.oy + 668]], { w: 3.6, head: 14 }, S8(0.05), 0.35);
+    arrow([[A.ox + 300, A.oy + 626], [A.ox + 250, A.oy + 655]], { w: 3.6, head: 14 }, S8(0.32), 0.35);
+    note('electrons in = electrons out', A.ox + 150, A.oy + 806, 34, S9(0.05), {});
+    // energy: a coral block flies down the cable into the phone, then stays
+    CUE.energyFlight = { from: [A.ox + 80, A.oy + 660], to: [phL.cx, phL.cy - 60], t0: S10(0.05), t1: S10(0.62) };
+    DYN.push({ t0: S10(0.05), t1: S10(0.75), draw(t, c) {
+      const u = eio(clamp((t - CUE.energyFlight.t0) / (CUE.energyFlight.t1 - CUE.energyFlight.t0)));
+      const x = lerp(CUE.energyFlight.from[0], CUE.energyFlight.to[0], u), y = lerp(CUE.energyFlight.from[1], CUE.energyFlight.to[1], u) - Math.sin(Math.PI * u) * 90;
+      const [X, Y] = toScreen(c, x, y), r = 34 * c.z, s = 1 - 0.35 * u;
+      ctx.save(); ctx.globalCompositeOperation = 'multiply';
+      ctx.fillStyle = C.coral; ctx.globalAlpha = 0.9;
+      ctx.translate(X, Y); ctx.rotate(c.r + u * 0.6);
+      ctx.beginPath(); ctx.roundRect(-r * s, -r * 0.62 * s, r * 2 * s, r * 1.24 * s, 8); ctx.fill();
+      ctx.globalAlpha = 0.95; ctx.fillStyle = C.paper;
+      ctx.font = `700 ${Math.max(10, 30 * c.z) | 0}px Caveat`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('E', 0, 2); ctx.restore(); ctx.textAlign = 'left';
+    } });
+    BLOB(rrect(phL.cx - 42, phL.cy - 92, 84, 56, 10), C.coral, { dx: 6, dy: 5, a: 0.92, ang: -0.5, sp: 8, replace: true, holes: [ell(phL.cx, phL.cy - 64, 30, 12, 0, 0, TAU, 14)] }, S10(0.66), 0.4);
+    TXT('energy', phL.cx - 40, phL.cy - 100, 34, { f: 'CB', k: 0.8, layer: 'coral', pass: true }, S10(0.7), 0.3);
+    PEN([[phL.cx - 52, phL.cy - 56], [phL.cx + 52, phL.cy - 60]], { layer: 'coral', w: 4.2, ta: 0.1, tb: 0.25, wob: 0.7 }, S10(0.85), 0.24);
+    STORYBOARD[1] = { title: 'The Impossible Scale', cell: [A.ox, A.oy], idea: 'hook: two phones on a balance; only energy crossed in' };
+    CAM.push(
+      { t: 0.55, x: A.ox + 500, y: A.cy - 130, z: 2.0, r: -1.0, k: 'd' },
+      { t: S2(0.0), x: phL.cx, y: phL.cy - 60, z: 2.05, r: -0.8, k: 'g' },
+      { t: S2(0.85), x: phL.cx + 20, y: phL.cy - 60, z: 2.0, r: -0.6, k: 'd' },
+      { t: S3(0.1), x: A.ox + 640, y: A.cy + 40, z: 1.24, r: 0.6, k: 'g' },
+      { t: S4(0.0), x: A.ox + 360, y: bal.left.panY - 60, z: 1.62, r: 0.8, k: 'p' },
+      { t: S4(0.7), x: A.ox + 370, y: bal.left.panY - 40, z: 1.5, r: 0.6, k: 'g' },
+      { t: S6(0.0), x: A.ox + 520, y: A.oy + 660, z: 1.42, r: -0.6, k: 'g' },
+      { t: S8(0.4), x: A.ox + 500, y: A.oy + 670, z: 1.46, r: -0.5, k: 'd' },
+      { t: S10(0.0), x: A.ox + 300, y: A.oy + 600, z: 2.1, r: -0.5, k: 'f', fn: t2 => { const q = CUE.energyFlight, u = clamp((t2 - q.t0) / (q.t1 - q.t0)); return [lerp(q.from[0], q.to[0], u) + 30, lerp(q.from[1], q.to[1], u) - Math.sin(Math.PI * u) * 90 + 60]; } },
+      { t: S10(0.8), x: A.ox + 590, y: A.cy + 20, z: 1.3, r: 0.4, k: 'g' });
+  })();
+
+  // =====================================================================
+  // CHAPTER 2 — ENERGY IS NOT STUFF  (cell 1080,0 · c02l01..c02l07)
+  // =====================================================================
+  (function ch2() {
+    const A = cellOf(2), S1 = span('c02l01', 'c02l02'), S2 = span('c02l02', 'c02l03'), S3 = span('c02l03', 'c02l04'),
+      S4 = span('c02l04', 'c02l05'), S5 = span('c02l05', 'c02l06'), S6 = span('c02l06', 'c02l07');
+    capsule(2, 'energy is not stuff', T('c02l01') - 0.1);
+    // battery cross-section: outer case + two electrode layers + separator
+    const bx = A.ox + 330, by = A.cy - 60, bw = 380, bh = 320;
+    PEN(rrect(bx, by, bw, bh, 26).map(p => p), { w: 2.8, ta: 0.08, tb: 0.1, wob: 0.5 }, S1(0.05), 0.7);
+    const layer1 = [[bx + 26, by + 36], [bx + 150, by + 30], [bx + 152, by + bh - 30], [bx + 24, by + bh - 36]];
+    const layer2 = [[bx + bw - 150, by + 30], [bx + bw - 24, by + 36], [bx + bw - 22, by + bh - 36], [bx + bw - 152, by + bh - 30]];
+    const sep = [[bx + 176, by + 46], [bx + bw - 176, by + 46], [bx + bw - 172, by + bh - 46], [bx + 172, by + bh - 46]];
+    PEN(layer1.concat([layer1[0]]), { w: 2.2, ta: 0.1, tb: 0.15, wob: 0.4 }, S1(0.3), 0.35);
+    PEN(layer2.concat([layer2[0]]), { w: 2.2, ta: 0.1, tb: 0.15, wob: 0.4 }, S1(0.45), 0.35);
+    PEN(sep.concat([sep[0]]), { w: 1.7, p: 0.8, layer: 'graph', ta: 0.1, tb: 0.15, wob: 0.5 }, S1(0.6), 0.3);
+    BLOB(layer1, C.tin, { dx: 7, dy: 6, a: 0.85, ang: -0.7, sp: 9 }, S1(0.72), 0.3);
+    BLOB(layer2, C.coral, { dx: 7, dy: 6, a: 0.6, ang: -0.7, sp: 9 }, S1(0.82), 0.3);
+    note('ions', bx + bw / 2 - 30, by - 24, 32, S2(0.1), { leader: [[bx + bw / 2, by + 60], [bx + bw / 2, by + 6]] });
+    // ions sliding between the layers + charge arrows
+    const ions = [];
+    for (let i = 0; i < 6; i++) ions.push([bx + 200 + (i % 3) * 44 + rnd(-6, 6), by + 110 + Math.floor(i / 3) * 120 + rnd(-8, 8)]);
+    ions.forEach((p, i) => { PEN(ell(p[0], p[1], 9, 9, 0, 0, TAU, 12), { w: 2.0, ta: 0.2, tb: 0.2, wob: 0.3 }, S2(0.2 + i * 0.06), 0.09); BLOB(ell(p[0], p[1], 9, 9, 0, 0, TAU, 12), C.tinDk, { dx: 4, dy: 3, a: 0.7, ang: 0.5, sp: 5 }, S2(0.5 + i * 0.05), 0.08); });
+    arrow([[bx + 190, by + bh + 40], [bx + 300, by + bh + 40]], { w: 4.2, head: 18, layer: 'coral' }, S2(0.35), 0.4);
+    note('charge', bx + 310, by + bh + 54, 32, S2(0.5), { layer: 'coral' });
+    arrow([[bx + bw - 190, by + bh + 76], [bx + bw - 300, by + bh + 76]], { w: 4.0, head: 17 }, S2(0.72), 0.4);
+    note('discharge', bx + bw - 290, by + bh + 64, 32, S2(0.78), {});
+    // the spring inset
+    const sx = A.ox + 800, sy = A.cy + 130;
+    const coil = [];
+    for (let i = 0; i <= 7; i++) { coil.push([sx + i * 34, sy - (i % 2 ? 26 : 26) - 8]); coil.push([sx + i * 34 + 17, sy + (i % 2 ? 0 : 0) + 26]); }
+    PEN([[sx - 60, sy + 8], [sx - 8, sy + 8]], { w: 2.6, ta: 0.2, tb: 0.2 }, S2(0.6), 0.15);
+    PEN(coil, { w: 2.4, ta: 0.1, tb: 0.1, wob: 0.6 }, S2(0.66), 0.6);
+    PEN([[sx + 7 * 34 + 8, sy + 8], [sx + 7 * 34 + 66, sy + 8]], { w: 2.6, ta: 0.2, tb: 0.2 }, S2(0.92), 0.15);
+    note('like a stretched spring', sx - 40, sy + 76, 32, S2(0.8), {});
+    // same atoms note + swatch strip
+    note('same atoms. same electrons.', A.ox + 560, A.oy + 240, 38, S4(0.02), { f: 'CB', k: 0.8 });
+    const sw = swatchStrip(A.ox + 160, A.oy + 130, 3, 54, S5(0.05), 0.9);
+    sw.fill(0, C.batGreenDk, S5(0.4), 0.14); sw.label(0, 'empty', S5(0.5));
+    sw.fill(1, C.mustard, S5(0.62), 0.14); sw.label(1, 'charging', S5(0.72));
+    sw.fill(2, C.batGreen, S5(0.82), 0.14); sw.label(2, 'full', S5(0.92));
+    // the question, written large, coral underline
+    const q = TXT('why would energy have weight?', A.ox + 240, A.oy + 800, 62, { f: 'CB', k: 0.8, jit: 0.5 }, S6(0.1), 1.4);
+    BLOB([[A.ox + 690, A.oy + 816], [A.ox + 850, A.oy + 812], [A.ox + 856, A.oy + 842], [A.ox + 686, A.oy + 848]], C.mustard, { dx: 10, dy: 8, a: 0.8, amp: 2.2, ang: -0.1, sp: 12 }, S6(0.72), 0.24);
+    PEN([[A.ox + 236, A.oy + 854], [A.ox + 520, A.oy + 848], [A.ox + 700, A.oy + 852]], { layer: 'coral', w: 5.0, ta: 0.06, tb: 0.2, wob: 0.9, kind: 'pencil' }, S6(0.85), 0.2);
+    STORYBOARD[2] = { title: 'Energy Is Not Stuff', cell: [A.ox, A.oy], idea: 'cross-section; ions; spring; swatch states; the question' };
+    CAM.push(
+      { t: T('c02l01') + 0.55, x: A.cx, y: A.cy - 40, z: 1.24, r: 1.2, k: 'g' },
+      { t: S2(0.0), x: bx + bw / 2, y: by + bh / 2 + 10, z: 1.78, r: 0.8, k: 'g' },
+      { t: S3(0.2), x: bx + bw / 2, y: by + bh / 2 + 40, z: 1.6, r: 0.6, k: 'd' },
+      { t: T('c02l04') + 1.2, x: A.ox + 700, y: A.oy + 210, z: 1.35, r: -0.6, k: 'g' },
+      { t: S5(0.0), x: A.ox + 390, y: A.oy + 170, z: 1.45, r: -0.8, k: 'g' },
+      { t: S6(0.0), x: A.ox + 480, y: A.oy + 640, z: 1.18, r: 0.5, k: 'g' },
+      { t: TE('c02l07') + 0.12, x: A.ox + 480, y: A.oy + 660, z: 1.14, r: 0.4, k: 'd' });
+  })();
+
+  // =====================================================================
+  // CHAPTER 3 — THE OLD RULE  (cell 2160,0 · c03l01..c03l08)
+  // =====================================================================
+  (function ch3() {
+    const A = cellOf(3), S1 = span('c03l01', 'c03l02'), S2 = span('c03l02', 'c03l03'), S3 = span('c03l03', 'c03l04'),
+      S4 = span('c03l04', 'c03l05'), S5 = span('c03l05', 'c03l06'), S6 = span('c03l06', 'c03l07'), S7 = span('c03l07', 'c03l08');
+    capsule(3, 'an old rule', T('c03l01') - 0.1);
+    // the sealed glass vessel: a teardrop ampoule with a sealed neck
+    const vx = A.ox + 300, vy = A.cy + 40;
+    PEN([[vx, vy - 210], [vx + 6, vy - 150]], { layer: 'light', w: 1.3, p: 0.5 }, S2(0.02), 0.05);
+    const glassL = bez([vx, vy - 214], [vx - 8, vy - 120], [vx - 96, vy - 60], [vx - 92, vy + 40], 30);
+    const glassR = bez([vx + 2, vy - 214], [vx + 10, vy - 120], [vx + 98, vy - 60], [vx + 94, vy + 40], 30);
+    const bottom = ell(vx + 1, vy + 40, 93, 26, 0, Math.PI * 0.03, Math.PI * 0.97, 26);
+    PEN(glassL, { w: 2.6, ta: 0.08, tb: 0.12, wob: 0.4 }, S2(0.05), 0.5);
+    PEN(glassR, { w: 2.6, ta: 0.08, tb: 0.12, wob: 0.4 }, S2(0.2), 0.5);
+    PEN(bottom, { w: 2.4, ta: 0.1, tb: 0.2, wob: 0.4 }, S2(0.35), 0.3);
+    PEN([[vx - 6, vy - 206], [vx + 10, vy - 210]], { w: 3.2, ta: 0.2, tb: 0.3, wob: 0.4 }, S3(0.35), 0.16);   // the melted seal
+    const tin = [[vx - 56, vy + 6], [vx + 52, vy + 2], [vx + 48, vy + 36], [vx - 60, vy + 34]];
+    PEN(tin.concat([tin[0]]), { w: 2.2, ta: 0.1, tb: 0.12, wob: 0.4 }, S2(0.5), 0.3);
+    BLOB(tin, C.tin, { dx: 6, dy: 5, a: 0.9, ang: -0.5, sp: 8 }, S2(0.62), 0.3);
+    note('tin, sealed in', vx - 150, vy + 120, 34, S3(0.2), { leader: [[vx - 70, vy + 30], [vx - 130, vy + 100]] });
+    note('nothing in, nothing out', vx - 30, vy - 250, 34, S3(0.5), {});
+    // the label
+    note('Paris, 1770s. Lavoisier.', A.ox + 700, A.oy + 160, 40, S3(0.05), { f: 'CB', k: 0.8 });
+    note('trusted his balance more than any theory', A.ox + 700, A.oy + 216, 32, S3(0.05), {});
+    // heating: flame + heat waves + part of the tin turns to powder (re-register, half done)
+    const fx = vx, fy = vy + 150;
+    const flame = [[fx - 26, fy], [fx - 14, fy - 40], [fx - 4, fy - 66], [fx + 2, fy - 88], [fx + 8, fy - 60], [fx + 16, fy - 34], [fx + 28, fy]];
+    PEN([[fx - 44, fy + 10], [fx + 44, fy + 10]], { w: 2.4, ta: 0.1, tb: 0.1, wob: 0.4 }, S5(0.02), 0.12);
+    PEN(flame, { w: 2.6, ta: 0.15, tb: 0.1, wob: 0.6 }, S5(0.06), 0.4);
+    BLOB(flame.concat([[fx - 26, fy]]), C.mustard, { dx: 5, dy: 4, a: 0.75, ang: 0.6, sp: 7 }, S5(0.2), 0.25);
+    for (let i = 0; i < 3; i++) PEN(Array.from({ length: 10 }, (_, k) => [vx - 130 + i * 130 + Math.sin(k * 0.9 + i) * 10, vy + 130 - k * 26]), { layer: 'coral', w: 2.4, ta: 0.2, tb: 0.25, wob: 0.3, p: 0.85 }, S5(0.28 + i * 0.07), 0.2);
+    BLOB([[vx - 56, vy + 6], [vx + 6, vy + 4], [vx + 2, vy + 36], [vx - 60, vy + 34]], C.tinDk, { dx: 6, dy: 5, a: 0.9, ang: 0.5, sp: 7, replace: true }, S5(0.55), 0.4);
+    note('grey powder', vx + 120, vy + 30, 32, S5(0.7), { leader: [[vx + 20, vy + 20], [vx + 110, vy + 24]] });
+    // weigh ticks: two readings, both level
+    const w1 = balance(A.ox + 800, A.oy + 560, 90, 0, S4(0.1), 1.2);
+    note('weighed', A.ox + 700, A.oy + 400, 32, S4(0.35), { leader: [[A.ox + 800, A.oy + 430], [A.ox + 740, A.oy + 392]] });
+    note('weighed again. unchanged.', A.ox + 690, A.oy + 660, 36, S6(0.1), { f: 'CB', k: 0.8 });
+    PEN([[A.ox + 760, A.oy + 616], [A.ox + 840, A.oy + 616], [A.ox + 800, A.oy + 674]], { layer: 'coral', w: 3.6, ta: 0.2, tb: 0.2, wob: 0.4 }, S6(0.3), 0.2);  // a check mark
+    // the rule card
+    const rx = A.ox + 620, ry = A.oy + 240;
+    const card = rotP([[rx, ry], [rx + 360, ry - 6], [rx + 366, ry + 150], [rx - 4, ry + 156]], rx + 180, ry + 75, -0.02);
+    PEN(card.concat([card[0]]), { w: 2.2, ta: 0.05, tb: 0.05, wob: 0.5 }, S7(0.05), 0.4);
+    TXT('an equal quantity of matter,', rx + 26, ry + 52, 36, { f: 'CM', k: 0.8 }, S7(0.2), 0.5);
+    TXT('before and after.', rx + 26, ry + 98, 36, { f: 'CM', k: 0.8 }, S7(0.45), 0.34);
+    TXT('1789', rx + 280, ry + 132, 30, { f: 'CM', k: 0.8, layer: 'light' }, S7(0.6), 0.16);
+    PEN([[rx + 18, ry + 116], [rx + 240, ry + 112]], { layer: 'coral', w: 4.4, ta: 0.1, tb: 0.25, wob: 0.8 }, S7(0.72), 0.22);
+    BLOB(card, C.body, { dx: 8, dy: 7, a: 0.4, amp: 2, ang: -0.1, sp: 12 }, S7(0.12), 0.2);
+    STORYBOARD[3] = { title: 'The Old Rule', cell: [A.ox, A.oy], idea: 'Lavoisier: sealed tin, heat in and out, weight unchanged, the 1789 rule' };
+    CAM.push(
+      { t: T('c03l01') + 0.55, x: A.cx, y: A.cy - 20, z: 1.22, r: -1.0, k: 'g' },
+      { t: S2(0.0), x: vx, y: vy - 20, z: 1.6, r: -0.6, k: 'g' },
+      { t: S3(0.0), x: A.ox + 780, y: A.oy + 200, z: 1.3, r: 0.6, k: 'g' },
+      { t: S4(0.0), x: vx + 40, y: vy - 30, z: 1.5, r: -0.4, k: 'g' },
+      { t: S5(0.0), x: vx + 20, y: vy + 40, z: 1.52, r: -0.3, k: 'd' },
+      { t: S5(0.45), x: vx + 20, y: vy + 60, z: 1.58, r: -0.3, k: 'p' },
+      { t: S6(0.0), x: A.ox + 790, y: A.oy + 560, z: 1.5, r: 0.8, k: 'g' },
+      { t: S7(0.0), x: rx + 180, y: ry + 80, z: 1.6, r: 0.6, k: 'g' },
+      { t: TE('c03l08') + 0.12, x: rx + 180, y: ry + 90, z: 1.5, r: 0.5, k: 'd' });
+  })();
+
+  // =====================================================================
+  // CHAPTER 4 — THE BALANCE'S LIMIT  (cell 0,800 · c04l01..c04l07)
+  // =====================================================================
+  (function ch4() {
+    const A = cellOf(4), S1 = span('c04l01', 'c04l02'), S2 = span('c04l02', 'c04l03'), S3 = span('c04l03', 'c04l04'),
+      S4 = span('c04l04', 'c04l05'), S5 = span('c04l05', 'c04l06'), S6 = span('c04l06', 'c04l07'), S7 = span('c04l07', null);
+    capsule(4, "the balance's limit", T('c04l01') - 0.1);
+    // Landolt's H-vessel: two arms, joined at the bottom
+    const hx = A.ox + 320, hy = A.cy - 60, hw = 300, hh = 240;
+    PEN([[hx - hw / 2, hy - hh / 2], [hx - hw / 2, hy + hh / 2 - 40]], { w: 2.6, ta: 0.1, tb: 0.15, wob: 0.4 }, S3(0.05), 0.3);
+    PEN([[hx + hw / 2, hy - hh / 2], [hx + hw / 2, hy + hh / 2 - 40]], { w: 2.6, ta: 0.1, tb: 0.15, wob: 0.4 }, S3(0.16), 0.3);
+    PEN(ell(hx - hw / 2, hy - hh / 2, 34, 22, 0, Math.PI, TAU, 18), { w: 2.4, ta: 0.15, tb: 0.2, wob: 0.4 }, S3(0.27), 0.2);
+    PEN(ell(hx + hw / 2, hy - hh / 2, 34, 22, 0, Math.PI, TAU, 18), { w: 2.4, ta: 0.15, tb: 0.2, wob: 0.4 }, S3(0.34), 0.2);
+    PEN([[hx - hw / 2, hy + hh / 2 - 44], [hx - 40, hy + hh / 2 - 10], [hx + 40, hy + hh / 2 - 10], [hx + hw / 2, hy + hh / 2 - 44]], { w: 2.4, ta: 0.1, tb: 0.2, wob: 0.4 }, S3(0.42), 0.3);
+    // the two chemicals, sealed in the separate arms
+    const chemL = [[hx - hw / 2 + 12, hy + 20], [hx - 12, hy + 14], [hx - 14, hy + hh / 2 - 52], [hx - hw / 2 + 10, hy + hh / 2 - 48]];
+    const chemR = [[hx + 12, hy + 14], [hx + hw / 2 - 12, hy + 20], [hx + hw / 2 - 10, hy + hh / 2 - 48], [hx + 14, hy + hh / 2 - 52]];
+    PEN(chemL.concat([chemL[0]]), { w: 2.0, ta: 0.1, tb: 0.15, wob: 0.4 }, S3(0.55), 0.25);
+    PEN(chemR.concat([chemR[0]]), { w: 2.0, ta: 0.1, tb: 0.15, wob: 0.4 }, S3(0.65), 0.25);
+    BLOB(chemL, C.chemA, { dx: 6, dy: 5, a: 0.88, ang: -0.5, sp: 8 }, S3(0.75), 0.25);
+    BLOB(chemR, C.chemB, { dx: 6, dy: 5, a: 0.88, ang: -0.5, sp: 8 }, S3(0.85), 0.25);
+    note('two chemicals, sealed apart', hx - 130, hy - hh / 2 - 60, 34, S3(0.15), {});
+    // they react: the colours merge mottled (re-register over both arms)
+    BLOB([[hx - hw / 2 + 8, hy + 16], [hx + hw / 2 - 8, hy + 16], [hx + hw / 2 - 6, hy + hh / 2 - 46], [hx - hw / 2 + 6, hy + hh / 2 - 42]], '#c98a5e', { dx: 7, dy: 6, a: 0.8, ang: -0.4, sp: 10, replace: true }, S4(0.15), 0.55);
+    note('react', hx - 30, hy + hh / 2 + 60, 36, S4(0.05), { f: 'CB', k: 0.8 });
+    // heat escapes
+    for (let i = 0; i < 3; i++) PEN(Array.from({ length: 9 }, (_, k) => [hx - 90 + i * 90 + Math.sin(k * 1.0 + i * 2) * 10, hy - hh / 2 - 30 - k * 30]), { layer: 'coral', w: 2.4, ta: 0.25, tb: 0.25, wob: 0.3, p: 0.85 }, S4(0.35 + i * 0.08), 0.22);
+    // weighed again and again: tick marks accumulate
+    note('weighed again', hx - 60, hy + hh + 90, 34, S4(0.6), {});
+    for (let i = 0; i < 6; i++) PEN([[hx + 60 + (i % 3) * 30, hy + hh + 70 + Math.floor(i / 3) * 36], [hx + 60 + (i % 3) * 30 + 4, hy + hh + 88 + Math.floor(i / 3) * 36]], { w: 2.6, ta: 0.2, tb: 0.2, wob: 0.3 }, S4(0.68 + i * 0.05), 0.1);
+    // error hunting list
+    const ex = A.ox + 760, ey = A.oy + 200;
+    note('every error chased:', ex, ey, 36, S5(0.0), { f: 'CB', k: 0.8, pass: true });
+    ['buoyancy', 'moisture', 'dust'].forEach((s, i) => TXT(s, ex + 36, ey + 56 + i * 44, 32, { f: 'CM', k: 0.8, rot: -0.02 }, S5(0.2 + i * 0.14), 0.22));
+    // the verdict: precision scale with needle + error bar + the number, circled
+    const px2 = A.ox + 790, py2 = A.cy + 190;
+    PEN(rrect(px2 - 150, py2 - 60, 300, 130, 16), { w: 2.6, ta: 0.08, tb: 0.1, wob: 0.5 }, S6(0.1), 0.5);
+    PEN([[px2 - 110, py2 + 10], [px2 + 110, py2 + 10]], { w: 2.0, p: 0.8, ta: 0.15, tb: 0.15, wob: 0.3 }, S6(0.35), 0.2);
+    for (let i = 0; i <= 8; i++) PEN([[px2 - 110 + i * 27.5, py2 + 10], [px2 - 110 + i * 27.5, py2 + (i % 2 ? 20 : 24)]], { w: 1.6, p: 0.8, wob: 0.2 }, S6(0.4 + i * 0.012), 0.05);
+    PEN([[px2, py2 + 10], [px2 + 6, py2 - 46], [px2 + 3, py2 - 44]], { w: 2.6, ta: 0.25, tb: 0.2, wob: 0.4 }, S6(0.55), 0.2);   // the needle, a hair off zero
+    PEN([[px2 - 34, py2 + 44], [px2 + 34, py2 + 44], [px2 + 34, py2 + 54], [px2 - 34, py2 + 54]], { layer: 'coral', w: 2.4, ta: 0.1, tb: 0.1, wob: 0.3 }, S7(0.2), 0.2);
+    TXT('0.03 mg', px2 - 62, py2 - 90, 46, { f: 'CB', k: 0.82 }, S7(0.35), 0.34);
+    circleStroke(px2 + 40, py2 - 106, 78, { layer: 'coral', w: 3.2, a0: -2.2 }, S7(0.55), 0.3);
+    note('no reaction changed weight by more', px2 - 150, py2 + 130, 30, S7(0.05), {});
+    note('Berlin. 20 years of this.', A.ox + 90, A.oy + 760, 34, S2(0.2), { f: 'CB', k: 0.8 });
+    STORYBOARD[4] = { title: "The Balance's Limit", cell: [A.ox, A.oy], idea: 'Landolt: H-vessel, react, escape, reweigh; 0.03 mg verdict' };
+    CAM.push(
+      { t: T('c04l01') + 0.55, x: A.ox + 450, y: A.cy, z: 1.22, r: 1.0, k: 'g' },
+      { t: S2(0.0), x: A.ox + 300, y: A.oy + 700, z: 1.45, r: 0.5, k: 'g' },
+      { t: S3(0.0), x: hx, y: hy - 20, z: 1.5, r: -0.6, k: 'g' },
+      { t: S4(0.1), x: hx, y: hy + 20, z: 1.48, r: -0.4, k: 'd' },
+      { t: S5(0.0), x: ex + 100, y: ey + 70, z: 1.5, r: 0.6, k: 'g' },
+      { t: S6(0.0), x: px2, y: py2 - 30, z: 1.55, r: 0.4, k: 'p' },
+      { t: S6(0.5), x: px2, y: py2 - 30, z: 1.62, r: 0.4, k: 'd' },
+      { t: S7(0.3), x: px2 + 10, y: py2 - 40, z: 1.7, r: 0.4, k: 'p' },
+      { t: TE('c04l07') + 0.12, x: px2, y: py2 - 40, z: 1.6, r: 0.3, k: 'd' });
+  })();
+
+  // =====================================================================
+  // CHAPTER 5 — RADIUM REFUSES TO BEHAVE  (cell 1080,800 · c05l01..c05l09)
+  // =====================================================================
+  (function ch5() {
+    const A = cellOf(5), S1 = span('c05l01', 'c05l02'), S2 = span('c05l02', 'c05l03'), S3 = span('c05l03', 'c05l04'),
+      S4 = span('c05l04', 'c05l05'), S5 = span('c05l05', 'c05l06'), S6 = span('c05l06', 'c05l07'), S7 = span('c05l07', 'c05l08'),
+      S8 = span('c05l08', 'c05l09'), S9 = span('c05l09', null);
+    capsule(5, 'radium', T('c05l01') - 0.1);
+    // purification chain: a ton of ore, a funnel, one tiny vial
+    const ore = ell(A.ox + 190, A.cy + 130, 150, 88, 0, Math.PI, TAU, 26, 0.06);
+    PEN(ore, { w: 2.6, ta: 0.1, tb: 0.15, wob: 0.5 }, S2(0.05), 0.5);
+    for (let i = 0; i < 7; i++) PEN([[A.ox + 90 + i * 30, A.cy + 100 + rnd(-10, 10)], [A.ox + 86 + i * 30, A.cy + 160 + rnd(-8, 8)]], { w: 1.8, p: 0.7, wob: 0.5 }, S2(0.3 + i * 0.03), 0.06);
+    BLOB(ore, C.coal, { dx: 7, dy: 6, a: 0.55, amp: 2.2, ang: 0.4, sp: 10 }, S2(0.4), 0.3);
+    note('a ton of ore', A.ox + 100, A.cy + 260, 34, S2(0.5), {});
+    arrow([[A.ox + 350, A.cy + 100], [A.ox + 450, A.cy + 60]], { w: 4.2, head: 18 }, S2(0.6), 0.35);
+    // the glowing vial
+    const rx = A.ox + 540, ry = A.cy + 40;
+    const vial = [[rx - 16, ry - 90], [rx + 16, ry - 90], [rx + 22, ry + 40], [rx - 22, ry + 40]];
+    PEN(vial.concat([vial[0]]), { w: 2.2, ta: 0.1, tb: 0.12, wob: 0.4 }, S2(0.72), 0.3);
+    BLOB(vial, C.radium, { dx: 5, dy: 4, a: 0.95, ang: -0.4, sp: 7 }, S2(0.85), 0.3);
+    circleStroke(rx, ry - 20, 52, { layer: 'coral', w: 2.2, a0: 0.6 }, S3(0.3), 0.22);            // a glow ring
+    for (let k = 0; k < 6; k++) { const a = k * TAU / 6 + 0.4; PEN([[rx + Math.cos(a) * 60, ry - 20 + Math.sin(a) * 60], [rx + Math.cos(a) * 78, ry - 20 + Math.sin(a) * 78]], { layer: 'coral', w: 2.0, ta: 0.2, tb: 0.3, wob: 0.2 }, S3(0.4 + k * 0.02), 0.05); }
+    note('1 gram of radium', rx - 70, ry + 110, 34, S3(0.05), { f: 'CB', k: 0.8 });
+    note('100 calories of heat, every hour', rx - 120, ry + 160, 32, S3(0.55), {});
+    for (let i = 0; i < 3; i++) PEN(Array.from({ length: 8 }, (_, k) => [rx + 60 + i * 40 + Math.sin(k * 1.1 + i) * 8, ry - 40 - k * 28]), { layer: 'coral', w: 2.2, ta: 0.25, tb: 0.25, wob: 0.3, p: 0.8 }, S3(0.15 + i * 0.06), 0.2);
+    // calendar + comparison bars (radium vs coal, a year)
+    note('one year later...', A.ox + 600, A.oy + 130, 36, S4(0.05), { f: 'CB', k: 0.8 });
+    const bx = A.ox + 790, by = A.oy + 440;
+    PEN([[bx, by], [bx + 190, by]], { w: 2.2, ta: 0.1, tb: 0.1, wob: 0.3 }, S4(0.2), 0.15);
+    const radBar = [[bx + 30, by], [bx + 78, by], [bx + 78, by - 260], [bx + 30, by - 260]];
+    const coalBar = [[bx + 120, by], [bx + 160, by], [bx + 160, by - 22], [bx + 120, by - 22]];
+    PEN(radBar.concat([radBar[0]]), { w: 2.2, ta: 0.1, tb: 0.1, wob: 0.4 }, S4(0.3), 0.2);
+    BLOB(radBar, C.coral, { dx: 6, dy: 5, a: 0.85, ang: -0.5, sp: 8 }, S4(0.45), 0.3);
+    TXT('900,000', bx + 2, by - 286, 30, { f: 'CM', k: 0.8 }, S4(0.6), 0.24);
+    TXT('radium', bx + 8, by + 40, 30, { f: 'CM', k: 0.8 }, S4(0.75), 0.2);
+    PEN(coalBar.concat([coalBar[0]]), { w: 2.0, ta: 0.1, tb: 0.1, wob: 0.3 }, S5(0.1), 0.15);
+    BLOB(coalBar, C.coal, { dx: 5, dy: 4, a: 0.8, ang: -0.5, sp: 6 }, S5(0.2), 0.18);
+    TXT('7,000', bx + 108, by - 44, 28, { f: 'CM', k: 0.8 }, S5(0.35), 0.2);
+    TXT('coal', bx + 118, by + 40, 30, { f: 'CM', k: 0.8 }, S5(0.5), 0.16);
+    TXT('calories, per year', bx + 4, by + 84, 28, { f: 'CM', k: 0.8, layer: 'light' }, S5(0.62), 0.24);
+    // x100 burst
+    TXT('×100', bx - 130, by - 180, 56, { f: 'CB', k: 0.85, layer: 'coral', rot: -0.06 }, S6(0.1), 0.3);
+    for (let k = 0; k < 5; k++) { const a = -0.5 - k * 0.35; PEN([[bx - 80 + Math.cos(a) * 40, by - 190 + Math.sin(a) * 40], [bx - 80 + Math.cos(a) * (56 + k * 6), by - 190 + Math.sin(a) * (56 + k * 6)]], { layer: 'coral', w: 2.6, ta: 0.2, tb: 0.3, wob: 0.2 }, S6(0.2 + k * 0.03), 0.06); }
+    // half-life marker
+    const dy2 = A.oy + 690;
+    PEN([[A.ox + 130, dy2], [A.ox + 560, dy2]], { w: 2.4, ta: 0.08, tb: 0.08, wob: 0.3 }, S7(0.05), 0.3);
+    PEN(Array.from({ length: 22 }, (_, k) => [A.ox + 134 + k * 20, dy2 - Math.max(0, 120 * Math.exp(-k * 20 / 260)) * (0.75 + 0.25 * Math.sin(k * 1.3))]), { w: 2.6, ta: 0.1, tb: 0.1, wob: 0.4, p: 0.9 }, S7(0.25), 0.5);
+    note('half still there, 1,600 years on', A.ox + 200, dy2 + 50, 32, S7(0.6), {});
+    // the two options + the big question
+    arrow([[A.ox + 640, A.oy + 620], [A.ox + 640, A.oy + 540]], { w: 4.0, head: 17 }, S8(0.1), 0.35);
+    note('energy from space?', A.ox + 560, A.oy + 660, 32, S8(0.2), {});
+    circleStroke(A.ox + 800, A.oy + 470, 44, { w: 2.4, a0: -1.0 }, S8(0.4), 0.25);
+    PEN(ell(A.ox + 800, A.oy + 470, 14, 14, 0, 0, TAU, 12), { w: 2.0, ta: 0.2, tb: 0.2, wob: 0.3 }, S8(0.55), 0.1);
+    arrow([[A.ox + 800, A.oy + 520], [A.ox + 800, A.oy + 560]], { w: 4.0, head: 17 }, S8(0.65), 0.3);
+    note('...or from inside the atom?', A.ox + 700, A.oy + 706, 32, S8(0.75), {});
+    TXT('?', rx - 14, ry - 150, 84, { f: 'CB', k: 0.85, layer: 'coral' }, S9(0.1), 0.3);
+    STORYBOARD[5] = { title: 'Radium Refuses to Behave', cell: [A.ox, A.oy], idea: 'ore to vial; heat without burning; bars; half-life; two options' };
+    CAM.push(
+      { t: T('c05l01') + 0.55, x: A.ox + 400, y: A.cy + 60, z: 1.3, r: -0.8, k: 'g' },
+      { t: S2(0.0), x: A.ox + 240, y: A.cy + 90, z: 1.42, r: -0.6, k: 'g' },
+      { t: S3(0.0), x: rx, y: ry - 30, z: 1.6, r: 0.4, k: 'g' },
+      { t: S4(0.0), x: A.ox + 860, y: A.oy + 240, z: 1.3, r: -0.6, k: 'g' },
+      { t: S6(0.0), x: bx + 60, y: by - 160, z: 1.55, r: -0.4, k: 'p' },
+      { t: S7(0.0), x: A.ox + 560, y: dy2 - 60, z: 1.5, r: 0.5, k: 'g' },
+      { t: S8(0.0), x: A.ox + 720, y: A.oy + 560, z: 1.3, r: -0.5, k: 'g' },
+      { t: S9(0.0), x: rx, y: ry - 60, z: 1.5, r: 0.3, k: 'g' },
+      { t: TE('c05l09') + 0.12, x: rx, y: ry - 50, z: 1.45, r: 0.3, k: 'd' });
+  })();
+
+  // =====================================================================
+  // CHAPTER 6 — LIGHT HAS MOMENTUM  (cell 2160,800 · c06l01..c06l12)
+  // =====================================================================
+  (function ch6() {
+    const A = cellOf(6), S1 = span('c06l01', 'c06l02'), S2 = span('c06l02', 'c06l03'), S3 = span('c06l03', 'c06l04'),
+      S4 = span('c06l04', 'c06l05'), S5 = span('c06l05', 'c06l06'), S6 = span('c06l06', 'c06l07'), S7 = span('c06l07', 'c06l08'),
+      S8 = span('c06l08', 'c06l09'), S9 = span('c06l09', 'c06l10'), S10 = span('c06l10', 'c06l11'), S11 = span('c06l11', 'c06l12'), S12 = span('c06l12', null);
+    capsule(6, 'light pushes', T('c06l01') - 0.1);
+    // the sun + rays
+    const sx = A.ox + 200, sy = A.oy + 200;
+    circleStroke(sx, sy, 40, { w: 2.6, a0: -1.2 }, S2(0.05), 0.3);
+    BLOB(ell(sx, sy, 40, 40, 0, 0, TAU, 26), C.mustard, { dx: 6, dy: 5, a: 0.85, ang: -0.4, sp: 8 }, S2(0.2), 0.2);
+    for (let k = 0; k < 8; k++) { const a = k * TAU / 8 + 0.25; PEN([[sx + Math.cos(a) * 54, sy + Math.sin(a) * 54], [sx + Math.cos(a) * 72, sy + Math.sin(a) * 72]], { layer: 'coral', w: 2.2, ta: 0.2, tb: 0.25, wob: 0.2 }, S2(0.3 + k * 0.02), 0.05); }
+    // the comet: head + tail pointing away
+    const cx2 = A.ox + 480, cy2 = A.oy + 340;
+    circleStroke(cx2, cy2, 20, { w: 2.4, a0: 0.8 }, S3(0.05), 0.2);
+    BLOB(ell(cx2, cy2, 20, 20, 0, 0, TAU, 16), C.hydrogen, { dx: 5, dy: 4, a: 0.8, ang: -0.4, sp: 6 }, S3(0.15), 0.12);
+    for (let i = 0; i < 4; i++) PEN(bez([cx2 + 16, cy2 - 8 + i * 8 - 12], [cx2 + 90, cy2 - 30 + i * 22 - 12], [cx2 + 170, cy2 - 26 + i * 26 - 12], [cx2 + 250, cy2 - 10 + i * 30 - 12], 18), { w: 1.9, p: 0.8, ta: 0.3, tb: 0.4, wob: 0.5 }, S3(0.25 + i * 0.06), 0.22);
+    arrow([[sx + 60, sy + 90], [cx2 - 40, cy2 - 30]], { w: 4.2, head: 18, layer: 'coral' }, S3(0.6), 0.4);
+    note('light pushes the tail away', cx2 - 90, cy2 + 120, 32, S3(0.75), {});
+    // the lab: a vane in a bulb
+    const lx = A.ox + 760, ly = A.oy + 200;
+    circleStroke(lx, ly, 64, { w: 2.4, a0: -0.6 }, S4(0.05), 0.35);
+    PEN([[lx - 6, ly - 34], [lx - 6, ly + 34]], { w: 2.0, p: 0.85, ta: 0.2, tb: 0.2, wob: 0.3 }, S4(0.3), 0.12);
+    PEN([[lx - 26, ly - 10], [lx + 20, ly - 26]], { w: 2.2, ta: 0.2, tb: 0.2, wob: 0.3 }, S4(0.4), 0.1);
+    PEN([[lx - 26, ly + 12], [lx + 20, ly + 28]], { w: 2.2, ta: 0.2, tb: 0.2, wob: 0.3 }, S4(0.5), 0.1);
+    arrow([[lx - 170, ly], [lx - 80, ly]], { w: 4.0, head: 17, layer: 'coral' }, S4(0.6), 0.3);
+    note('measured in the lab', lx - 170, ly + 100, 32, S4(0.8), {});
+    // the formula stack
+    const fx = A.ox + 220, fy = A.cy + 170;
+    note('Poincaré, 1900', A.ox + 700, A.oy + 480, 38, S2(0.5), { f: 'CB', k: 0.8 });
+    TXT('momentum = E / c', fx, fy, 44, { f: 'CB', k: 0.8 }, S6(0.05), 0.5);
+    TXT('momentum = mass × speed', fx, fy + 70, 44, { f: 'CB', k: 0.8 }, S7(0.05), 0.5);
+    note('anything that pushes carries momentum', fx + 40, fy - 60, 32, S5(0.05), {});
+    // the merge: strike 'mass × speed', derive m = E/c²
+    PEN([[fx + 130, fy + 58], [fx + 470, fy + 52]], { layer: 'coral', w: 3.6, ta: 0.1, tb: 0.2, wob: 0.6 }, S8(0.05), 0.3);
+    TXT('mass = E / c²', fx + 60, fy + 160, 64, { f: 'CB', k: 0.85, layer: 'coral' }, S8(0.3), 0.6);
+    BLOB([[fx + 52, fy + 176], [fx + 400, fy + 172], [fx + 404, fy + 208], [fx + 48, fy + 214]], C.mustard, { dx: 10, dy: 8, a: 0.75, amp: 2.2, ang: -0.1, sp: 12 }, S8(0.72), 0.24);
+    // the cannon-lamp example
+    const ex = A.ox + 660, ey = A.cy + 210;
+    PEN(rrect(ex, ey, 130, 90, 14), { w: 2.6, ta: 0.08, tb: 0.1, wob: 0.4 }, S9(0.05), 0.35);
+    BLOB(rrect(ex, ey, 130, 90, 14), C.tin, { dx: 6, dy: 5, a: 0.7, ang: -0.4, sp: 8 }, S9(0.2), 0.2);
+    note('1 kg lamp', ex + 8, ey - 20, 32, S9(0.3), {});
+    const flash = bez([ex + 134, ey + 40], [ex + 220, ey + 10], [ex + 300, ey + 26], [ex + 380, ey + 40], 26);
+    PEN(flash, { w: 3.0, layer: 'coral', ta: 0.1, tb: 0.1, wob: 0.5 }, S9(0.45), 0.3);
+    for (let k = 0; k < 4; k++) PEN([[ex + 200 + k * 46, ey + 40 + rnd(-16, 16)], [ex + 226 + k * 46, ey + 40 + rnd(-16, 16)]], { layer: 'coral', w: 2.4, ta: 0.3, tb: 0.3, wob: 0.4 }, S9(0.6 + k * 0.03), 0.08);
+    arrow([[ex + 20, ey + 104], [ex - 60, ey + 104]], { w: 4.0, head: 17 }, S9(0.7), 0.3);
+    note('recoil: 1 cm/s', ex - 180, ey + 170, 32, S9(0.8), {});
+    note('3 million joules of light', ex + 150, ey - 60, 32, S10(0.0), {});
+    note('the flash: 33 billionths of a gram', ex - 30, ey + 210, 34, S10(0.15), { f: 'CB', k: 0.8 });
+    // the doubt
+    note('"a fictitious fluid"', A.ox - 20, A.oy + 720, 44, S11(0.1), { f: 'CB', k: 0.82 });
+    PEN([[A.ox - 24, A.oy + 736], [A.ox + 240, A.oy + 730]], { layer: 'light', w: 3.0, ta: 0.1, tb: 0.2, wob: 0.6 }, S11(0.45), 0.25);
+    note('the number sat there.', A.ox + 620, fy + 160, 34, S12(0.0), {});
+    STORYBOARD[6] = { title: 'Light Has Momentum', cell: [A.ox, A.oy], idea: 'comet, lab vane, p = E/c, m = E/c², cannon-lamp, fictitious fluid' };
+    CAM.push(
+      { t: T('c06l01') + 0.55, x: A.cx, y: A.cy - 60, z: 1.22, r: 1.2, k: 'g' },
+      { t: S2(0.0), x: sx + 120, y: sy + 40, z: 1.5, r: -0.5, k: 'g' },
+      { t: S3(0.0), x: cx2 + 40, y: cy2 - 10, z: 1.4, r: -0.4, k: 'g' },
+      { t: S4(0.0), x: lx - 40, y: ly + 10, z: 1.5, r: 0.5, k: 'g' },
+      { t: S6(0.0), x: fx + 220, y: fy - 30, z: 1.32, r: 0.6, k: 'g' },
+      { t: S8(0.15), x: fx + 190, y: fy + 80, z: 1.42, r: 0.5, k: 'p' },
+      { t: S8(0.7), x: fx + 200, y: fy + 110, z: 1.38, r: 0.4, k: 'g' },
+      { t: S9(0.0), x: ex + 150, y: ey + 60, z: 1.4, r: -0.5, k: 'g' },
+      { t: S10(0.1), x: ex + 170, y: ey + 80, z: 1.42, r: -0.5, k: 'd' },
+      { t: T('c06l11') + 0.5, x: A.ox + 300, y: A.oy + 680, z: 1.3, r: 0.4, k: 'g' },
+      { t: TE('c06l12') + 0.12, x: A.ox + 380, y: A.oy + 690, z: 1.24, r: 0.3, k: 'd' });
+  })();
+
+  // =====================================================================
+  // CHAPTER 7 — EINSTEIN'S FIRST ARGUMENT  (cell 0,1600 · c07l01..c07l15)
+  // =====================================================================
+  (function ch7() {
+    const A = cellOf(7), S1 = span('c07l01', 'c07l02'), S2 = span('c07l02', 'c07l03'), S3 = span('c07l03', 'c07l04'),
+      S5 = span('c07l04', 'c07l06'), S6 = span('c07l06', 'c07l07'), S7 = span('c07l07', 'c07l08'), S8 = span('c07l08', 'c07l09'),
+      S9 = span('c07l09', 'c07l10'), S10 = span('c07l10', 'c07l11'), S11 = span('c07l11', 'c07l12'), S12 = span('c07l12', 'c07l13'),
+      S13 = span('c07l13', 'c07l14'), S14 = span('c07l14', 'c07l15'), S15 = span('c07l15', null);
+    capsule(7, "Einstein's first argument", T('c07l01') - 0.1);
+    // Bern desk + patent doodles
+    const dx = A.ox + 170, dy = A.oy + 210;
+    PEN([[dx - 90, dy + 60], [dx + 90, dy + 60]], { w: 2.6, ta: 0.1, tb: 0.1, wob: 0.4 }, S1(0.05), 0.2);
+    PEN([[dx - 80, dy + 60], [dx - 80, dy + 110]], { w: 2.4, ta: 0.2, tb: 0.2 }, S1(0.12), 0.1);
+    PEN([[dx + 80, dy + 60], [dx + 80, dy + 110]], { w: 2.4, ta: 0.2, tb: 0.2 }, S1(0.16), 0.1);
+    PEN([[dx - 60, dy - 10], [dx + 60, dy - 10], [dx + 50, dy + 58], [dx - 52, dy + 58], [dx - 60, dy - 10]], { w: 2.2, ta: 0.08, tb: 0.1, wob: 0.4 }, S1(0.2), 0.3);
+    for (let i = 0; i < 3; i++) PEN([[dx - 44, dy + 6 + i * 16], [dx + 44, dy + 6 + i * 16]], { w: 1.6, p: 0.7, wob: 0.4, layer: i === 2 ? 'coral' : 'graph' }, S1(0.4 + i * 0.05), 0.08);
+    note('Bern, 1905. a patent clerk.', dx - 110, dy + 170, 34, S1(0.3), { f: 'CB', k: 0.8 });
+    // the letter card
+    const lx = A.ox + 620, ly = A.oy + 130;
+    const card = rotP([[lx, ly], [lx + 400, ly - 8], [lx + 408, ly + 200], [lx - 6, ly + 206]], lx + 200, ly + 100, -0.02);
+    PEN(card.concat([card[0]]), { w: 2.2, ta: 0.05, tb: 0.05, wob: 0.5 }, S2(0.05), 0.4);
+    BLOB(card, C.body, { dx: 8, dy: 7, a: 0.4, amp: 2, ang: -0.1, sp: 12 }, S2(0.15), 0.25);
+    TXT('"a body\'s mass must be', lx + 30, ly + 56, 36, { f: 'CM', k: 0.8 }, S2(0.25), 0.5);
+    TXT('a measure of its energy"', lx + 30, ly + 102, 36, { f: 'CM', k: 0.8 }, S2(0.5), 0.44);
+    note('to a friend, just after relativity', lx + 20, ly + 140, 28, S2(0.75), { layer: 'light' });
+    PEN([[lx + 24, ly + 120], [lx + 330, ly + 116]], { layer: 'coral', w: 4.2, ta: 0.1, tb: 0.2, wob: 0.7 }, S3(0.1), 0.24);
+    note('radium should get lighter', A.ox + 700, A.oy + 380, 32, S3(0.3), { leader: [[A.ox + 690, A.oy + 340], [A.ox + 740, A.oy + 370]] });
+    note('"amusing and seductive"', A.ox + 120, A.oy + 470, 36, S5(0.1), { f: 'CB', k: 0.82 });
+    note('three pages', A.ox + 420, A.oy + 470, 34, S5(0.45), { f: 'CB', k: 0.8 });
+    // ---- the two-flash diagram (rest frame) ----
+    const gx = A.ox + 480, gy = A.cy + 60;
+    PEN(ell(gx, gy - 130, 34, 34, 0, 0, TAU, 22), { layer: 'light', w: 1.4, p: 0.55, wob: 0.5 }, S7(0.02), 0.1);
+    circleStroke(gx, gy - 130, 30, { w: 2.6, a0: -0.9 }, S7(0.05), 0.3);
+    BLOB(ell(gx, gy - 130, 30, 30, 0, 0, TAU, 22), C.mustard, { dx: 6, dy: 5, a: 0.8, ang: -0.4, sp: 7 }, S7(0.25), 0.22);
+    const flashL = bez([gx - 40, gy - 130], [gx - 110, gy - 158], [gx - 170, gy - 130], [gx - 230, gy - 140], 22);
+    const flashR = bez([gx + 40, gy - 130], [gx + 110, gy - 102], [gx + 170, gy - 130], [gx + 230, gy - 120], 22);
+    PEN(flashL, { w: 3.0, layer: 'coral', ta: 0.1, tb: 0.1, wob: 0.5 }, S7(0.4), 0.3);
+    PEN(flashR, { w: 3.0, layer: 'coral', ta: 0.1, tb: 0.1, wob: 0.5 }, S7(0.55), 0.3);
+    arrow([[gx - 60, gy - 108], [gx - 130, gy - 108]], { w: 3.4, head: 15, layer: 'coral' }, S7(0.7), 0.25);
+    arrow([[gx + 60, gy - 108], [gx + 130, gy - 108]], { w: 3.4, head: 15, layer: 'coral' }, S7(0.8), 0.25);
+    TXT('L', gx - 250, gy - 140, 42, { f: 'CB', k: 0.82, layer: 'coral' }, S8(0.05), 0.18);
+    TXT('L', gx + 240, gy - 140, 42, { f: 'CB', k: 0.82, layer: 'coral' }, S8(0.12), 0.18);
+    note('pushes cancel', gx - 70, gy - 40, 32, S8(0.3), {});
+    // ---- the train frame (match cut below) ----
+    const ty = gy + 170;
+    note('from a passing train', gx - 180, ty + 150, 34, S9(0.05), { f: 'CB', k: 0.8 });
+    circleStroke(gx, ty, 20, { w: 2.2, a0: -0.9 }, S9(0.2), 0.2);
+    BLOB(ell(gx, ty, 20, 20, 0, 0, TAU, 16), C.mustard, { dx: 4, dy: 4, a: 0.75, ang: -0.4, sp: 6 }, S9(0.32), 0.14);
+    const fL2 = bez([gx - 28, ty], [gx - 80, ty - 20], [gx - 120, ty], [gx - 158, ty - 8], 18);
+    const fR2 = bez([gx + 28, ty], [gx + 96, ty - 26], [gx + 160, ty - 4], [gx + 240, ty - 16], 22);
+    PEN(fL2, { w: 2.6, layer: 'coral', ta: 0.1, tb: 0.1, wob: 0.5 }, S9(0.4), 0.24);
+    PEN(fR2, { w: 3.2, layer: 'coral', ta: 0.1, tb: 0.1, wob: 0.5 }, S10(0.05), 0.3);
+    TXT('longer', gx + 180, ty - 60, 30, { f: 'CM', k: 0.8, layer: 'coral' }, S10(0.35), 0.2);
+    TXT('shorter', gx - 150, ty - 54, 30, { f: 'CM', k: 0.8 }, S10(0.5), 0.2);
+    // the train itself
+    PEN([[gx - 260, ty + 60], [gx + 240, ty + 60], [gx + 240, ty + 100], [gx - 260, ty + 100]], { w: 2.2, ta: 0.06, tb: 0.06, wob: 0.4 }, S9(0.5), 0.35);
+    for (let i = 0; i < 3; i++) PEN(ell(gx - 180 + i * 180, ty + 104, 16, 16, 0, 0, TAU, 12), { w: 2.0, ta: 0.2, tb: 0.2, wob: 0.3 }, S9(0.65 + i * 0.05), 0.1);
+    for (let i = 0; i < 4; i++) PEN([[gx - 320 - i * 34, ty + 66 + i * 6], [gx - 282 - i * 34, ty + 60 + i * 6]], { layer: 'light', w: 2.0, p: 0.7, wob: 0.4 }, S9(0.8 + i * 0.03), 0.06);
+    // energy bookkeeping
+    note('L + a little extra', gx - 280, ty + 218, 38, S11(0.1), { f: 'CB', k: 0.82 });
+    PEN([[gx - 290, ty + 196], [gx - 60, ty + 192]], { layer: 'coral', w: 4.6, ta: 0.08, tb: 0.2, wob: 0.8 }, S11(0.35), 0.26);
+    note('paid out of kinetic energy', gx + 30, ty + 222, 32, S12(0.05), {});
+    TXT('kinetic = ½ · mass · speed²', gx + 230, ty + 330, 40, { f: 'CB', k: 0.8 }, S12(0.3), 0.5);
+    PEN([[gx + 236, ty + 346], [gx + 480, ty + 342]], { layer: 'coral', w: 3.2, ta: 0.1, tb: 0.2, wob: 0.6 }, S13(0.05), 0.28);
+    note('speed unchanged. mass drops —', gx + 230, ty + 386, 32, S13(0.3), { f: 'CB', k: 0.82 });
+    // the reveal: m = E/c², now real (floods solid)
+    TXT('mass drops by  L/c²', A.ox + 700, A.oy + 800, 58, { f: 'CB', k: 0.85, layer: 'coral' }, S14(0.1), 0.6);
+    BLOB([[A.ox + 692, A.oy + 818], [A.ox + 1040, A.oy + 814], [A.ox + 1044, A.oy + 864], [A.ox + 688, A.oy + 870]], C.mustard, { dx: 10, dy: 8, a: 0.8, amp: 2.2, ang: -0.1, sp: 12 }, S14(0.6), 0.3);
+    STORYBOARD[7] = { title: "Einstein's First Argument", cell: [A.ox, A.oy], idea: 'two flashes at rest; train frame; L + extra; kinetic energy; mass drops by L/c²' };
+    CAM.push(
+      { t: T('c07l01') + 0.55, x: A.ox + 700, y: A.oy + 220, z: 1.45, r: -0.8, k: 'g' },
+      { t: T('c07l02') + 1.1, x: lx + 190, y: ly + 110, z: 1.5, r: 0.6, k: 'g' },
+      { t: S5(0.0), x: A.ox + 760, y: A.oy + 440, z: 1.3, r: -0.4, k: 'g' },
+      { t: S7(0.0), x: gx, y: gy - 110, z: 1.4, r: 0.5, k: 'g' },
+      { t: S9(0.0), x: gx - 60, y: ty + 40, z: 1.32, r: -0.5, k: 'g' },
+      { t: S10(0.1), x: gx + 60, y: ty + 10, z: 1.38, r: -0.5, k: 'p' },
+      { t: S11(0.0), x: gx + 20, y: ty + 160, z: 1.3, r: 0.4, k: 'g' },
+      { t: S12(0.2), x: gx + 380, y: ty + 250, z: 1.32, r: 0.4, k: 'd' },
+      { t: S14(0.0), x: A.ox + 540, y: A.oy + 820, z: 1.65, r: 0.5, k: 'p' },
+      { t: S14(0.55), x: A.ox + 545, y: A.oy + 825, z: 1.6, r: 0.4, k: 'g' },
+      { t: TE('c07l15') + 0.12, x: A.ox + 540, y: A.oy + 830, z: 1.55, r: 0.3, k: 'd' });
+  })();
+
+  // =====================================================================
+  // CHAPTER 8 — THE BOX OF LIGHT  (cell 1080,1600 · c08l01..c08l11)
+  // =====================================================================
+  (function ch8() {
+    const A = cellOf(8), S1 = span('c08l01', 'c08l02'), S2 = span('c08l02', 'c08l03'), S3 = span('c08l03', 'c08l04'),
+      S4 = span('c08l04', 'c08l05'), S5 = span('c08l05', 'c08l06'), S6 = span('c08l06', 'c08l07'), S7 = span('c08l07', 'c08l08'),
+      S8 = span('c08l08', 'c08l09'), S9 = span('c08l09', 'c08l10'), S10 = span('c08l10', 'c08l11'), S11 = span('c08l11', null);
+    capsule(8, 'the box of light', T('c08l01') - 0.1);
+    // the boat, top left
+    const bx = A.ox + 260, by = A.oy + 240;
+    PEN([[bx - 170, by], [bx + 170, by], [bx + 120, by + 64], [bx - 120, by + 64], [bx - 170, by]], { w: 2.6, ta: 0.08, tb: 0.1, wob: 0.4 }, S2(0.1), 0.5);
+    BLOB([[bx - 168, by + 2], [bx + 168, by + 2], [bx + 118, by + 62], [bx - 118, by + 62]], C.tin, { dx: 7, dy: 6, a: 0.6, ang: 0.3, sp: 9 }, S2(0.35), 0.3);
+    // walking figure (simple, no face)
+    const px3 = bx + 30;
+    PEN(ell(px3, by - 86, 15, 15, 0, 0, TAU, 12), { w: 2.2, ta: 0.15, tb: 0.15, wob: 0.3 }, S3(0.1), 0.12);
+    PEN([[px3, by - 70], [px3, by - 30]], { w: 2.4, ta: 0.2, tb: 0.2, wob: 0.3 }, S3(0.18), 0.1);
+    PEN([[px3, by - 62], [px3 + 22, by - 44]], { w: 2.2, ta: 0.2, tb: 0.2, wob: 0.3 }, S3(0.24), 0.08);
+    PEN([[px3, by - 62], [px3 - 18, by - 40]], { w: 2.2, ta: 0.2, tb: 0.2, wob: 0.3 }, S3(0.3), 0.08);
+    PEN([[px3, by - 30], [px3 + 16, by]], { w: 2.2, ta: 0.2, tb: 0.2, wob: 0.3 }, S3(0.36), 0.08);
+    PEN([[px3, by - 30], [px3 - 14, by]], { w: 2.2, ta: 0.2, tb: 0.2, wob: 0.3 }, S3(0.42), 0.08);
+    arrow([[bx - 60, by + 92], [bx - 150, by + 92]], { w: 3.6, head: 16 }, S3(0.55), 0.3);
+    note('the boat slides back', bx - 170, by + 116, 32, S3(0.7), {});
+    PEN([[bx - 220, by + 64], [bx + 220, by + 64]], { w: 2.0, p: 0.75, ta: 0.1, tb: 0.1, wob: 0.3 }, S2(0.05), 0.2);  // water line
+    // centre of mass rule
+    note('nothing inside moves', A.ox + 120, A.oy + 460, 34, S4(0.05), { f: 'CB', k: 0.8 });
+    note('its own centre of mass', A.ox + 120, A.oy + 506, 34, S4(0.15), { f: 'CB', k: 0.8 });
+    PEN(ell(A.ox + 480, A.oy + 480, 7, 7, 0, 0, TAU, 10), { w: 2.2, ta: 0.2, tb: 0.2, wob: 0.2 }, S4(0.3), 0.08);
+    PEN([[A.ox + 380, A.oy + 480], [A.ox + 580, A.oy + 480]], { layer: 'light', w: 1.8, p: 0.6, wob: 0.3 }, S4(0.4), 0.15);
+    // ---- the box in space (colour flood from the boat block) ----
+    const X = A.ox + 700, Y = A.cy + 60, BW2 = 420, BH2 = 190;
+    for (let i = 0; i < 9; i++) PEN(ell(A.ox + rnd(80, 1020), A.oy + rnd(560, 760), 2.2, 2.2, 0, 0, TAU, 6), { w: 1.6, p: 0.7, wob: 0.2, layer: 'light' }, S5(0.02) + i * 0.02, 0.04);
+    const box = rrect(X - BW2 / 2, Y - BH2 / 2, BW2, BH2, 10);
+    PEN(box.concat([box[0]]), { w: 2.8, ta: 0.06, tb: 0.08, wob: 0.5 }, S5(0.05), 0.6);
+    BLOB(box, C.tin, { dx: 8, dy: 6, a: 0.5, amp: 2, ang: -0.2, sp: 11 }, S5(0.4), 0.3);
+    note('a closed box, empty space', X - 160, Y + BH2 / 2 + 165, 32, S5(0.55), {});
+    // flash from the left wall; recoil; travel; absorption
+    const lw = [X - BW2 / 2 + 8, Y], rw2 = [X + BW2 / 2 - 8, Y];
+    for (let k = 0; k < 5; k++) PEN([[lw[0] + 10 + k * 9, Y - 14 + k * 7], [lw[0] + 16 + k * 11, Y - 2 + k * 9]], { layer: 'coral', w: 3.0, ta: 0.2, tb: 0.3, wob: 0.4 }, S6(0.05) + k * 0.015, 0.05);
+    arrow([[X + 30, Y + BH2 / 2 + 30], [X - 90, Y + BH2 / 2 + 30]], { w: 3.6, head: 16 }, S6(0.25), 0.28);
+    note('recoil', X - 150, Y + BH2 / 2 + 58, 30, S6(0.4), {});
+    // travelling flash (dynamic dash)
+    CUE.boxFlash = { x0: lw[0] + 30, x1: rw2[0] - 30, y: Y, t0: S6(0.5), t1: S7(0.35) };
+    DYN.push({ t0: S6(0.5), t1: S7(0.45), draw(t, c) {
+      const q = CUE.boxFlash, u = clamp((t - q.t0) / (q.t1 - q.t0)), x = lerp(q.x0, q.x1, u);
+      const [Xs, Ys] = toScreen(c, x, q.y), r = 26 * c.z;
+      ctx.save(); ctx.globalCompositeOperation = 'multiply'; ctx.globalAlpha = 0.9; ctx.fillStyle = C.mustard; ctx.rotate(c.r);
+      ctx.translate(Xs, Ys); ctx.beginPath(); ctx.moveTo(-r, 0); ctx.lineTo(-r * 0.2, -r * 0.5); ctx.lineTo(r * 0.6, 0); ctx.lineTo(-r * 0.2, r * 0.5); ctx.closePath(); ctx.fill(); ctx.restore();
+    } });
+    for (let k = 0; k < 5; k++) PEN([[rw2[0] - 10 - k * 9, Y - 14 + k * 7], [rw2[0] - 16 - k * 11, Y - 2 + k * 9]], { layer: 'coral', w: 3.0, ta: 0.2, tb: 0.3, wob: 0.4 }, S7(0.4) + k * 0.015, 0.05);
+    // the ruler + shift
+    PEN([[X - BW2 / 2, Y + BH2 / 2 + 85], [X + BW2 / 2 + 30, Y + BH2 / 2 + 85]], { w: 2.0, p: 0.8, ta: 0.08, tb: 0.08, wob: 0.3 }, S7(0.6), 0.25);
+    for (let i = 0; i < 8; i++) PEN([[X - BW2 / 2 + i * 64, Y + BH2 / 2 + 85], [X - BW2 / 2 + i * 64, Y + BH2 / 2 + (i % 2 ? 95 : 101)]], { w: 1.6, p: 0.8, wob: 0.2 }, S7(0.68 + i * 0.015), 0.05);
+    arrow([[X + 30, Y + BH2 / 2 + 66], [X - 26, Y + BH2 / 2 + 66]], { w: 3.0, head: 14, layer: 'coral' }, S7(0.8), 0.22);
+    note('shifted. nothing outside touched it', X - 30, Y + BH2 / 2 + 124, 32, S7(0.9), {});
+    // the two options
+    note('either boxes push themselves...', A.ox + 40, A.oy + 676, 32, S8(0.1), {});
+    note('...or light carries mass, wall to wall', A.ox + 40, A.oy + 722, 34, S8(0.4), { f: 'CB', k: 0.82 });
+    // the balance equation
+    TXT('M · d  =  m · L', A.ox + 700, A.oy + 620, 52, { f: 'CB', k: 0.85 }, S9(0.1), 0.5);
+    PEN([[A.ox + 696, A.oy + 638], [A.ox + 840, A.oy + 634]], { layer: 'light', w: 2.6, ta: 0.1, tb: 0.2, wob: 0.5 }, S9(0.5), 0.2);
+    // m = E/c² boxed, punch-in
+    TXT('m = E / c²', X - 120, Y - 120, 62, { f: 'CB', k: 0.86, layer: 'coral' }, S10(0.1), 0.55);
+    PEN(rrect(X - 134, Y - 186, 320, 96, 12).map(p => p), { layer: 'coral', w: 3.4, ta: 0.08, tb: 0.1, wob: 0.5 }, S10(0.5), 0.35);
+    // walls re-registered: left lighter, right heavier
+    BLOB(rrect(X - BW2 / 2 + 4, Y - BH2 / 2 + 6, 30, BH2 - 12, 6), C.paper, { dx: 3, dy: 3, a: 0.85, ang: -0.3, sp: 6, replace: true }, S10(0.75), 0.3);
+    BLOB(rrect(X + BW2 / 2 - 34, Y - BH2 / 2 + 6, 30, BH2 - 12, 6), C.coal, { dx: 3, dy: 3, a: 0.6, ang: -0.3, sp: 6, replace: true }, S10(0.85), 0.3);
+    note('left wall lighter,', X - 190, Y + 8, 28, S10(0.9), { f: 'CB', k: 0.8 });
+    note('right wall heavier.', X - 190, Y + 46, 28, S10(0.97), { f: 'CB', k: 0.8 });
+    note('built on Poincaré\'s reasoning', A.ox + 130, A.oy + 790, 30, S11(0.15), {});
+    note('— said so on page one', A.ox + 130, A.oy + 832, 28, S11(0.4), { layer: 'light' });
+    STORYBOARD[8] = { title: 'The Box of Light', cell: [A.ox, A.oy], idea: 'boat rule; box in space; flash wall to wall; M·d = m·L; m = E/c² real' };
+    CAM.push(
+      { t: T('c08l01') + 0.55, x: A.ox + 440, y: A.cy, z: 1.25, r: 1.0, k: 'g' },
+      { t: S2(0.0), x: bx + 20, y: by + 30, z: 1.42, r: -0.6, k: 'g' },
+      { t: S3(0.0), x: bx + 20, y: by + 20, z: 1.38, r: -0.4, k: 'd' },
+      { t: S4(0.0), x: A.ox + 320, y: A.oy + 480, z: 1.35, r: 0.5, k: 'g' },
+      { t: S5(0.0), x: X, y: Y, z: 1.3, r: 0.4, k: 'g' },
+      { t: S6(0.2), x: X - 60, y: Y + 30, z: 1.45, r: 0.4, k: 'd' },
+      { t: S7(0.55), x: X, y: Y + BH2 / 2 + 60, z: 1.3, r: 0.3, k: 'g' },
+      { t: S8(0.0), x: A.ox + 330, y: A.oy + 716, z: 1.3, r: -0.4, k: 'g' },
+      { t: S9(0.0), x: A.ox + 550, y: A.oy + 700, z: 1.4, r: 0.4, k: 'g' },
+      { t: S10(0.0), x: X + 30, y: Y - 120, z: 1.6, r: 0.5, k: 'p' },
+      { t: S10(0.55), x: X + 20, y: Y - 110, z: 1.5, r: 0.4, k: 'g' },
+      { t: TE('c08l11') + 0.12, x: A.ox + 550, y: Y - 100, z: 1.4, r: 0.3, k: 'd' });
+  })();
+
+  // =====================================================================
+  // CHAPTER 9 — WHY NOBODY COULD SEE IT  (cell 2160,1600 · c09l01..c09l10)
+  // =====================================================================
+  (function ch9() {
+    const A = cellOf(9), S1 = span('c09l01', 'c09l02'), S2 = span('c09l02', 'c09l03'), S3 = span('c09l03', 'c09l04'),
+      S4 = span('c09l04', 'c09l05'), S5 = span('c09l05', 'c09l06'), S6 = span('c09l06', 'c09l07'), S7 = span('c09l07', 'c09l08'),
+      S8 = span('c09l08', 'c09l09'), S9 = span('c09l09', 'c09l10'), S10 = span('c09l10', null);
+    capsule(9, 'the giant denominator', T('c09l01') - 0.1);
+    // c and c²
+    TXT('c = 300,000,000 m/s', A.ox + 140, A.oy + 220, 52, { f: 'CB', k: 0.82 }, S2(0.1), 0.55);
+    TXT('c² = 90,000,000,000,000,000', A.ox + 140, A.oy + 286, 36, { f: 'CB', k: 0.8, layer: 'light' }, S3(0.15), 0.7);
+    // the giant fraction: small E over a huge hatched slab (kept clear of the header lines)
+    const fx = A.ox + 560, fy = A.cy + 170;
+    TXT('E', fx - 16, fy - 200, 64, { f: 'CB', k: 0.85 }, S4(0.1), 0.2);
+    PEN([[fx - 240, fy - 160], [fx + 240, fy - 166]], { w: 4.6, ta: 0.06, tb: 0.1, wob: 0.7 }, S4(0.25), 0.3);
+    const slab = [[fx - 250, fy - 140], [fx + 250, fy - 146], [fx + 246, fy + 60], [fx - 254, fy + 66]];
+    PEN(slab.concat([slab[0]]), { w: 2.8, ta: 0.05, tb: 0.06, wob: 0.5 }, S4(0.4), 0.5);
+    BLOB(slab, C.coal, { dx: 8, dy: 7, a: 0.32, amp: 2.4, ang: -0.1, sp: 13 }, S4(0.55), 0.5);
+    TXT('c²', fx - 34, fy - 20, 88, { f: 'CB', k: 0.85 }, S4(0.75), 0.4);
+    note('ninety million billion joules = one kilogram', fx - 250, fy + 100, 32, S4(0.9), {});
+    // swatches: reaction heat vs balance limit
+    const sw = swatchStrip(A.ox + 130, A.oy + 700, 2, 62, S6(0.05), 0.5);
+    sw.fill(0, C.mustard, S6(0.4), 0.16);
+    TXT('reaction heat: a billionth g', A.ox + 54, A.oy + 804, 28, { f: 'CM', k: 0.78 }, S6(0.5), 0.2);
+    sw.fill(1, C.coal, S7(0.2), 0.16);
+    TXT('balance sees: 30 millionths g', A.ox + 48, A.oy + 844, 28, { f: 'CM', k: 0.78 }, S7(0.35), 0.2);
+    TXT('× 30,000 too coarse', A.ox + 130, A.oy + 900, 48, { f: 'CB', k: 0.85, layer: 'coral' }, S8(0.05), 0.42);
+    // radium capsule + 12-month dial
+    const rx = A.ox + 760, ry = A.cy + 130;
+    const cap = rrect(rx - 40, ry - 90, 80, 170, 30);
+    PEN(cap.concat([cap[0]]), { w: 2.4, ta: 0.06, tb: 0.08, wob: 0.4 }, S9(0.05), 0.4);
+    BLOB(ell(rx, ry + 20, 26, 40, 0, 0, TAU, 20), C.radium, { dx: 5, dy: 4, a: 0.9, ang: -0.4, sp: 7 }, S9(0.25), 0.25);
+    circleStroke(rx, ry + 10, 96, { w: 2.2, a0: -2.4 }, S9(0.4), 0.35);
+    for (let i = 0; i < 12; i++) { const a = -Math.PI / 2 + i * TAU / 12; PEN([[rx + Math.cos(a) * 88, ry + 10 + Math.sin(a) * 88], [rx + Math.cos(a) * 99, ry + 10 + Math.sin(a) * 99]], { w: 2.0, p: 0.8, wob: 0.2 }, S9(0.5 + i * 0.02), 0.04); }
+    note('1 g radium, one year of heat:', rx - 150, ry + 185, 32, S9(0.65), {});
+    note('40 billionths of a gram', rx - 130, ry + 240, 38, S9(0.78), { f: 'CB', k: 0.82 });
+    // the needle, a hair off zero
+    const nx = A.ox + 560, ny = A.oy + 780;
+    PEN([[nx - 100, ny], [nx + 100, ny]], { w: 2.2, ta: 0.1, tb: 0.1, wob: 0.3 }, S10(0.05), 0.2);
+    PEN([[nx, ny], [nx + 5, ny - 70], [nx + 2, ny - 68]], { w: 2.6, ta: 0.25, tb: 0.2, wob: 0.4 }, S10(0.25), 0.2);
+    note('right at the edge, twelve months on', nx, ny + 55, 32, S10(0.15), {});
+    STORYBOARD[9] = { title: 'Why Nobody Could See It', cell: [A.ox, A.oy], idea: 'the giant denominator; swatch gap; radium year; the needle at the edge' };
+    CAM.push(
+      { t: T('c09l01') + 0.55, x: A.ox + 700, y: A.cy, z: 1.2, r: -0.8, k: 'g' },
+      { t: S2(0.0), x: A.ox + 600, y: A.oy + 250, z: 1.3, r: 0.5, k: 'g' },
+      { t: S4(0.0), x: A.ox + 580, y: fy - 60, z: 1.35, r: -0.5, k: 'g' },
+      { t: S4(0.5), x: A.ox + 580, y: fy - 40, z: 1.5, r: -0.5, k: 'p' },
+      { t: S5(0.0), x: A.ox + 580, y: fy - 30, z: 1.4, r: -0.4, k: 'g' },
+      { t: S6(0.0), x: A.ox + 565, y: A.oy + 620, z: 1.45, r: 0.5, k: 'g' },
+      { t: S8(0.0), x: A.ox + 560, y: A.oy + 700, z: 1.4, r: 0.4, k: 'p' },
+      { t: S8(0.6), x: A.ox + 575, y: A.oy + 700, z: 1.32, r: 0.4, k: 'g' },
+      { t: S9(0.0), x: rx, y: ry + 20, z: 1.45, r: -0.4, k: 'g' },
+      { t: S10(0.0), x: A.ox + 540, y: ny - 30, z: 1.4, r: 0.4, k: 'g' },
+      { t: TE('c09l10') + 0.12, x: A.ox + 540, y: ny - 20, z: 1.4, r: 0.3, k: 'd' });
+  })();
+
+  // =====================================================================
+  // CHAPTER 10 — WEIGHING ATOMS  (cell 3240,0 · c10l01..c10l14)
+  // =====================================================================
+  (function ch10() {
+    const A = cellOf(10), S1 = span('c10l01', 'c10l02'), S2 = span('c10l02', 'c10l03'), S3 = span('c10l03', 'c10l04'),
+      S4 = span('c10l04', 'c10l05'), S5 = span('c10l05', 'c10l06'), S6 = span('c10l06', 'c10l07'), S7 = span('c10l07', 'c10l08'),
+      S8 = span('c10l08', 'c10l09'), S9 = span('c10l09', 'c10l10'), S10 = span('c10l10', 'c10l11'), S11 = span('c10l11', 'c10l12'),
+      S12 = span('c10l12', 'c10l13'), S13 = span('c10l13', 'c10l14'), S14 = span('c10l14', null);
+    capsule(10, 'weighing atoms', T('c10l01') - 0.1);
+    // the vacuum chamber + magnet poles + curving paths
+    const mx = A.ox + 300, my = A.cy + 40;
+    PEN(rrect(mx - 230, my - 170, 460, 340, 40), { w: 2.8, ta: 0.05, tb: 0.08, wob: 0.5 }, S3(0.05), 0.7);
+    PEN([[mx - 150, my - 170], [mx - 150, my - 90], [mx - 90, my - 90], [mx - 90, my - 170]], { w: 2.4, ta: 0.1, tb: 0.1, wob: 0.4 }, S3(0.3), 0.25);
+    PEN([[mx + 150, my - 170], [mx + 150, my - 90], [mx + 90, my - 90], [mx + 90, my - 170]], { w: 2.4, ta: 0.1, tb: 0.1, wob: 0.4 }, S3(0.4), 0.25);
+    TXT('N', mx - 138, my - 196, 36, { f: 'CB', k: 0.8 }, S3(0.5), 0.15);
+    TXT('S', mx + 116, my - 196, 36, { f: 'CB', k: 0.8 }, S3(0.55), 0.15);
+    // ion paths: light curves hard, heavy curves less
+    const arc = (cx, cy, r, a0, a1, n) => Array.from({ length: n + 1 }, (_, i) => [cx + Math.cos(a0 + (a1 - a0) * i / n) * r, cy + Math.sin(a0 + (a1 - a0) * i / n) * r]);
+    PEN(arc(mx - 60, my + 60, 150, -Math.PI * 0.5, -Math.PI * 0.05, 22), { w: 2.6, ta: 0.1, tb: 0.1, wob: 0.4, layer: 'coral' }, S4(0.15), 0.4);
+    PEN(arc(mx - 60, my + 60, 230, -Math.PI * 0.5, -Math.PI * 0.62, 22), { w: 2.4, ta: 0.1, tb: 0.1, wob: 0.4 }, S4(0.45), 0.4);
+    note('light bends hard', mx - 190, my + 170, 30, S4(0.7), { layer: 'coral' });
+    note('heavy, less', mx - 20, my - 224, 30, S4(0.85), {});
+    note('the bend is the scale', mx - 100, my + 240, 38, S4(0.95), { f: 'CB', k: 0.82 });
+    // the two requirements
+    note('more energy per atom', A.ox + 640, A.oy + 150, 34, S2(0.05), { f: 'CB', k: 0.8 });
+    note('a way to weigh single atoms', A.ox + 640, A.oy + 196, 34, S2(0.28), { f: 'CB', k: 0.8 });
+    note('Cambridge, Rutherford\'s lab', A.ox + 640, A.oy + 260, 32, S3(0.05), { layer: 'light' });
+    // the 1932 experiment: proton beam + lithium target + the hut
+    const ex = A.ox + 720, ey = A.cy + 60;
+    arrow([[ex - 200, ey - 100], [ex - 64, ey - 100]], { w: 4.2, head: 18, layer: 'coral' }, S5(0.1), 0.35);
+    note('fast protons', ex - 256, ey - 128, 32, S5(0.25), { layer: 'coral' });
+    PEN([[ex - 52, ey - 130], [ex - 36, ey - 100], [ex - 52, ey - 70], [ex - 68, ey - 100], [ex - 52, ey - 130]], { w: 2.4, ta: 0.1, tb: 0.1, wob: 0.4 }, S5(0.4), 0.2);
+    BLOB([[ex - 52, ey - 128], [ex - 38, ey - 100], [ex - 52, ey - 72], [ex - 66, ey - 100]], C.lithium, { dx: 5, dy: 4, a: 0.85, ang: -0.4, sp: 7 }, S5(0.5), 0.18);
+    note('lithium', ex - 96, ey + 6, 32, S5(0.6), { leader: [[ex - 60, ey - 10], [ex - 80, ey - 40]] });
+    note('14 April 1932', A.ox + 80, A.oy + 150, 36, S5(0.05), { f: 'CB', k: 0.82 });
+    // the dark hut beneath
+    const hx = ex + 130, hy = ey + 200;
+    PEN(rrect(hx - 110, hy - 60, 220, 120, 10), { w: 2.6, ta: 0.06, tb: 0.08, wob: 0.4 }, S6(0.1), 0.5);
+    BLOB(rrect(hx - 110, hy - 60, 220, 120, 10), C.coal, { dx: 6, dy: 5, a: 0.35, ang: -0.2, sp: 10 }, S6(0.35), 0.3);
+    PEN([[hx - 40, hy + 60], [hx - 40, hy + 6], [hx - 8, hy - 18], [hx - 8, hy + 60]], { w: 1.8, p: 0.8, ta: 0.1, tb: 0.1, wob: 0.3 }, S6(0.5), 0.2);  // observer
+    PEN(ell(hx - 24, hy - 26, 10, 10, 0, 0, TAU, 10), { w: 1.8, p: 0.8, wob: 0.3 }, S6(0.55), 0.08);
+    note('a darkened hut, shielded from X-rays', hx - 60, hy + 245, 30, S6(0.65), {});
+    // the screen lights up: sparkles
+    CUE.sparkle = { x: hx + 60, y: hy, t0: S7(0.05) };
+    DYN.push({ t0: S7(0.05), t1: S8(0.6), draw(t, c) {
+      const [Xs, Ys] = toScreen(c, CUE.sparkle.x, CUE.sparkle.y), age = t - CUE.sparkle.t0;
+      ctx.save(); ctx.globalCompositeOperation = 'multiply';
+      for (let i = 0; i < 14; i++) {
+        const a = h2(i, 77) * TAU, sp2 = 0.5 + h2(i, 31) * 1.2, life = clamp(age * sp2 - i * 0.05, 0, 1.2);
+        if (life <= 0 || life >= 1.2) continue;
+        const r = (10 + life * 26) * c.z, al = 1 - life / 1.2;
+        const x = Xs + Math.cos(a) * r, y = Ys + Math.sin(a) * r;
+        ctx.globalAlpha = al * 0.9; ctx.strokeStyle = i % 3 ? C.coral : C.graphite; ctx.lineWidth = 2.4 * c.z;
+        ctx.beginPath(); ctx.moveTo(x - 5 * c.z, y); ctx.lineTo(x + 5 * c.z, y); ctx.moveTo(x, y - 5 * c.z); ctx.lineTo(x, y + 5 * c.z); ctx.stroke();
+      }
+      ctx.restore();
+    } });
+    PEN([[hx + 30, hy - 40], [hx + 90, hy - 40], [hx + 90, hy + 40], [hx + 30, hy + 40], [hx + 30, hy - 40]], { w: 2.2, ta: 0.08, tb: 0.08, wob: 0.4 }, S7(0.05), 0.25);
+    note('the screen lit up', hx + 50, hy + 70, 34, S7(0.3), { f: 'CB', k: 0.82 });
+    note('"mighty like alpha particles"', A.ox + 400, hy - 130, 36, S8(0.15), { f: 'CB', k: 0.82 });
+    note('— Rutherford, in the hut', A.ox + 400, hy - 100, 28, S8(0.45), { layer: 'light' });
+    // the reaction, magnified (match cut)
+    magnifier(A.ox + 230, A.cy + 240, 150, S9(0.05), 0.6);
+    circleStroke(A.ox + 230, A.cy + 240, 54, { w: 2.6, a0: -1.0 }, S9(0.3), 0.3);
+    BLOB(ell(A.ox + 230, A.cy + 240, 52, 52, 0, 0, TAU, 26), C.lithium, { dx: 6, dy: 5, a: 0.85, ang: -0.4, sp: 8 }, S9(0.45), 0.22);
+    PEN(ell(A.ox + 250, A.cy + 222, 12, 12, 0, 0, TAU, 10), { w: 2.2, ta: 0.2, tb: 0.2, wob: 0.3 }, S9(0.6), 0.1);
+    BLOB(ell(A.ox + 250, A.cy + 222, 12, 12, 0, 0, TAU, 10), C.coral, { dx: 4, dy: 3, a: 0.9, ang: 0.4, sp: 5 }, S9(0.7), 0.1);
+    note('Li swallows a proton,', A.ox + 90, A.cy + 400, 32, S9(0.8), {});
+    // two alphas fly apart (shatter)
+    const a1 = [A.ox + 300, A.cy + 180], a2 = [A.ox + 160, A.cy + 310];
+    arrow([[A.ox + 258, A.cy + 214], a1], { w: 4.0, head: 17, layer: 'coral' }, S10(0.05), 0.3);
+    arrow([[A.ox + 218, A.cy + 268], a2], { w: 4.0, head: 17, layer: 'coral' }, S10(0.15), 0.3);
+    PEN(ell(a1[0], a1[1], 13, 13, 0, 0, TAU, 10), { w: 2.2, ta: 0.2, tb: 0.2, wob: 0.3 }, S10(0.3), 0.09);
+    PEN(ell(a2[0], a2[1], 13, 13, 0, 0, TAU, 10), { w: 2.2, ta: 0.2, tb: 0.2, wob: 0.3 }, S10(0.36), 0.09);
+    BLOB(ell(a1[0], a1[1], 13, 13, 0, 0, TAU, 10), C.helium, { dx: 4, dy: 3, a: 0.9, ang: 0.4, sp: 5 }, S10(0.45), 0.09);
+    BLOB(ell(a2[0], a2[1], 13, 13, 0, 0, TAU, 10), C.helium, { dx: 4, dy: 3, a: 0.9, ang: 0.4, sp: 5 }, S10(0.5), 0.09);
+    note('two helium nuclei, 17.2 MeV', A.ox + 90, A.cy + 450, 34, S10(0.1), { f: 'CB', k: 0.82 });
+    // the ledger + prediction bars
+    TXT('Li + H  >  He + He', A.ox + 660, A.oy + 320, 46, { f: 'CB', k: 0.85 }, S11(0.05), 0.5);
+    note('missing mass × c² = energy?', A.ox + 660, A.oy + 374, 32, S11(0.4), {});
+    const pbx = A.ox + 600, pby = A.oy + 760;
+    PEN([[pbx, pby], [pbx + 300, pby]], { w: 2.2, ta: 0.08, tb: 0.08, wob: 0.3 }, S12(0.05), 0.2);
+    const bar1 = [[pbx + 40, pby], [pbx + 96, pby], [pbx + 96, pby - 150], [pbx + 40, pby - 150]];
+    const bar2 = [[pbx + 170, pby], [pbx + 226, pby], [pbx + 226, pby - 184], [pbx + 170, pby - 184]];
+    PEN(bar1.concat([bar1[0]]), { w: 2.2, ta: 0.08, tb: 0.08, wob: 0.4 }, S12(0.15), 0.2);
+    BLOB(bar1, C.tin, { dx: 5, dy: 4, a: 0.7, ang: -0.5, sp: 7 }, S12(0.3), 0.2);
+    PEN(bar2.concat([bar2[0]]), { w: 2.2, ta: 0.08, tb: 0.08, wob: 0.4 }, S12(0.4), 0.2);
+    BLOB(bar2, C.coral, { dx: 5, dy: 4, a: 0.85, ang: -0.5, sp: 7 }, S12(0.5), 0.2);
+    TXT('14', pbx + 52, pby - 158, 30, { f: 'CM', k: 0.8 }, S12(0.6), 0.14);
+    TXT('17.2', pbx + 190, pby - 200, 30, { f: 'CM', k: 0.8, layer: 'coral' }, S12(0.65), 0.18);
+    TXT('predicted', pbx + 10, pby + 40, 28, { f: 'CM', k: 0.8 }, S12(0.75), 0.2);
+    TXT('measured', pbx + 150, pby + 40, 28, { f: 'CM', k: 0.8 }, S12(0.85), 0.2);
+    note('blurry...', pbx + 280, pby - 230, 34, S12(0.95), { f: 'CB', k: 0.8, rot: 0.06 });
+    // the fix: re-register bar1 to 16.8 + check
+    BLOB([[pbx + 40, pby], [pbx + 96, pby], [pbx + 96, pby - 178], [pbx + 40, pby - 178]], C.tin, { dx: 5, dy: 4, a: 0.75, ang: -0.5, sp: 7, replace: true }, S13(0.2), 0.28);
+    TXT('16.8', pbx + 44, pby - 194, 30, { f: 'CM', k: 0.8, layer: 'coral' }, S13(0.4), 0.18);
+    note('a year later. it matched.', pbx - 60, pby + 96, 40, S13(0.6), { f: 'CB', k: 0.84 });
+    PEN([[pbx + 66, pby + 116], [pbx + 130, pby + 110], [pbx + 196, pby + 178]], { layer: 'coral', w: 4.4, ta: 0.15, tb: 0.2, wob: 0.4 }, S13(0.75), 0.26);
+    TXT('energy, weighed.', A.ox + 480, A.oy + 910, 44, { f: 'CB', k: 0.86, layer: 'coral' }, S14(0.3), 0.4);
+    STORYBOARD[10] = { title: 'Weighing Atoms', cell: [A.ox, A.oy], idea: 'bend-as-scale; 1932; hut; Li+p reaction; 14 vs 17.2; 16.8 match' };
+    CAM.push(
+      { t: T('c10l01') + 0.55, x: A.ox + 710, y: A.cy - 40, z: 1.2, r: 0.8, k: 'g' },
+      { t: S2(0.0), x: A.ox + 780, y: A.oy + 200, z: 1.3, r: -0.5, k: 'g' },
+      { t: S3(0.0), x: A.ox + 660, y: my, z: 1.28, r: 0.5, k: 'g' },
+      { t: S4(0.1), x: A.ox + 640, y: my + 60, z: 1.42, r: 0.4, k: 'd' },
+      { t: S5(0.0), x: ex - 80, y: ey - 100, z: 1.4, r: -0.4, k: 'g' },
+      { t: S6(0.0), x: hx, y: hy, z: 1.45, r: 0.5, k: 'g' },
+      { t: S7(0.0), x: hx + 40, y: hy - 30, z: 1.55, r: 0.4, k: 'p' },
+      { t: S8(0.0), x: A.ox + 660, y: A.oy + 580, z: 1.3, r: -0.4, k: 'g' },
+      { t: S9(0.0), x: A.ox + 540, y: A.cy + 240, z: 1.5, r: -0.5, k: 'g' },
+      { t: S10(0.0), x: A.ox + 540, y: A.cy + 240, z: 1.6, r: -0.5, k: 'p' },
+      { t: T('c10l11') + 0.7, x: A.ox + 730, y: A.oy + 440, z: 1.25, r: 0.4, k: 'g' },
+      { t: S12(0.0), x: pbx + 120, y: pby - 60, z: 1.35, r: 0.4, k: 'g' },
+      { t: S13(0.15), x: pbx + 120, y: pby - 70, z: 1.45, r: 0.4, k: 'p' },
+      { t: S14(0.2), x: A.ox + 600, y: A.oy + 820, z: 1.4, r: 0.3, k: 'g' },
+      { t: TE('c10l14') + 0.12, x: A.ox + 610, y: A.oy + 825, z: 1.35, r: 0.3, k: 'd' });
+  })();
+
+  // =====================================================================
+  // CHAPTER 11 — THE SUN PROVES IT  (cell 3240,800 · c11l01..c11l08)
+  // =====================================================================
+  (function ch11() {
+    const A = cellOf(11), S1 = span('c11l01', 'c11l02'), S2 = span('c11l02', 'c11l03'), S3 = span('c11l03', 'c11l04'),
+      S4 = span('c11l04', 'c11l05'), S5 = span('c11l05', 'c11l06'), S6 = span('c11l06', 'c11l07'), S7 = span('c11l07', 'c11l08'), S8 = span('c11l08', null);
+    capsule(11, 'the Sun proves it', T('c11l01') - 0.1);
+    // four hydrogens
+    const hy2 = A.oy + 260, hx0 = A.ox + 190;
+    const hs = [];
+    for (let i = 0; i < 4; i++) { const x = hx0 + (i % 2) * 74, y = hy2 + Math.floor(i / 2) * 74;
+      circleStroke(x, y, 26, { w: 2.4, a0: i * 1.4 }, S2(0.1) + i * 0.06, 0.18); hs.push([x, y]); }
+    hs.forEach(([x, y], i) => BLOB(ell(x, y, 26, 26, 0, 0, TAU, 18), C.hydrogen, { dx: 5, dy: 4, a: 0.9, ang: -0.4, sp: 6 }, S2(0.3) + i * 0.04, 0.1));
+    note('4 × hydrogen', hx0 - 40, hy2 + 210, 32, S2(0.6), {});
+    // the ledger
+    TXT('4.0313', hx0 + 200, hy2 + 40, 44, { f: 'CB', k: 0.82 }, S3(0.05), 0.3);
+    note('four hydrogens', hx0 + 200, hy2 - 40, 28, S3(0.02), { layer: 'light' });
+    // one helium
+    const hx1 = A.ox + 560;
+    circleStroke(hx1, hy2 + 74, 40, { w: 2.6, a0: -0.8 }, S3(0.3), 0.28);
+    BLOB(ell(hx1, hy2 + 74, 40, 40, 0, 0, TAU, 24), C.helium, { dx: 6, dy: 5, a: 0.88, ang: -0.4, sp: 8 }, S3(0.5), 0.2);
+    TXT('4.0026', hx1 + 70, hy2 + 90, 44, { f: 'CB', k: 0.82 }, S3(0.65), 0.3);
+    note('one helium', hx1 - 40, hy2 + 190, 32, S3(0.8), {});
+    arrow([[hx0 + 190, hy2 + 74], [hx1 - 60, hy2 + 74]], { w: 4.2, head: 18 }, S4(0.1), 0.4);
+    // the missing chip flies off
+    arrow([[hx1 + 30, hy2 + 40], [hx1 + 120, hy2 - 60]], { w: 3.6, head: 16, layer: 'coral' }, S5(0.05), 0.35);
+    note('0.7% missing — carried away as energy', hx1 - 130, hy2 + 240, 32, S5(0.3), {});
+    note('Eddington, 1920: this powers the stars', hx1 - 130, hy2 + 300, 36, S4(0.5), { f: 'CB', k: 0.82 });
+    // the sun
+    const sx2 = A.ox + 240, sy2 = A.cy + 220;
+    circleStroke(sx2, sy2, 90, { w: 3.0, a0: -1.1 }, S6(0.05), 0.5);
+    BLOB(ell(sx2, sy2, 90, 90, 0, 0, TAU, 40), C.mustard, { dx: 9, dy: 8, a: 0.85, ang: -0.4, sp: 11 }, S6(0.3), 0.4);
+    for (let k = 0; k < 10; k++) { const a = k * TAU / 10 + 0.15; arrow([[sx2 + Math.cos(a) * 108, sy2 + Math.sin(a) * 108], [sx2 + Math.cos(a) * 165, sy2 + Math.sin(a) * 165]], { w: 2.8, head: 12, layer: 'coral' }, S6(0.55) + k * 0.015, 0.14); }
+    note('fuses 600,000,000 tons of hydrogen a second', sx2 - 100, sy2 + 200, 32, S6(0.55), {});
+    TXT('4,000,000 tons of mass', A.ox + 400, sy2 + 36, 42, { f: 'CB', k: 0.84, layer: 'coral' }, S7(0.15), 0.45);
+    TXT('leaves as light. every second.', A.ox + 400, sy2 + 92, 42, { f: 'CB', k: 0.84, layer: 'coral' }, S7(0.35), 0.45);
+    PEN([[A.ox + 396, sy2 + 122], [A.ox + 1010, sy2 + 116]], { layer: 'coral', w: 4.0, ta: 0.08, tb: 0.2, wob: 0.7 }, S7(0.6), 0.26);
+    // the phone echo
+    const ph = phone(A.ox + 760, A.oy + 620, 110, 210, S8(0.05), 1.2);
+    BLOB([[ph.bx, ph.by], [ph.bx + ph.bw2, ph.by], [ph.bx + ph.bw2, ph.by + ph.bh2], [ph.bx, ph.by + ph.bh2]], C.coral, { dx: 5, dy: 4, a: 0.95, ang: -0.3, sp: 7 }, S8(0.5), 0.3);
+    note('the stars and your pocket, one equation', A.ox + 460, A.oy + 760, 32, S8(0.25), {});
+    STORYBOARD[11] = { title: 'The Sun Proves It', cell: [A.ox, A.oy], idea: '4H to He; 0.7% missing; the Sun loses 4M t/s; phone echo' };
+    CAM.push(
+      { t: T('c11l01') + 0.55, x: A.ox + 750, y: A.cy - 40, z: 1.2, r: -0.6, k: 'g' },
+      { t: S2(0.0), x: hx0 + 60, y: hy2 + 60, z: 1.4, r: 0.5, k: 'g' },
+      { t: S3(0.2), x: hx1 + 40, y: hy2 + 40, z: 1.35, r: 0.4, k: 'g' },
+      { t: S5(0.0), x: hx1 + 40, y: hy2 + 40, z: 1.35, r: 0.3, k: 'd' },
+      { t: S6(0.0), x: sx2, y: sy2, z: 1.25, r: -0.4, k: 'g' },
+      { t: T('c11l07') + 0.5, x: A.ox + 640, y: sy2 + 40, z: 1.8, r: 0.4, k: 'g' },
+      { t: S8(0.0), x: A.ox + 750, y: A.oy + 620, z: 1.5, r: 0.3, k: 'g' },
+      { t: TE('c11l08') + 0.12, x: A.ox + 750, y: A.oy + 620, z: 1.45, r: 0.3, k: 'd' });
+  })();
+
+  // =====================================================================
+  // CHAPTER 12 — YOUR PHONE, YOUR BODY, E = MC²  (cell 3240,1600 · c12l01..c12l09)
+  // =====================================================================
+  (function ch12() {
+    const A = cellOf(12), S1 = span('c12l01', 'c12l02'), S2 = span('c12l02', 'c12l03'), S3 = span('c12l03', 'c12l04'),
+      S4 = span('c12l04', 'c12l05'), S5 = span('c12l05', 'c12l06'), S6 = span('c12l06', 'c12l07'), S7 = span('c12l07', 'c12l08'),
+      S8 = span('c12l08', 'c12l09');
+    const S9 = f => TE('c12l09') - 0.4 + f * 4.4;   // the last beat: after the narration ends
+    capsule(12, 'E = mc²', T('c12l01') - 0.1);
+    // left column: the balance again (match cut back to ch1's idea) + the phone
+    const bal = balance(A.ox + 160, A.oy + 560, 150, 7, S1(0.05), 2.0);
+    const ph = phone(A.ox + 120, A.cy - 160, 120, 230, S1(0.15), 1.8);
+    BLOB([[ph.bx, ph.by], [ph.bx + ph.bw2, ph.by], [ph.bx + ph.bw2, ph.by + ph.bh2], [ph.bx, ph.by + ph.bh2]], C.coral, { dx: 5, dy: 4, a: 0.95, ang: -0.3, sp: 7 }, S2(0.1), 0.35);
+    note('under a billionth of a gram', A.ox - 100, A.oy + 650, 30, S2(0.5), {});
+    note('unmeasurable', A.ox + 110, bal.byT - 20, 30, S3(0.1), { layer: 'light', leader: [[A.ox + 210, bal.byT - 16], [A.ox + 230, bal.byT + 10]] });
+    // right column: the equation, written large (kept clear of the end card above)
+    TXT('E = mc²', A.ox + 460, A.cy - 10, 108, { f: 'CB', k: 0.85, jit: 0.4 }, S4(0.05), 1.1);
+    BLOB([[A.ox + 570, A.cy - 76], [A.ox + 790, A.cy - 80], [A.ox + 794, A.cy + 10], [A.ox + 566, A.cy + 14]], C.mustard, { dx: 12, dy: 10, a: 0.8, amp: 2.4, ang: -0.1, sp: 14 }, S4(0.55), 0.34);
+    PEN([[A.ox + 454, A.cy + 34], [A.ox + 640, A.cy + 28], [A.ox + 760, A.cy + 32]], { layer: 'coral', w: 5.5, ta: 0.06, tb: 0.25, wob: 1.0, kind: 'pencil' }, S4(0.75), 0.3);
+    note('energy weighs its amount,', A.ox + 420, A.cy + 100, 30, S4(0.9), {});
+    note('divided by c²', A.ox + 420, A.cy + 152, 30, S5(0.05), { layer: 'light' });
+    // bottom right: the body outline
+    const bx2 = A.ox + 820, by2 = A.cy + 250;
+    PEN(ell(bx2, by2 - 130, 34, 40, 0, 0, TAU, 22), { w: 2.6, ta: 0.1, tb: 0.12, wob: 0.5 }, S5(0.1), 0.3);
+    const torso = bez([bx2 - 52, by2 - 84], [bx2 - 70, by2 + 10], [bx2 - 44, by2 + 90], [bx2 - 30, by2 + 150], 22)
+      .concat(bez([bx2 + 30, by2 + 150], [bx2 + 44, by2 + 90], [bx2 + 70, by2 + 10], [bx2 + 52, by2 - 84], 22));
+    PEN(torso.concat([torso[0]]), { w: 2.6, ta: 0.06, tb: 0.08, wob: 0.5 }, S5(0.3), 0.6);
+    PEN([[bx2 - 52, by2 - 70], [bx2 - 108, by2 + 30]], { w: 2.3, ta: 0.15, tb: 0.15, wob: 0.4 }, S5(0.55), 0.16);
+    PEN([[bx2 + 52, by2 - 70], [bx2 + 108, by2 + 30]], { w: 2.3, ta: 0.15, tb: 0.15, wob: 0.4 }, S5(0.6), 0.16);
+    note('you, mostly', bx2 + 40, by2 + 196, 34, S5(0.8), { f: 'CB', k: 0.8 });
+    // bottom left: the magnified proton (match cut)
+    magnifier(A.ox + 440, A.cy + 300, 95, S6(0.05), 0.55, { hd: [1, -1] });
+    circleStroke(A.ox + 440, A.cy + 300, 60, { w: 2.6, a0: -1.0 }, S6(0.4), 0.35);
+    BLOB(ell(A.ox + 440, A.cy + 300, 56, 56, 0, 0, TAU, 30), C.hydrogen, { dx: 7, dy: 6, a: 0.9, ang: -0.4, sp: 9 }, S6(0.55), 0.3);
+    const qs = [[A.ox + 416, A.cy + 278], [A.ox + 464, A.cy + 285], [A.ox + 438, A.cy + 324]];
+    qs.forEach(([qx, qy], i) => { PEN(ell(qx, qy, 9, 9, 0, 0, TAU, 10), { w: 2.2, ta: 0.2, tb: 0.2, wob: 0.3 }, S6(0.7) + i * 0.03, 0.08); BLOB(ell(qx, qy, 9, 9, 0, 0, TAU, 10), C.coral, { dx: 3, dy: 3, a: 0.9, ang: 0.4, sp: 4 }, S6(0.8) + i * 0.03, 0.07); });
+    note('three quarks: < 1% of the weight', A.ox + 300, A.cy + 440, 30, S6(0.9), {});
+    // colour flood: the proton floods with energy texture
+    BLOB(ell(A.ox + 440, A.cy + 300, 54, 54, 0, 0, TAU, 30), '#f0d9a0', { dx: 7, dy: 6, a: 0.5, amp: 2.6, ang: 0.5, sp: 9, replace: true, holes: qs.map(([qx, qy]) => ell(qx, qy, 13, 13, 0, 0, TAU, 10)) }, S7(0.1), 0.45);
+    note('the rest: the strong force — trapped motion', A.ox + 300, A.cy + 496, 30, S7(0.5), {});
+    // the body + phone re-registered to energy colour
+    BLOB(torso.concat([torso[0]]), C.coral, { dx: 9, dy: 8, a: 0.5, amp: 2.6, ang: -0.3, sp: 12, replace: true }, S8(0.15), 0.5);
+    BLOB(ph.body, C.coral, { dx: 7, dy: 6, a: 0.4, amp: 2, ang: -0.3, sp: 10, replace: true, holes: [ph.scr] }, S8(0.55), 0.35);
+    note('stored energy, shaped like a person', A.ox + 590, A.cy + 150, 30, S8(0.75), { f: 'CB', k: 0.82 });
+    // final beat, under the balance
+    note('charge it tonight —', A.ox - 70, A.oy + 870, 38, T('c12l09') + 0.3, { f: 'CB', k: 0.84 });
+    note('ever so slightly heavier.', A.ox - 70, A.oy + 926, 34, T('c12l09') + 1.9, { f: 'CB', k: 0.82 });
+    STORYBOARD[12] = { title: 'Your Phone, Your Body, E=mc²', cell: [A.ox, A.oy], idea: 'the balance returns; E=mc² large; body; magnified proton; everyone is stored energy' };
+    CAM.push(
+      { t: T('c12l01') + 0.55, x: A.ox + 160, y: A.cy - 150, z: 1.5, r: 0.6, k: 'g' },
+      { t: S2(0.0), x: A.ox + 160, y: A.cy - 190, z: 1.7, r: 0.5, k: 'g' },
+      { t: S3(0.0), x: A.ox + 150, y: bal.byT - 40, z: 1.6, r: 0.4, k: 'd' },
+      { t: S4(0.0), x: A.ox + 550, y: A.cy - 20, z: 1.42, r: -0.4, k: 'g' },
+      { t: S4(0.5), x: A.ox + 555, y: A.cy - 20, z: 1.5, r: -0.4, k: 'p' },
+      { t: S5(0.0), x: A.ox + 520, y: by2 + 20, z: 1.42, r: 0.5, k: 'g' },
+      { t: S6(0.0), x: A.ox + 440, y: A.cy + 280, z: 1.5, r: -0.5, k: 'g' },
+      { t: S7(0.05), x: A.ox + 440, y: A.cy + 285, z: 1.62, r: -0.5, k: 'p' },
+      { t: S7(0.6), x: A.ox + 445, y: A.cy + 290, z: 1.48, r: -0.4, k: 'g' },
+      { t: S8(0.0), x: A.ox + 520, y: A.cy + 280, z: 1.5, r: 0.3, k: 'g' },
+      { t: S9(0.0), x: A.ox + 540, y: A.cy + 400, z: 1.55, r: 0.3, k: 'g' },
+      { t: TL.end_card.t0 - 0.35, x: A.ox + 545, y: A.cy + 340, z: 1.5, r: 0.2, k: 'd' });
+    // ---- the end card: a note card in the empty top right, no pull-back ----
+    const EC = TL.end_card, eS = f => EC.t0 + EC.draw * f;
+    const card = rotP([[A.ox + 560, A.oy + 36], [A.ox + 1010, A.oy + 28], [A.ox + 1016, A.oy + 270], [A.ox + 554, A.oy + 278]], A.ox + 785, A.oy + 150, -0.015);
+    PEN(card.concat([card[0]]), { w: 2.2, smooth: false, ta: 0.04, tb: 0.04, wob: 0.6 }, eS(0.02), 0.5);
+    BLOB(card, C.radium, { dx: 9, dy: 8, a: 0.45, amp: 2.2, ang: -0.1, sp: 14 }, eS(0.16), 0.3);
+    TXT('E = mc²', A.ox + 616, A.oy + 112, 76, { f: 'CB', k: 0.86, jit: 0.4 }, eS(0.28), 0.7);
+    TXT('energy has weight.', A.ox + 616, A.oy + 198, 44, { f: 'CM', k: 0.8 }, eS(0.55), 0.5);
+    PEN([[A.ox + 612, A.oy + 218], [A.ox + 890, A.oy + 214]], { layer: 'coral', w: 4.6, ta: 0.06, tb: 0.2, wob: 0.8 }, eS(0.82), 0.28);
+    CAM.push({ t: EC.t0 + 1.5, x: A.ox + 785, y: A.oy + 155, z: 1.42, r: 0.3, k: 'g' },
+              { t: EC.t0 + EC.draw + EC.hold, x: A.ox + 785, y: A.oy + 160, z: 1.38, r: 0.2, k: 'd' });
+    STORYBOARD.end_card = { title: 'E = mc² — energy has weight', cell: [A.ox + 560, A.oy + 58], idea: 'the end card, drawn last into the empty top right; no whole-page pull-back' };
+  })();
+
+  // gesture sounds from camera moves, and the done cue (as the demo does)
+  CAM.forEach((b, i) => { if (i && (b.k === 'g' || b.k === 'p' || b.k === 'i' || b.k === 'f') && b.t > CAM[i - 1].t) SFX.push({ t: CAM[i - 1].t, type: b.k === 'p' ? 'punch' : 'gesture', d: b.t - CAM[i - 1].t, pan: 0 }); });
+  CUE.done = TL.end_card.t0 + TL.end_card.draw;
+  SFX.push({ t: CUE.done, type: 'done', d: 0, pan: 0 });
+}
+
+
+// ---------- camera ----------
+const gease = u => 0.45 * eio(u) + 0.55 * eo(u);
+const sstep = x => { x = clamp(x); return x * x * (3 - 2 * x); };
+function cam(t) {
+  let i = 0; while (i < CAM.length - 2 && t >= CAM[i + 1].t) i++;
+  const a = CAM[i], b = CAM[i + 1], span = b.t - a.t, u0 = span > 1e-6 ? clamp((t - a.t) / span) : 1;
+  const u = b.k === 'g' ? gease(u0) : b.k === 'i' ? Math.pow(u0, 2.4) : b.k === 'p' ? eo(u0) : eio(u0);
+  let x = lerp(a.x, b.x, u), y = lerp(a.y, b.y, u);
+  if (b.k === 'f') { const p = b.fn(t), w = sstep(u0 / 0.25) * (1 - sstep((u0 - 0.8) / 0.2)); x = lerp(x, p[0], w); y = lerp(y, p[1], w); }
+  return { x, y, z: Math.exp(lerp(Math.log(a.z), Math.log(b.z), u)), r: lerp(a.r, b.r, u) * Math.PI / 180 };
+}
+function toScreen(c, x, y) { const dx = (x - c.x) * c.z, dy = (y - c.y) * c.z, cs = Math.cos(c.r), sn = Math.sin(c.r); return [W / 2 + dx * cs - dy * sn, H / 2 + dx * sn + dy * cs]; }
+function toWorld(c, X, Y) { const dx = X - W / 2, dy = Y - H / 2, cs = Math.cos(-c.r), sn = Math.sin(-c.r); return [c.x + (dx * cs - dy * sn) / c.z, c.y + (dx * sn + dy * cs) / c.z]; }
+
+// ---------- stylus ----------
+let NIBS = [];
+const OFF = [W + 160, H + 260];
+function stylusAt(t) {
+  const c = cam(t); let act = null;
+  for (const e of NIBS) if (t >= e.t0 && t < e.t0 + e.d) act = e;
+  if (act) { const p = act.nib((t - act.t0) / act.d); return { P: toScreen(c, p[0], p[1]), lift: 0 }; }
+  let prev = null, next = null;
+  for (const e of NIBS) { if (e.t0 + e.d <= t && (!prev || e.t0 + e.d >= prev.t0 + prev.d)) prev = e; if (e.t0 > t && (!next || e.t0 < next.t0)) next = e; }
+  const ta = prev ? prev.t0 + prev.d : -9, tb = next ? next.t0 : 1e9, gap = tb - ta;
+  const pa = prev ? toScreen(c, ...prev.nib(1)) : OFF, pb = next ? toScreen(c, ...next.nib(0)) : OFF;
+  if (gap > 1.1 || !prev || !next) {
+    if (prev && t - ta < 0.45) { const u = eio((t - ta) / 0.45); return { P: [lerp(pa[0], OFF[0], u), lerp(pa[1], OFF[1], u)], lift: Math.min(1, u * 2) }; }
+    if (next && tb - t < 0.45) { const u = eio(1 - (tb - t) / 0.45); return { P: [lerp(OFF[0], pb[0], u), lerp(OFF[1], pb[1], u)], lift: Math.min(1, (1 - u) * 2) }; }
+    return null;
+  }
+  const u = (t - ta) / gap;
+  return { P: [lerp(pa[0], pb[0], eio(u)), lerp(pa[1], pb[1], eio(u))], lift: Math.sin(Math.PI * u) * clamp(gap / 0.3, 0.25, 1) };
+}
+function drawStylus(t) {
+  const n = stylusAt(t); if (!n) return;
+  const [X, Y] = n.P, n2 = stylusAt(t + 1 / 48), lean = n2 ? clamp((n2.P[0] - X) * 0.004, -0.06, 0.06) : 0;
+  const ang = 0.98 + lean, d = [Math.cos(ang), Math.sin(ang)], nn = [-d[1], d[0]], h0 = 4 + n.lift * 26;
+  const P = (s, o) => [X + d[0] * s + nn[0] * o, Y + d[1] * s + nn[1] * o];
+  const body = (k = 0) => { const L = 600, rw = 12.5, sh = s => [k * (h0 + s * 0.05) * 0.9, k * (h0 + s * 0.05) * 0.35];
+    return [[0, 0], [12, -2.6], [46, -rw], [L, -rw], [L + 8, -rw * 0.6], [L + 8, rw * 0.6], [L, rw], [46, rw], [12, 2.6]].map(([s, o]) => { const q = P(s, o), e = sh(s); return [q[0] + e[0], q[1] + e[1]]; }); };
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = 'rgba(120,98,76,0.16)'; ctx.beginPath(); polyPath(ctx, body(1)); ctx.fill();
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = '#fbf8f2'; ctx.beginPath(); polyPath(ctx, body(0)); ctx.fill();
+  ctx.fillStyle = '#ebe5da'; ctx.beginPath(); polyPath(ctx, [P(46, 4), P(600, 4), P(600, 12.5), P(46, 12.5)]); ctx.fill();
+  ctx.fillStyle = '#ddd6cb'; ctx.beginPath(); polyPath(ctx, [P(12, -2.6), P(46, -12.5), P(46, 12.5), P(12, 2.6)]); ctx.fill();
+  ctx.fillStyle = '#4a3f37'; ctx.beginPath(); polyPath(ctx, [P(0, 0), P(12, -2.6), P(12, 2.6)]); ctx.fill();
+  ctx.strokeStyle = '#c9bdab'; ctx.lineWidth = 1.3; ctx.lineJoin = 'round'; ctx.beginPath(); polyPath(ctx, body(0)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(...P(46, -12.5)); ctx.lineTo(...P(46, 12.5)); ctx.stroke();
+  ctx.restore();
+}
+
+// ---------- subtitles: an English paper chip, wiped in like a colour block ----------
+const SUB_RIGHT = {};
+function drawSubs(t) {
+  if (!VOC) return;
+  const q = VOC.cues.find(c => t >= c.t0 && t < c.t1); if (!q) return;
+  const fin = clamp((t - q.t0) / 0.2), fout = clamp((q.t1 - t) / 0.18);
+  ctx.save();
+  ctx.font = '40px CM';
+  const we = ctx.measureText(q.en).width, we2 = q.en2 ? ctx.measureText(q.en2).width : 0;
+  const w = Math.max(we, we2) + 64, h = q.en2 ? 118 : 74, x = SUB_RIGHT[q.id] ? W - 96 - w : 96, y = H - 56 - h;
+  ctx.globalAlpha = fout;
+  ctx.beginPath(); ctx.rect(x - 20, y - 20, (w + 40) * eo(fin), h + 40); ctx.clip();
+  ctx.fillStyle = '#e4d6bd'; ctx.globalAlpha = fout * 0.75; ctx.beginPath(); ctx.roundRect(x + 9, y + 8, w, h, 10); ctx.fill();
+  ctx.fillStyle = '#fbf7ee'; ctx.globalAlpha = fout * 0.95; ctx.beginPath(); ctx.roundRect(x, y, w, h, 10); ctx.fill();
+  const ta = fout * clamp((t - q.t0 - 0.08) / 0.18);
+  ctx.globalAlpha = ta; ctx.fillStyle = '#43362e'; ctx.font = '40px CM'; ctx.textBaseline = 'alphabetic';
+  ctx.fillText(q.en, x + 32, y + 52);
+  if (q.en2) ctx.fillText(q.en2, x + 32, y + 100);
+  ctx.restore();
+}
+window.__chip = t => { if (!VOC) return null; const q = VOC.cues.find(c => t >= c.t0 && t < c.t1); if (!q) return null;
+  ctx.font = '40px CM'; const we = ctx.measureText(q.en).width, we2 = q.en2 ? ctx.measureText(q.en2).width : 0;
+  const w = Math.max(we, we2) + 64, h = q.en2 ? 118 : 74, x = SUB_RIGHT[q.id] ? W - 96 - w : 96, y = H - 56 - h;
+  return { x0: x - 20, y0: y - 20, x1: x - 20 + w + 40, y1: y - 20 + h + 40 }; };
+window.__TEXTBOXES = () => EL.filter(e => e.kind === 'write').map(e => ({ text: e.T.s, t0: e.t0, t1: e.t0 + e.d, box: e.T.box, pass: !!e.pass }));
+
+// ---------- composite: paper × colour × pencil layers with the grain threshold ----------
+let IMG_LAST = null, IMG_PREV = null;   // the camera drifts: reuse two window buffers, never more
+function composite(c) {
+  const cs = [[0, 0], [W, 0], [0, H], [W, H]].map(([X, Y]) => toWorld(c, X, Y));
+  const [a, b, cc, d] = bbox(cs);
+  const x0 = Math.max(0, Math.floor(PX(a)) - 2), y0 = Math.max(0, Math.floor(PY(b)) - 2), x1 = Math.min(BW, Math.ceil(PX(cc)) + 2), y1 = Math.min(BH, Math.ceil(PY(d)) + 2);
+  const w = x1 - x0, h = y1 - y0;
+  let img = IMG_LAST;
+  if (!img || img.width !== w || img.height !== h) {
+    img = (IMG_PREV && IMG_PREV.width === w && IMG_PREV.height === h) ? IMG_PREV : new ImageData(w, h);
+    IMG_PREV = IMG_LAST; IMG_LAST = img;
+  }
+  const o = img.data;
+  const fd = TG.fx.getImageData(x0, y0, w, h).data, pp = hex(C.paper), Ls = ORDER.map(n => [TG.L[n], LAYERS[n].col, LAYERS[n].alpha]);
+  const pr = pp[0], pg = pp[1], pb = pp[2];
+  for (let y = 0; y < h; y++) {
+    const row = (y + y0) * BW + x0;
+    for (let x = 0; x < w; x++) {
+      const i = row + x, j = (y * w + x) * 4, g = GRAIN[i] / 255, g2 = GRAIN2[i] / 255;
+      const l0 = Ls[0][0][i], l1 = Ls[1][0][i], l2 = Ls[2][0][i], fa = fd[j + 3] / 255;
+      if (!fa && !l0 && !l1 && !l2) {   // bare paper: the common case
+        const pk = (0.985 + 0.03 * g2) * (0.99 + 0.02 * g);
+        o[j] = pr * pk * 255; o[j + 1] = pg * pk * 255; o[j + 2] = pb * (0.985 + 0.03 * g2) * (0.985 + 0.025 * g) * 255; o[j + 3] = 255; continue;
+      }
+      const pk = (0.985 + 0.03 * g2) * (0.99 + 0.02 * g);
+      let r = pr * pk, gg = pg * pk, bb = pb * (0.985 + 0.03 * g2) * (0.985 + 0.025 * g);
+      if (fa) { const al = fa * (0.86 + 0.14 * (1 - g * 0.8)); r *= 1 - al + al * fd[j] / 255; gg *= 1 - al + al * fd[j + 1] / 255; bb *= 1 - al + al * fd[j + 2] / 255; }
+      for (let q = 0; q < 3; q++) { const v = Ls[q][0][i] / 255; if (!v) continue;
+        const al = clamp((v * 0.9 - g * 0.85 + 0.32) * 2.1) * Ls[q][2]; if (al <= 0) continue; const col = Ls[q][1];
+        r *= 1 - al + al * col[0]; gg *= 1 - al + al * col[1]; bb *= 1 - al + al * col[2]; }
+      o[j] = r * 255; o[j + 1] = gg * 255; o[j + 2] = bb * 255; o[j + 3] = 255;
+    }
+  }
+  wx.putImageData(img, x0, y0);
+  return [x0, y0, w, h];
+}
+
+// ---------- cache of finished marks ----------
+function clearTarget(T) { for (const n of ORDER) T.L[n].fill(0); T.fx.clearRect(0, 0, BW, BH); }
+function renderMarks(t) {
+  let k = 0; while (k < EL.length && t >= EL[k].t0 + EL[k].d) k++;
+  if (cacheK > k) { clearTarget(CACHE); cacheK = 0; }
+  if (cacheK < k) { TG = CACHE; for (let i = cacheK; i < k; i++) EL[i].apply(1); cacheK = k; }
+  let partial = false; for (let i = k; i < EL.length; i++) if (t >= EL[i].t0) { partial = true; break; }
+  if (!partial) { TG = CACHE; return; }
+  for (const n of ORDER) WORK.L[n].set(CACHE.L[n]);
+  WORK.fx.clearRect(0, 0, BW, BH); WORK.fx.drawImage(CACHE.fc, 0, 0);
+  TG = WORK;
+  for (let i = k; i < EL.length; i++) { const e = EL[i]; if (t >= e.t0) e.apply(clamp((t - e.t0) / e.d)); }
+}
+
+// ---------- render ----------
+window.DUR = 0;
+function renderFull(t) {
+  const c = cam(t);
+  renderMarks(t);
+  const [x0, y0, w, h] = composite(c);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = C.paper; ctx.fillRect(0, 0, W, H);
+  ctx.setTransform(1, 0, 0, 1, W / 2, H / 2); ctx.rotate(c.r); ctx.scale(c.z / S, c.z / S); ctx.translate(-(c.x - X0) * S, -(c.y - Y0) * S);
+  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(WC, x0, y0, w, h, x0, y0, w, h);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  for (const d of DYN) if (t >= d.t0 && t < d.t1) d.draw(t, c);
+  const g = ctx.createRadialGradient(W / 2, H / 2, H * 0.45, W / 2, H / 2, H * 1.15);
+  g.addColorStop(0, 'rgba(120,100,80,0)'); g.addColorStop(1, 'rgba(120,100,80,0.10)');
+  ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over';
+  if (CLEAN) return;
+  drawStylus(t);
+  drawSubs(t);
+}
+window.render = t => renderFull(FROM + t);
+window.CAMAT = cam;
+window.__camdump = () => CAM.map(k => ({ t: +k.t.toFixed(2), x: k.x, y: k.y, z: k.z, k: k.k }));
+
+window.__diag = (px0, py0, px1, py1) => {
+  const out = {};
+  for (const nm of ORDER) {
+    const buf = CACHE.L[nm]; let sum = 0, n = 0;
+    for (let y = py0; y < py1; y++) for (let x = px0; x < px1; x++) { sum += buf[y * BW + x]; n++; }
+    out[nm] = +(sum / n / 255).toFixed(3);
+  }
+  const fd = CACHE.fx.getImageData(px0, py0, px1 - px0, py1 - py0).data;
+  const wc = wcx.getImageData(px0, py0, px1 - px0, py1 - py0).data;
+  let wr = 0, wg = 0, wb2 = 0; const n2 = (px1 - px0) * (py1 - py0);
+  for (let i = 0; i < wc.length; i += 4) { wr += wc[i]; wg += wc[i + 1]; wb2 += wc[i + 2]; }
+  out.wc = [wr / n2 | 0, wg / n2 | 0, wb2 / n2 | 0];
+  let r = 0, g = 0, b = 0, a = 0, n = (px1 - px0) * (py1 - py0);
+  for (let i = 0; i < fd.length; i += 4) { r += fd[i]; g += fd[i + 1]; b += fd[i + 2]; a += fd[i + 3]; }
+  out.fx = [r / n | 0, g / n | 0, b / n | 0, a / n / 255];
+  return out;
+};
+
+
+window.TEXTS = t => {
+  t += FROM; const c = cam(t), out = [];
+  EL.forEach((e, i) => { if (e.kind !== 'write' || t < e.t0) return; const [a, b, cc, d] = e.T.box;
+    const cs = [[a, b], [cc, b], [a, d], [cc, d]].map(([x, y]) => toScreen(c, x, y)), bb = bbox(cs);
+    out.push({ id: 'txt' + i, text: e.T.s, x0: bb[0], y0: bb[1], x1: bb[2], y1: bb[3], pass: e.pass }); });
+  return out;
+};
+
+async function boot() {
+  GLY = await (await fetch('glyphs.json')).json();
+  TL = await (await fetch('voice/timeline.json')).json();
+  VOC = await (await fetch('voice/cues.json')).json();
+  if (!TO) TO = TL.total;
+  FROM = clamp(FROM, 0, TL.total); TO = clamp(TO, FROM, TL.total);
+  window.DUR = TO - FROM;
+  await Promise.all([['CB', 'Ag'], ['CM', 'Ag']].map(([f, s]) => document.fonts.load(`40px ${f}`, s)));
+  buildGrain();
+  CACHE = mkTarget(); WORK = mkTarget(); TG = CACHE;
+  buildPage();
+  NIBS = EL.filter(e => e.nib);
+  const ev = [];
+  for (const e of EL) { if (e.kind === 'occ' || e.kind === 'none') continue; const tm = e.t0 + e.d / 2, c = cam(tm), p = e.nib ? e.nib(0.5) : e.wx;
+    ev.push({ t: e.t0, type: e.kind, d: e.d, pan: clamp(toScreen(c, p[0], p[1])[0] / W * 2 - 1, -1, 1) }); }
+  NIBS.forEach((e, i) => { const prev = NIBS.slice(0, i).reduce((m, q) => Math.max(m, q.t0 + q.d), -1); if (e.t0 - prev > 0.1) { const c = cam(e.t0), p = e.nib(0); ev.push({ t: e.t0, type: 'tap', d: 0, pan: clamp(toScreen(c, p[0], p[1])[0] / W * 2 - 1, -1, 1) }); } });
+  ev.push(...SFX);
+  window.EV = ev.filter(e => e.t >= FROM && e.t < TO).map(e => ({ ...e, t: +(e.t - FROM).toFixed(4), d: +e.d.toFixed(4), pan: +e.pan.toFixed(3) }));
+  window.CUE = CUE; window.STORYBOARD = STORYBOARD; window.TL_DUMP = TL; window.EL_DUMP = EL;
+  window.READY = true;
+}
+boot();
+</script>
+</body></html>

@@ -1,0 +1,17 @@
+{
+ "chapter": 10,
+ "title": "Weighing Atoms",
+ "from": 450.388,
+ "to": 533.788,
+ "frame_range": [
+  10809,
+  12811
+ ],
+ "frame_count": 2002,
+ "fps": 24,
+ "resolution": "1920x1080",
+ "video_codec": "libx264 (crf 14, preset medium, yuv420p \u2014 set by core/render/video.mjs)",
+ "command": "node core/render/video.mjs project --fps 24 --workers 2 --q 'from=450.38800000000003&to=533.788' --out project/out/ch10.mp4",
+ "audio": "project/out/mix.wav (full-film mix; mux after concat \u2014 see audio_mix_plan.md)",
+ "subtitle": "burned into the page itself (drawSubs); project/script/subtitles.srt is the export"
+}

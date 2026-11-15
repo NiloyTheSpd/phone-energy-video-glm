@@ -1,0 +1,17 @@
+{
+ "chapter": 1,
+ "title": "The Impossible Scale",
+ "from": 0.0,
+ "to": 40.822,
+ "frame_range": [
+  0,
+  980
+ ],
+ "frame_count": 980,
+ "fps": 24,
+ "resolution": "1920x1080",
+ "video_codec": "libx264 (crf 14, preset medium, yuv420p \u2014 set by core/render/video.mjs)",
+ "command": "node core/render/video.mjs project --fps 24 --workers 2 --q 'from=0.0&to=40.822' --out project/out/ch01.mp4",
+ "audio": "project/out/mix.wav (full-film mix; mux after concat \u2014 see audio_mix_plan.md)",
+ "subtitle": "burned into the page itself (drawSubs); project/script/subtitles.srt is the export"
+}

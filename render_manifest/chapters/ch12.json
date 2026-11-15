@@ -1,0 +1,17 @@
+{
+ "chapter": 12,
+ "title": "Your Phone, Your Body, E=mc\u00b2",
+ "from": 578.283,
+ "to": 629.8,
+ "frame_range": [
+  13879,
+  15115
+ ],
+ "frame_count": 1236,
+ "fps": 24,
+ "resolution": "1920x1080",
+ "video_codec": "libx264 (crf 14, preset medium, yuv420p \u2014 set by core/render/video.mjs)",
+ "command": "node core/render/video.mjs project --fps 24 --workers 2 --q 'from=578.2829999999999&to=629.8' --out project/out/ch12.mp4",
+ "audio": "project/out/mix.wav (full-film mix; mux after concat \u2014 see audio_mix_plan.md)",
+ "subtitle": "burned into the page itself (drawSubs); project/script/subtitles.srt is the export"
+}

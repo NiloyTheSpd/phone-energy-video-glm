@@ -1,0 +1,962 @@
+[
+ {
+  "id": "c01l01",
+  "chapter": 1,
+  "expected": "Take two phones, identical in every way.",
+  "text": "Take two phones, identical in every way.",
+  "heard": "Take two phones, identical in every way.",
+  "match": true
+ },
+ {
+  "id": "c01l02",
+  "chapter": 1,
+  "expected": "Charge one completely, drain the other until it's dead,",
+  "text": "Charge one completely, drain the other until it's dead,",
+  "heard": "Charge one completely, drain the other until it's dead.",
+  "match": true
+ },
+ {
+  "id": "c01l03",
+  "chapter": 1,
+  "expected": "and set them on a balance.",
+  "text": "and set them on a balance.",
+  "heard": "and set them on a balance.",
+  "match": true
+ },
+ {
+  "id": "c01l04",
+  "chapter": 1,
+  "expected": "The charged phone is heavier.",
+  "text": "The charged phone is heavier.",
+  "heard": "The charged phone is heavier.",
+  "match": true
+ },
+ {
+  "id": "c01l05",
+  "chapter": 1,
+  "expected": "Not by any amount you could measure.",
+  "text": "Not by any amount you could measure.",
+  "heard": "Not by any amount you could measure.",
+  "match": true
+ },
+ {
+  "id": "c01l06",
+  "chapter": 1,
+  "expected": "Yet nothing material went in while it charged.",
+  "text": "Yet nothing material went in while it charged.",
+  "heard": "Yet nothing material went in while it charged.",
+  "match": true
+ },
+ {
+  "id": "c01l07",
+  "chapter": 1,
+  "expected": "No atoms came down the cable.",
+  "text": "No atoms came down the cable.",
+  "heard": "No atoms came down the cable.",
+  "match": true
+ },
+ {
+  "id": "c01l08",
+  "chapter": 1,
+  "expected": "No extra electrons piled up either: every electron that flowed in through one wire flowed back out through the other.",
+  "text": "No extra electrons piled up either: every electron that flowed in through one wire flowed back out through the other.",
+  "heard": "No extra electrons piled up either. Every electron that flowed in through one wire flowed back out through the other.",
+  "match": true
+ },
+ {
+  "id": "c01l09",
+  "chapter": 1,
+  "expected": "The only thing the phone gained was energy.",
+  "text": "The only thing the phone gained was energy.",
+  "heard": "The only thing the phone gained was energy.",
+  "match": true
+ },
+ {
+  "id": "c01l10",
+  "chapter": 1,
+  "expected": "And energy, it turns out, has weight.",
+  "text": "And energy, it turns out, has weight.",
+  "heard": "And energy, it turns out, has weight.",
+  "match": true
+ },
+ {
+  "id": "c02l01",
+  "chapter": 2,
+  "expected": "Inside the battery, charging doesn't add stuff. It rearranges it.",
+  "text": "Inside the battery, charging doesn't add stuff. It rearranges it.",
+  "heard": "Inside the battery, charging doesn't add stuff. It rearranges it.",
+  "match": true
+ },
+ {
+  "id": "c02l02",
+  "chapter": 2,
+  "expected": "Ions shuttle between two layers into an arrangement that stores energy, like a stretched spring.",
+  "text": "Ions shuttle between two layers into an arrangement that stores energy, like a stretched spring.",
+  "heard": "ions shuttle between two layers into an arrangement that stores energy like a stretched spring.",
+  "match": true
+ },
+ {
+  "id": "c02l03",
+  "chapter": 2,
+  "expected": "Use the phone, and they slide back down, releasing it.",
+  "text": "Use the phone, and they slide back down, releasing it.",
+  "heard": "Use the phone and they slide back down, releasing it.",
+  "match": true
+ },
+ {
+  "id": "c02l04",
+  "chapter": 2,
+  "expected": "A full battery and an empty one hold exactly the same atoms.",
+  "text": "A full battery and an empty one hold exactly the same atoms.",
+  "heard": "A full battery and an empty one hold exactly the same atoms.",
+  "match": true
+ },
+ {
+  "id": "c02l05",
+  "chapter": 2,
+  "expected": "The only difference is energy.",
+  "text": "The only difference is energy.",
+  "heard": "The only difference is energy.",
+  "match": true
+ },
+ {
+  "id": "c02l06",
+  "chapter": 2,
+  "expected": "So why would energy have weight at all?",
+  "text": "So why would energy have weight at all?",
+  "heard": "So why would energy have weight at all?",
+  "match": true
+ },
+ {
+  "id": "c02l07",
+  "chapter": 2,
+  "expected": "Matter is supposed to be the thing that ways.",
+  "text": "Matter is supposed to be the thing that weighs.",
+  "heard": "Matter is supposed to be the thing that ways.",
+  "match": true
+ },
+ {
+  "id": "c03l01",
+  "chapter": 3,
+  "expected": "For a century, science's most careful weighings said the opposite:",
+  "text": "For a century, science's most careful weighings said the opposite:",
+  "heard": "For a century, science's most careful weighings said the opposite.",
+  "match": true
+ },
+ {
+  "id": "c03l02",
+  "chapter": 3,
+  "expected": "nothing inside a sealed container can change its weight.",
+  "text": "nothing inside a sealed container can change its weight.",
+  "heard": "Nothing inside a sealed container can change its weight.",
+  "match": true
+ },
+ {
+  "id": "c03l03",
+  "chapter": 3,
+  "expected": "The rule was born in Paris in the 1770s with Antoine Lavoisier, a chemist who trusted his balance more than any theory.",
+  "text": "The rule was born in Paris, in the seventeen seventies, with Antoine Lavoisier, a chemist who trusted his balance more than any theory.",
+  "heard": "The rule was born in Paris in the 1770s with Antoine Lavoisier, a chemist who trusted his balance more than any theory.",
+  "match": true
+ },
+ {
+  "id": "c03l04",
+  "chapter": 3,
+  "expected": "He sealed tin inside a glass vessel, melting the glass shut so nothing could get in or out, and took its weight.",
+  "text": "He sealed tin inside a glass vessel, melting the glass shut so nothing could get in or out, and took its weight.",
+  "heard": "He sealed tin inside a glass vessel, melting the glass shut so nothing could get in or out and took its weight.",
+  "match": true
+ },
+ {
+  "id": "c03l05",
+  "chapter": 3,
+  "expected": "Then he heated it, until part of the shiny metal turned to gray powder, let it cool, and took its weight again.",
+  "text": "Then he heated it, until part of the shiny metal turned to grey powder, let it cool, and took its weight again.",
+  "heard": "Then he heated it, until part of the shiny metal turned to gray powder, let it cool, and took its weight again.",
+  "match": true
+ },
+ {
+  "id": "c03l06",
+  "chapter": 3,
+  "expected": "Heat had poured in and out. The weight had not changed at all.",
+  "text": "Heat had poured in and out. The weight had not changed at all.",
+  "heard": "Heat had poured in and out. The weight had not changed at all.",
+  "match": true
+ },
+ {
+  "id": "c03l07",
+  "chapter": 3,
+  "expected": "In 1789, his rule, an equal quantity of matter before and after.",
+  "text": "In seventeen eighty-nine, his rule: an equal quantity of matter, before and after.",
+  "heard": "In 1789, his rule, an equal quantity of matter before and after.",
+  "match": true
+ },
+ {
+  "id": "c03l08",
+  "chapter": 3,
+  "expected": "Energy, it seemed, weighs nothing.",
+  "text": "Energy, it seemed, weighs nothing.",
+  "heard": "Energy, it seemed, weighs nothing.",
+  "match": true
+ },
+ {
+  "id": "c04l01",
+  "chapter": 4,
+  "expected": "But a rule is only as good as the balance that tests it.",
+  "text": "But a rule is only as good as the balance that tests it.",
+  "heard": "But a rule is only as good as the balance that tests it.",
+  "match": true
+ },
+ {
+  "id": "c04l02",
+  "chapter": 4,
+  "expected": "In the 1890s, Hans Landolt in Berlin spent 20 years testing it harder than anyone.",
+  "text": "In the eighteen nineties, Hans Landolt in Berlin spent twenty years testing it harder than anyone.",
+  "heard": "In the 1890s, Hans Landolt in Berlin spent 20 years testing it harder than anyone.",
+  "match": true
+ },
+ {
+  "id": "c04l03",
+  "chapter": 4,
+  "expected": "Two chemicals, sealed in the separate arms of a glass vessel, react;",
+  "text": "Two chemicals, sealed in the separate arms of a glass vessel, react;",
+  "heard": "Two chemicals, sealed in the separate arms of a glass vessel, react.",
+  "match": true
+ },
+ {
+  "id": "c04l04",
+  "chapter": 4,
+  "expected": "the heat escapes; he weighs it again. And again. And again.",
+  "text": "the heat escapes; he weighs it again. And again. And again.",
+  "heard": "The heat escapes, he weighs it again, and again, and again.",
+  "match": true
+ },
+ {
+  "id": "c04l05",
+  "chapter": 4,
+  "expected": "He chased every error \u2014 buoyancy, moisture, dust.",
+  "text": "He chased every error \u2014 buoyancy, moisture, dust.",
+  "heard": "He chased every error, buoyancy, moisture, dust.",
+  "match": true
+ },
+ {
+  "id": "c04l06",
+  "chapter": 4,
+  "expected": "His 1908 verdict. No reaction changed weight by more than three hundredths of a milligram.",
+  "text": "His nineteen oh eight verdict: no reaction changed weight by more than three hundredths of a milligram.",
+  "heard": "His 1908 verdict. No reaction changed weight by more than three hundredths of a milligram.",
+  "match": true
+ },
+ {
+  "id": "c04l07",
+  "chapter": 4,
+  "expected": "If the escaping heat weighed anything at all, it weighed less than that.",
+  "text": "If the escaping heat weighed anything at all, it weighed less than that.",
+  "heard": "If the escaping heat weighed anything at all, it weighed less than that.",
+  "match": true
+ },
+ {
+  "id": "c05l01",
+  "chapter": 5,
+  "expected": "Then a tiny glowing sample made that answer hard to believe.",
+  "text": "Then a tiny glowing sample made that answer hard to believe.",
+  "heard": "Then a tiny glowing sample made that answer hard to believe.",
+  "match": true
+ },
+ {
+  "id": "c05l02",
+  "chapter": 5,
+  "expected": "Radium, which Marie Curie purified in 1902, from more than a ton of ore.",
+  "text": "Radium, which Marie Curie purified in nineteen oh two, from more than a ton of ore.",
+  "heard": "Radium, which Marie Curie purified in 1902, from more than a ton of ore.",
+  "match": true
+ },
+ {
+  "id": "c05l03",
+  "chapter": 5,
+  "expected": "Pierre Curie measured 1g giving off 100 calories of heat every hour.",
+  "text": "Pierre Curie measured one gram giving off a hundred calories of heat, every hour.",
+  "heard": "Pierre Curie measured 1g giving off 100 calories of heat every hour.",
+  "match": true
+ },
+ {
+  "id": "c05l04",
+  "chapter": 5,
+  "expected": "That adds up to nearly 900,000 calories a year.",
+  "text": "That adds up to nearly nine hundred thousand calories a year.",
+  "heard": "That adds up to nearly 900 ,000 calories a year.",
+  "match": true
+ },
+ {
+  "id": "c05l05",
+  "chapter": 5,
+  "expected": "A gram of coal gives 7,000. Then it's gone.",
+  "text": "A gram of coal gives seven thousand. Then it's gone.",
+  "heard": "A gram of coal gives 7 ,000. Then it's gone.",
+  "match": true
+ },
+ {
+  "id": "c05l06",
+  "chapter": 5,
+  "expected": "The radium releases 100 times more, every year, and barely slows down.",
+  "text": "The radium releases a hundred times more, every year, and barely slows down:",
+  "heard": "The radium releases 100 times more, every year, and barely slows down.",
+  "match": true
+ },
+ {
+  "id": "c05l07",
+  "chapter": 5,
+  "expected": "Half is still there 1600 years from now.",
+  "text": "half is still there sixteen hundred years from now.",
+  "heard": "Half is still there 1600 years from now.",
+  "match": true
+ },
+ {
+  "id": "c05l08",
+  "chapter": 5,
+  "expected": "Nobody could say what it was using up.",
+  "text": "Nobody could say what it was using up.",
+  "heard": "Nobody could say what it was using up.",
+  "match": true
+ },
+ {
+  "id": "c05l09",
+  "chapter": 5,
+  "expected": "Either it soaked up invisible energy from space, or the energy came from inside the atom itself.",
+  "text": "Either it soaked up invisible energy from space, or the energy came from inside the atom itself.",
+  "heard": "Either it soaked up invisible energy from space, or the energy came from inside the atom itself.",
+  "match": true
+ },
+ {
+  "id": "c06l01",
+  "chapter": 6,
+  "expected": "The first clue had appeared earlier, in the way light behaves.",
+  "text": "The first clue had appeared earlier, in the way light behaves.",
+  "heard": "The first clue had appeared earlier in the way light behaves.",
+  "match": true
+ },
+ {
+  "id": "c06l02",
+  "chapter": 6,
+  "expected": "In 1900, Henry Poincar\u00e9 worked through a fact most people never think about. Light pushes.",
+  "text": "In nineteen hundred, Henri Poincar\u00e9 worked through a fact most people never think about: light pushes.",
+  "heard": "In 1900, Henry Poincar\u00e9 worked through a fact most people never think about. Light pushes.",
+  "match": true
+ },
+ {
+  "id": "c06l03",
+  "chapter": 6,
+  "expected": "It's why a comet's tail points away from the Sun;",
+  "text": "It's why a comet's tail points away from the Sun;",
+  "heard": "It's why a comet's tail points away from the sun.",
+  "match": true
+ },
+ {
+  "id": "c06l04",
+  "chapter": 6,
+  "expected": "and lab experiments had just measured that push.",
+  "text": "and lab experiments had just measured that push.",
+  "heard": "And lab experiments had just measured that push.",
+  "match": true
+ },
+ {
+  "id": "c06l05",
+  "chapter": 6,
+  "expected": "Anything that pushes carries momentum.",
+  "text": "Anything that pushes carries momentum.",
+  "heard": "Anything that pushes carries momentum.",
+  "match": true
+ },
+ {
+  "id": "c06l06",
+  "chapter": 6,
+  "expected": "A flash of energy E carries momentum: E divided by the speed of light.",
+  "text": "A flash of energy E carries momentum: E divided by the speed of light.",
+  "heard": "A flash of energy e carries momentum, e divided by the speed of light.",
+  "match": true
+ },
+ {
+  "id": "c06l07",
+  "chapter": 6,
+  "expected": "Momentum is mass-time speed.",
+  "text": "Momentum is mass times speed.",
+  "heard": "Momentum is mass -time speed.",
+  "match": true
+ },
+ {
+  "id": "c06l08",
+  "chapter": 6,
+  "expected": "What mass would that flash need? Its energy, divided by the speed of light squared.",
+  "text": "What mass would that flash need? Its energy, divided by the speed of light squared.",
+  "heard": "What mass would that flash need? Its energy, divided by the speed of light, squared.",
+  "match": true
+ },
+ {
+  "id": "c06l09",
+  "chapter": 6,
+  "expected": "His example, a 1 kg lamp firing 3 million joules of light recoils like a cannon.",
+  "text": "His example: a one kilogram lamp firing three million joules of light recoils like a cannon,",
+  "heard": "His example, a 1 kg lamp firing 3 million joules of light recoils like a cannon.",
+  "match": true
+ },
+ {
+  "id": "c06l10",
+  "chapter": 6,
+  "expected": "while the flash carries thirty-three billionths of a gram.",
+  "text": "while the flash carries thirty-three billionths of a gram.",
+  "heard": "while the flash carries 33 billionths of a gram.",
+  "match": true
+ },
+ {
+  "id": "c06l11",
+  "chapter": 6,
+  "expected": "But he called it a fiction, not a real weight.",
+  "text": "But he called it a fiction, not a real weight.",
+  "heard": "But he called it a fiction, not a real weight.",
+  "match": true
+ },
+ {
+  "id": "c06l12",
+  "chapter": 6,
+  "expected": "The number sat there. He didn't believe it.",
+  "text": "The number sat there. He didn't believe it.",
+  "heard": "The number sat there. He didn't believe it.",
+  "match": true
+ },
+ {
+  "id": "c07l01",
+  "chapter": 7,
+  "expected": "Believing it took Albert Einstein \u2014 twenty six, a clerk at the patent office in Bern.",
+  "text": "Believing it took Albert Einstein \u2014 twenty six, a clerk at the patent office in Bern.",
+  "heard": "Believing it took Albert Einstein, 26, a clerk at the patent office in Bern.",
+  "match": true
+ },
+ {
+  "id": "c07l02",
+  "chapter": 7,
+  "expected": "In 1905, just after finishing relativity, he wrote to a friend.",
+  "text": "In nineteen oh five, just after finishing relativity, he wrote to a friend:",
+  "heard": "In 1905, just after finishing relativity, he wrote to a friend.",
+  "match": true
+ },
+ {
+  "id": "c07l03",
+  "chapter": 7,
+  "expected": "a body's mass must be a measure of the energy inside it.",
+  "text": "a body's mass must be a measure of the energy inside it.",
+  "heard": "A body's mass must be a measure of the energy inside it.",
+  "match": true
+ },
+ {
+  "id": "c07l04",
+  "chapter": 7,
+  "expected": "Light carries mass, he said. Radium should get noticeably lighter.",
+  "text": "Light carries mass, he said. Radium should get noticeably lighter.",
+  "heard": "Light carries mass, he said. Radium should get noticeably lighter.",
+  "match": true
+ },
+ {
+  "id": "c07l05",
+  "chapter": 7,
+  "expected": "That September, three pages in the leading physics journal.",
+  "text": "That September, three pages in the leading physics journal.",
+  "heard": "That September, three pages in the Leading Physics Journal.",
+  "match": true
+ },
+ {
+  "id": "c07l06",
+  "chapter": 7,
+  "expected": "A glowing object, at rest, fires two identical flashes in opposite directions.",
+  "text": "A glowing object, at rest, fires two identical flashes in opposite directions.",
+  "heard": "A glowing object at rest fires two identical flashes in opposite directions.",
+  "match": true
+ },
+ {
+  "id": "c07l07",
+  "chapter": 7,
+  "expected": "The push is cancel. It just loses the light's energy, L.",
+  "text": "The pushes cancel. It just loses the light's energy, L.",
+  "heard": "The push is cancel. It just loses the light's energy, L.",
+  "match": true
+ },
+ {
+  "id": "c07l08",
+  "chapter": 7,
+  "expected": "Now watch from a passing train.",
+  "text": "Now watch from a passing train.",
+  "heard": "Now watch from a passing train.",
+  "match": true
+ },
+ {
+  "id": "c07l09",
+  "chapter": 7,
+  "expected": "The speed is unchanged, but the forward flash now looks slightly more energetic, the backward slightly less.",
+  "text": "The speed is unchanged, but the forward flash now looks slightly more energetic, the backward slightly less.",
+  "heard": "The speed is unchanged, but the forward flash now looks slightly more energetic, the backward slightly less.",
+  "match": true
+ },
+ {
+  "id": "c07l10",
+  "chapter": 7,
+  "expected": "Add them: most of the difference cancels. Not all.",
+  "text": "Add them: most of the difference cancels. Not all.",
+  "heard": "Add them most of the difference cancels, not all.",
+  "match": true
+ },
+ {
+  "id": "c07l11",
+  "chapter": 7,
+  "expected": "From the train, the light carries away a little more than L.",
+  "text": "From the train, the light carries away a little more than L.",
+  "heard": "From the train, the light carries away a little more than L.",
+  "match": true
+ },
+ {
+  "id": "c07l12",
+  "chapter": 7,
+  "expected": "That extra must come out of its kinetic energy.",
+  "text": "That extra must come out of its kinetic energy.",
+  "heard": "That extra must come out of its kinetic energy.",
+  "match": true
+ },
+ {
+  "id": "c07l13",
+  "chapter": 7,
+  "expected": "And kinetic energy is one half, times mass, times speed squared.",
+  "text": "And kinetic energy is one half, times mass, times speed squared.",
+  "heard": "And kinetic energy is one half, times mass, times speed squared.",
+  "match": true
+ },
+ {
+  "id": "c07l14",
+  "chapter": 7,
+  "expected": "The speed hasn't changed. So the mass drops \u2014",
+  "text": "The speed hasn't changed. So the mass drops \u2014",
+  "heard": "The speed hasn't changed, so the mass drops.",
+  "match": true
+ },
+ {
+  "id": "c07l15",
+  "chapter": 7,
+  "expected": "by the light's energy, divided by the speed of light squared.",
+  "text": "by the light's energy, divided by the speed of light squared.",
+  "heard": "By the light's energy, divided by the speed of light squared,",
+  "match": true
+ },
+ {
+  "id": "c08l01",
+  "chapter": 8,
+  "expected": "A year later, Einstein offered a simpler argument: a flash of light inside a box.",
+  "text": "A year later, Einstein offered a simpler argument: a flash of light inside a box.",
+  "heard": "A year later, Einstein offered a simpler argument, a flash of light inside a box.",
+  "match": true
+ },
+ {
+  "id": "c08l02",
+  "chapter": 8,
+  "expected": "Walk from one end of a small boat to the other, and it slides back under you.",
+  "text": "Walk from one end of a small boat to the other, and it slides back under you.",
+  "heard": "Walk from one end of a small boat to the other, and it slides back under you.",
+  "match": true
+ },
+ {
+  "id": "c08l03",
+  "chapter": 8,
+  "expected": "Nothing inside a closed system can move its own center of mass.",
+  "text": "Nothing inside a closed system can move its own centre of mass.",
+  "heard": "Nothing inside a closed system can move its own center of mass.",
+  "match": true
+ },
+ {
+  "id": "c08l04",
+  "chapter": 8,
+  "expected": "Now make it a box in empty space, and make you a flash of light off the left wall.",
+  "text": "Now make it a box in empty space, and make you a flash of light off the left wall.",
+  "heard": "Now make it a box in empty space and make you a flash of light off the left wall.",
+  "match": true
+ },
+ {
+  "id": "c08l05",
+  "chapter": 8,
+  "expected": "The flash pushes the box back, crosses, and is absorbed at the right wall \u2014",
+  "text": "The flash pushes the box back, crosses, and is absorbed at the right wall \u2014",
+  "heard": "The flash pushes the box back, crosses, and is absorbed at the right wall.",
+  "match": true
+ },
+ {
+  "id": "c08l06",
+  "chapter": 8,
+  "expected": "the box stops, shifted. Nothing outside touched it.",
+  "text": "the box stops, shifted. Nothing outside touched it.",
+  "heard": "The box stops shifted. Nothing outside touched it.",
+  "match": true
+ },
+ {
+  "id": "c08l07",
+  "chapter": 8,
+  "expected": "So either the box pushed itself through space, or the light carried mass, wall to wall.",
+  "text": "So either the box pushed itself through space, or the light carried mass, wall to wall.",
+  "heard": "So either the box pushed itself through space, or the light carried mass, wall to wall.",
+  "match": true
+ },
+ {
+  "id": "c08l08",
+  "chapter": 8,
+  "expected": "The boat settles it: box mass times shift equals light mass times box length.",
+  "text": "The boat settles it: box mass times shift equals light mass times box length.",
+  "heard": "The boat settles it. Box mass times shift equals light mass times box length.",
+  "match": true
+ },
+ {
+  "id": "c08l09",
+  "chapter": 8,
+  "expected": "Everything cancels but one line: the light's mass equals its energy, divided by the speed of light squared.",
+  "text": "Everything cancels but one line: the light's mass equals its energy, divided by the speed of light squared.",
+  "heard": "Everything cancels but one line. The lights mass equals its energy divided by the speed of light squared.",
+  "match": true
+ },
+ {
+  "id": "c08l10",
+  "chapter": 8,
+  "expected": "The left wall really gets lighter. The right wall really gets heavier.",
+  "text": "The left wall really gets lighter. The right wall really gets heavier.",
+  "heard": "The left wall really gets lighter. The right wall really gets heavier.",
+  "match": true
+ },
+ {
+  "id": "c08l11",
+  "chapter": 8,
+  "expected": "Einstein credited Poincar\u00e9 on the paper's first page.",
+  "text": "Einstein credited Poincar\u00e9 on the paper's first page.",
+  "heard": "Einstein credited Poincar\u00e9 on the paper's first page.",
+  "match": true
+ },
+ {
+  "id": "c09l01",
+  "chapter": 9,
+  "expected": "Once energy has real weight, the old mysteries make sense.",
+  "text": "Once energy has real weight, the old mysteries make sense.",
+  "heard": "Once energy has real weight, the old mysteries make sense.",
+  "match": true
+ },
+ {
+  "id": "c09l02",
+  "chapter": 9,
+  "expected": "Only one thing hid that weight: the size of c squared.",
+  "text": "Only one thing hid that weight: the size of c squared.",
+  "heard": "Only one thing hid that weight, the size of C squared.",
+  "match": true
+ },
+ {
+  "id": "c09l03",
+  "chapter": 9,
+  "expected": "Light moves at 300 million meters per second.",
+  "text": "Light moves at three hundred million metres per second.",
+  "heard": "Light moves at 300 million meters per second.",
+  "match": true
+ },
+ {
+  "id": "c09l04",
+  "chapter": 9,
+  "expected": "So c squared is ninety million billion.",
+  "text": "So c squared is ninety million billion.",
+  "heard": "So C squared is 90 million billion.",
+  "match": true
+ },
+ {
+  "id": "c09l05",
+  "chapter": 9,
+  "expected": "Ninety million billion joules, for one kilogram of weight.",
+  "text": "Ninety million billion joules, for one kilogram of weight.",
+  "heard": "90 million billion joules for one kilogram of weight.",
+  "match": true
+ },
+ {
+  "id": "c09l06",
+  "chapter": 9,
+  "expected": "Landolt's escaping heat weighed about a billionth of a gram.",
+  "text": "Landolt's escaping heat weighed about a billionth of a gram.",
+  "heard": "Landolts escaping heat weighed about a billionth of a gram.",
+  "match": true
+ },
+ {
+  "id": "c09l07",
+  "chapter": 9,
+  "expected": "His balance could only see thirty millionths of a gram.",
+  "text": "His balance could only see thirty millionths of a gram.",
+  "heard": "His balance could only see 30 millionths of a gram.",
+  "match": true
+ },
+ {
+  "id": "c09l08",
+  "chapter": 9,
+  "expected": "Tens of thousands of times to course.",
+  "text": "Tens of thousands of times too coarse.",
+  "heard": "Tens of thousands of times to course.",
+  "match": true
+ },
+ {
+  "id": "c09l09",
+  "chapter": 9,
+  "expected": "Even a gram of radium radiates a whole year of heat that weighs just forty billionths of a gram,",
+  "text": "Even a gram of radium radiates a whole year of heat that weighs just forty billionths of a gram,",
+  "heard": "Even a gram of radium radiates a whole year of heat that weighs just 40 billionths of a gram.",
+  "match": true
+ },
+ {
+  "id": "c09l10",
+  "chapter": 9,
+  "expected": "right at the edge of the finest balances \u2014 after twelve patient months.",
+  "text": "right at the edge of the finest balances \u2014 after twelve patient months.",
+  "heard": "Right at the edge of the finest balances after 12 patient months.",
+  "match": true
+ },
+ {
+  "id": "c10l01",
+  "chapter": 10,
+  "expected": "So could anyone weigh energy at all?",
+  "text": "So could anyone weigh energy at all?",
+  "heard": "So could anyone weigh energy at all?",
+  "match": true
+ },
+ {
+  "id": "c10l02",
+  "chapter": 10,
+  "expected": "It would take more energy per atom, and a way to weigh single atoms.",
+  "text": "It would take more energy per atom, and a way to weigh single atoms.",
+  "heard": "It would take more energy per atom and a way to weigh single atoms.",
+  "match": true
+ },
+ {
+  "id": "c10l03",
+  "chapter": 10,
+  "expected": "Both arrived in Rutherford's lab in Cambridge.",
+  "text": "Both arrived in Rutherford's lab in Cambridge.",
+  "heard": "Both arrived in Rutherford's lab in Cambridge.",
+  "match": true
+ },
+ {
+  "id": "c10l04",
+  "chapter": 10,
+  "expected": "Adams were no longer weighed on pans. Flying through magnetic fields in a vacuum, the lighter ones curve more sharply. The bend became the scale.",
+  "text": "Atoms were no longer weighed on pans: flying through magnetic fields in a vacuum, the lighter ones curve more sharply. The bend became the scale.",
+  "heard": "Adams were no longer weighed on pans. Flying through magnetic fields in a vacuum, the lighter ones curve more sharply. The bend became the scale.",
+  "match": true
+ },
+ {
+  "id": "c10l05",
+  "chapter": 10,
+  "expected": "On the 14th of April, 1932, researchers fired fast protons at a thin layer of lithium.",
+  "text": "On the fourteenth of April, nineteen thirty-two, researchers fired fast protons at a thin layer of lithium.",
+  "heard": "On the 14th of April, 1932, researchers fired fast protons at a thin layer of lithium.",
+  "match": true
+ },
+ {
+  "id": "c10l06",
+  "chapter": 10,
+  "expected": "One watched from a darkened hut beneath the machine, shielded from X-rays.",
+  "text": "One watched from a darkened hut beneath the machine, shielded from X-rays.",
+  "heard": "One watched from a darkened hut beneath the machine, shielded from X -rays.",
+  "match": true
+ },
+ {
+  "id": "c10l07",
+  "chapter": 10,
+  "expected": "And this screen lit up.",
+  "text": "The screen lit up.",
+  "heard": "And this screen lit up.",
+  "match": true
+ },
+ {
+  "id": "c10l08",
+  "chapter": 10,
+  "expected": "Rutherford squeezed in: the flashes looked, he said, mighty like alpha particles.",
+  "text": "Rutherford squeezed in: the flashes looked, he said, mighty like alpha particles.",
+  "heard": "Rutherford squeezed in. The flashes looked, he said, mighty like alpha particles.",
+  "match": true
+ },
+ {
+  "id": "c10l09",
+  "chapter": 10,
+  "expected": "A lithium nucleus had swallowed a proton and split into two helium nuclei,",
+  "text": "A lithium nucleus had swallowed a proton and split into two helium nuclei,",
+  "heard": "A lithium nucleus had swallowed a proton and split into two helium nuclei.",
+  "match": true
+ },
+ {
+  "id": "c10l10",
+  "chapter": 10,
+  "expected": "Flying apart with 17.2 million electron volts.",
+  "text": "flying apart with seventeen point two million electron volts.",
+  "heard": "Flying apart with 17 .2 million electron volts.",
+  "match": true
+ },
+ {
+  "id": "c10l11",
+  "chapter": 10,
+  "expected": "Lithium plus hydrogen outweighs two heliums.",
+  "text": "Lithium plus hydrogen outweighs two heliums.",
+  "heard": "Lithium plus hydrogen outweighs two heliums.",
+  "match": true
+ },
+ {
+  "id": "c10l12",
+  "chapter": 10,
+  "expected": "If Einstein was right, the missing mass times c squared must equal that energy.",
+  "text": "If Einstein was right, the missing mass times c squared must equal that energy.",
+  "heard": "If Einstein was right, the missing mass times c squared must equal that energy.",
+  "match": true
+ },
+ {
+  "id": "c10l13",
+  "chapter": 10,
+  "expected": "But lithium's 1932, mass predicted only 14 million electron volts, against 17.",
+  "text": "But lithium's nineteen thirty-two mass predicted only fourteen million electron volts, against seventeen.",
+  "heard": "But lithium's 1932, mass predicted only 14 million electron volts, against 17.",
+  "match": true
+ },
+ {
+  "id": "c10l14",
+  "chapter": 10,
+  "expected": "A year later, a more precise lithium mass raised the prediction to 16.8 within a few percent. It matched.",
+  "text": "A year later, a more precise lithium mass raised the prediction to sixteen point eight \u2014 within a few percent. It matched.",
+  "heard": "A year later, a more precise lithium mass raised the prediction to 16 .8 within a few percent. It matched.",
+  "match": true
+ },
+ {
+  "id": "c11l01",
+  "chapter": 11,
+  "expected": "Weighing Adams had already explained something bigger.",
+  "text": "Weighing atoms had already explained something bigger.",
+  "heard": "Weighing Adams had already explained something bigger.",
+  "match": true
+ },
+ {
+  "id": "c11l02",
+  "chapter": 11,
+  "expected": "In 1920, helium proved lighter than the four hydrogens that build it.",
+  "text": "In nineteen twenty, helium proved lighter than the four hydrogens that build it.",
+  "heard": "In 1920, helium proved lighter than the four hydrogens that build it.",
+  "match": true
+ },
+ {
+  "id": "c11l03",
+  "chapter": 11,
+  "expected": "4.0313. Against 4.0026.",
+  "text": "Four point zero three one three, against four point zero zero two six.",
+  "heard": "4 .0313. Against 4 .0026.",
+  "match": true
+ },
+ {
+  "id": "c11l04",
+  "chapter": 11,
+  "expected": "Arthur Eddington saw that the missing mass could power the stars.",
+  "text": "Arthur Eddington saw that the missing mass could power the stars.",
+  "heard": "Arthur Eddington saw that the missing mass could power the stars.",
+  "match": true
+ },
+ {
+  "id": "c11l05",
+  "chapter": 11,
+  "expected": "Fusing hydrogen into helium leaves, 7-tenths of 1% missing, carried away as energy.",
+  "text": "Fusing hydrogen into helium leaves seven tenths of one percent missing, carried away as energy.",
+  "heard": "Fusing hydrogen into helium leaves, 7 -tenths of 1 % missing, carried away as energy.",
+  "match": true
+ },
+ {
+  "id": "c11l06",
+  "chapter": 11,
+  "expected": "The Sun fuses six hundred million tons of hydrogen a second,",
+  "text": "The Sun fuses six hundred million tons of hydrogen a second,",
+  "heard": "The sun fuses 600 million tons of hydrogen a second.",
+  "match": true
+ },
+ {
+  "id": "c11l07",
+  "chapter": 11,
+  "expected": "and four million tons of that never becomes matter \u2014 it leaves as light.",
+  "text": "and four million tons of that never becomes matter \u2014 it leaves as light.",
+  "heard": "And 4 million tons of that never becomes matter. It leaves as light.",
+  "match": true
+ },
+ {
+  "id": "c11l08",
+  "chapter": 11,
+  "expected": "The same equation runs the stars, and the battery in your pocket.",
+  "text": "The same equation runs the stars, and the battery in your pocket.",
+  "heard": "The same equation runs the stars and the battery in your pocket.",
+  "match": true
+ },
+ {
+  "id": "c12l01",
+  "chapter": 12,
+  "expected": "Sew back to the phones.",
+  "text": "So, back to the phones.",
+  "heard": "Sew back to the phones.",
+  "match": true
+ },
+ {
+  "id": "c12l02",
+  "chapter": 12,
+  "expected": "The charged one gained energy, and therefore mass: less than a billionth of a gram.",
+  "text": "The charged one gained energy, and therefore mass: less than a billionth of a gram.",
+  "heard": "The charged one gained energy and therefore mass, less than a billionth of a gram.",
+  "match": true
+ },
+ {
+  "id": "c12l03",
+  "chapter": 12,
+  "expected": "No balance can show it. We know it anyway:",
+  "text": "No balance can show it. We know it anyway:",
+  "heard": "No balance can show it. We know it anyway.",
+  "match": true
+ },
+ {
+  "id": "c12l04",
+  "chapter": 12,
+  "expected": "every kind of energy weighs exactly its amount, divided by c squared.",
+  "text": "every kind of energy weighs exactly its amount, divided by c squared.",
+  "heard": "Every kind of energy weighs exactly its amount, divided by c squared.",
+  "match": true
+ },
+ {
+  "id": "c12l05",
+  "chapter": 12,
+  "expected": "Almost all the mass of your body is energy too, locked in its protons and neutrons.",
+  "text": "Almost all the mass of your body is energy too, locked in its protons and neutrons.",
+  "heard": "Almost all the mass of your body is energy, too, locked in its protons and neutrons.",
+  "match": true
+ },
+ {
+  "id": "c12l06",
+  "chapter": 12,
+  "expected": "The three quarks in a proton are less than 1% of its weight.",
+  "text": "The three quarks in a proton are less than one percent of its weight.",
+  "heard": "The three quarks in a proton are less than 1 % of its weight.",
+  "match": true
+ },
+ {
+  "id": "c12l07",
+  "chapter": 12,
+  "expected": "The rest is the strong force \u2014 trapped, seething motion.",
+  "text": "The rest is the strong force \u2014 trapped, seething motion.",
+  "heard": "The rest is the strong force, trapped, seething motion.",
+  "match": true
+ },
+ {
+  "id": "c12l08",
+  "chapter": 12,
+  "expected": "You are mostly stored energy, wearing the shape of a person. So is your phone.",
+  "text": "You are mostly stored energy, wearing the shape of a person. So is your phone.",
+  "heard": "You are mostly stored energy, wearing the shape of a person. So is your phone.",
+  "match": true
+ },
+ {
+  "id": "c12l09",
+  "chapter": 12,
+  "expected": "Charge it tonight, and in the morning, it will be ever so slightly heavier.",
+  "text": "Charge it tonight, and in the morning, it will be ever so slightly heavier.",
+  "heard": "Charge it tonight, and in the morning, it will be ever so slightly heavier.",
+  "match": true
+ }
+]
